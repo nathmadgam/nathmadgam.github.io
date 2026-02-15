@@ -1,6 +1,4 @@
-================================================================================
-                    GAME DESIGN DOCUMENT: SOCIETY
-================================================================================
+                        GAME DESIGN DOCUMENT: SOCIETY
                         PROJECT CODE: HIGH_LIFE_V1
                         VERSION: 1.0.0 (MASTER DRAFT)
                         STATUS: PRE-PRODUCTION / RECRUITMENT
