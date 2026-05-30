@@ -58,7 +58,7 @@
     body:has(a:hover) #cur-ring,
     body:has(button:hover) #cur-ring { width:42px; height:42px; border-color: var(--accent2); }
 
-    /* ─────────── CANVAS PARTICLES ─────────── */
+    /* ─────────── CANVAS (full bg effect) ─────────── */
     #particles {
       position: fixed; inset: 0; z-index: 0;
       pointer-events: none;
@@ -392,7 +392,19 @@
       padding:22px 18px;
       font-family:var(--mono); font-size:.7rem; line-height:1.85;
       color:var(--muted); overflow-x:auto;
+      min-height:340px;
+      transition: opacity .5s ease;
     }
+    .code-body.fading { opacity: 0; }
+    .code-slide-dots {
+      margin-left: auto; display: flex; gap: 5px; align-items: center;
+    }
+    .slide-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(0,219,180,.2); transition: background .3s, transform .3s;
+      cursor: none;
+    }
+    .slide-dot.active { background: var(--accent); transform: scale(1.5); }
     /* typing cursor in code */
     .code-cursor {
       display:inline-block; width:2px; height:.85em;
@@ -593,39 +605,148 @@
 
     /* ─────────── COMMUNITIES ─────────── */
     .comm-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 14px;
     }
     .comm-card {
-      display: flex; align-items: center; gap: 16px;
-      border: 1px solid var(--border); border-radius: 4px; padding: 18px 20px;
-      text-decoration: none; color: var(--text); position: relative;
+      display: flex; flex-direction: column; gap: 12px;
+      border: 1px solid var(--border); border-radius: 4px; padding: 20px;
+      text-decoration: none; color: var(--text);
       transition: border-color .2s, background .2s, transform .2s;
-      overflow: hidden;
     }
     .comm-card:hover {
       border-color: var(--accent); background: rgba(0,219,180,.03);
       transform: translateY(-2px);
     }
+    /* top row: icon + name/badge */
+    .comm-top { display: flex; align-items: center; gap: 12px; }
     .comm-icon {
-      width: 44px; height: 44px; border-radius: 8px;
+      width: 40px; height: 40px; border-radius: 8px;
       object-fit: cover; flex-shrink: 0;
       border: 1px solid var(--border);
       background: var(--surface);
     }
-    .comm-info { flex: 1; min-width: 0; }
-    .comm-name { font-size: .9rem; font-weight: 700; margin-bottom: 2px; }
-    .comm-members { font-family: var(--mono); font-size: .6rem; color: var(--muted); letter-spacing: .08em; margin-bottom: 5px; }
-    .comm-desc { font-size: .78rem; color: var(--muted); line-height: 1.5; font-weight: 400; }
+    .comm-title-block { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+    .comm-name { font-size: .88rem; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .comm-role {
-      position: absolute; top: 14px; right: 16px;
-      font-family: var(--mono); font-size: .58rem;
+      font-family: var(--mono); font-size: .54rem;
       letter-spacing: .12em; text-transform: uppercase;
-      padding: 3px 10px; border-radius: 2px; font-weight: 700;
+      padding: 2px 8px; border-radius: 2px; font-weight: 700;
+      display: inline-block; align-self: flex-start; white-space: nowrap;
     }
     .comm-role.founder  { background: rgba(0,219,180,.15); color: var(--accent); border: 1px solid rgba(0,219,180,.3); }
     .comm-role.main-dev { background: rgba(79,108,255,.15); color: #7b91ff; border: 1px solid rgba(79,108,255,.3); }
     .comm-role.developer{ background: rgba(255,255,255,.06); color: var(--muted); border: 1px solid var(--border); }
     .comm-role.admin    { background: rgba(249,130,108,.12); color: #f9826c; border: 1px solid rgba(249,130,108,.25); }
+    /* bottom rows */
+    .comm-members { font-family: var(--mono); font-size: .6rem; color: var(--muted); letter-spacing: .08em; }
+    .comm-desc { font-size: .78rem; color: var(--muted); line-height: 1.55; font-weight: 400; }
+
+    /* ─────────── ABOUT ─────────── */
+    .about-layout {
+      display: grid; grid-template-columns: 280px 1fr; gap: 64px; align-items: start;
+    }
+    /* avatar */
+    .about-left { display: flex; flex-direction: column; gap: 28px; }
+    .about-avatar-wrap {
+      position: relative; width: 160px; margin: 0 auto;
+    }
+    .about-avatar-ring {
+      position: absolute; inset: -6px; border-radius: 50%;
+      border: 1px solid var(--accent);
+      animation: spinRing 8s linear infinite;
+      background: conic-gradient(var(--accent) 0deg, transparent 120deg, var(--accent2) 240deg, transparent 360deg);
+      -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), white calc(100% - 2px));
+      mask: radial-gradient(farthest-side, transparent calc(100% - 2px), white calc(100% - 2px));
+      opacity: .6;
+    }
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+    .about-avatar-inner {
+      width: 160px; height: 160px; border-radius: 50%; overflow: hidden;
+      border: 2px solid var(--border); background: var(--surface);
+    }
+    .about-avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .about-status-badge {
+      position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+      font-family: var(--mono); font-size: .58rem; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--accent);
+      background: var(--bg); border: 1px solid rgba(0,219,180,.3);
+      padding: 3px 10px; border-radius: 20px;
+      display: flex; align-items: center; gap: 5px; white-space: nowrap;
+    }
+    .about-status-badge .dot {
+      width: 5px; height: 5px; background: var(--accent);
+      border-radius: 50%; box-shadow: 0 0 6px var(--accent);
+      animation: pulse 2s infinite;
+    }
+    /* facts */
+    .about-facts { display: flex; flex-direction: column; gap: 10px; }
+    .about-fact {
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 10px 14px; border: 1px solid var(--border); border-radius: 2px;
+      transition: border-color .18s;
+    }
+    .about-fact:hover { border-color: var(--accent); }
+    .about-fact-label {
+      font-family: var(--mono); font-size: .56rem;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+    }
+    .about-fact-val { font-size: .84rem; font-weight: 600; }
+    /* social links */
+    .about-links { display: flex; flex-direction: column; gap: 8px; }
+    .about-link {
+      display: flex; align-items: center; gap: 9px;
+      font-family: var(--mono); font-size: .68rem; letter-spacing: .1em;
+      color: var(--muted); text-decoration: none;
+      border: 1px solid var(--border); padding: 10px 14px; border-radius: 2px;
+      transition: border-color .18s, color .18s, transform .18s;
+    }
+    .about-link:hover { border-color: var(--accent); color: var(--accent); transform: translateX(4px); }
+    /* right side */
+    .about-right { display: flex; flex-direction: column; gap: 40px; }
+    .about-bio p {
+      font-size: .95rem; color: var(--muted); line-height: 1.82;
+      font-weight: 400; margin-bottom: 16px;
+    }
+    .about-bio p:last-child { margin-bottom: 0; }
+    .about-edu-label {
+      font-family: var(--mono); font-size: .62rem;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 18px;
+    }
+    /* education timeline */
+    .edu-timeline { display: flex; flex-direction: column; gap: 0; }
+    .edu-item {
+      display: flex; gap: 18px; padding-bottom: 28px;
+      position: relative;
+    }
+    .edu-item::before {
+      content: ''; position: absolute;
+      left: 7px; top: 20px; bottom: 0;
+      width: 1px; background: var(--border);
+    }
+    .edu-item:last-child { padding-bottom: 0; }
+    .edu-item:last-child::before { display: none; }
+    .edu-dot {
+      width: 15px; height: 15px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid var(--accent); background: var(--bg);
+      margin-top: 3px; position: relative; z-index: 1;
+      box-shadow: 0 0 10px rgba(0,219,180,.3);
+    }
+    .edu-content { display: flex; flex-direction: column; gap: 4px; }
+    .edu-school { font-size: .95rem; font-weight: 700; }
+    .edu-course { font-size: .82rem; color: var(--muted); line-height: 1.5; font-weight: 400; }
+    .edu-period {
+      font-family: var(--mono); font-size: .6rem;
+      letter-spacing: .1em; color: var(--accent); text-transform: uppercase;
+    }
+    /* language chips */
+    .lang-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+    .lang-chip {
+      font-family: var(--mono); font-size: .65rem; letter-spacing: .1em;
+      border: 1px solid var(--border); padding: 6px 14px; border-radius: 2px;
+      color: var(--muted); transition: border-color .18s, color .18s;
+    }
+    .lang-chip:hover { border-color: var(--accent); color: var(--accent); }
 
     /* ─────────── RESPONSIVE ─────────── */
     @media(max-width:900px){
@@ -633,11 +754,13 @@
       .nav-status { display:none; }
       #hero { padding:110px 22px 70px; }
       .hero-exp { display:none; }
-      #projects,#scripting,#building,#clients,#contact,#games,#communities,footer,
+      #projects,#scripting,#building,#clients,#contact,#games,#communities,#about,footer,
       .section-header { padding-left:22px; padding-right:22px; }
-      #games, #communities { padding-left:22px; padding-right:22px; }
+      #games, #communities, #about { padding-left:22px; padding-right:22px; }
       .proj-filters { padding: 0 22px; }
       .games-grid { grid-template-columns: 1fr; }
+      .about-layout { grid-template-columns: 1fr; gap: 40px; }
+      .about-avatar-wrap { margin: 0; }
       .scripting-layout,.contact-layout { grid-template-columns:1fr; gap:36px; }
       .building-grid { grid-template-columns:1fr 1fr; }
       .form-row { grid-template-columns:1fr; }
@@ -660,9 +783,6 @@
   <!-- GRID -->
   <div class="grid-bg"></div>
 
-  <!-- BLOBS -->
-  <div class="blob blob-1" id="blob1" style="top:-100px;left:-100px"></div>
-  <div class="blob blob-2" id="blob2" style="bottom:0;right:-80px"></div>
 
   <!-- SCANLINES -->
   <div class="scan"></div>
@@ -671,6 +791,7 @@
   <nav>
     <div class="nav-logo">Cynex<span>.dev</span></div>
     <ul class="nav-links">
+      <li><a href="#about">About</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#scripting">Scripting</a></li>
       <li><a href="#building">Building</a></li>
@@ -698,13 +819,129 @@
         <div class="chip">Cooking Mechanics</div>
       </div>
       <div class="hero-cta">
-        <a href="#projects" class="btn-primary">View Projects</a>
+        <a href="#about" class="btn-primary">About Me</a>
         <a href="#contact" class="btn-ghost">Get in Touch</a>
       </div>
     </div>
     <div class="hero-exp">
       <div class="hero-exp-num" id="expNum">0</div>
       <div class="hero-exp-label">Years of<br>Experience</div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" style="padding:120px 60px;">
+    <div class="section-header reveal">
+      <span class="section-num">00 /</span>
+      <h2 class="section-title">About</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-layout">
+
+      <!-- LEFT: avatar + quick facts -->
+      <div class="about-left reveal">
+        <div class="about-avatar-wrap">
+          <div class="about-avatar-ring"></div>
+          <div class="about-avatar-inner">
+            <img
+              src="https://www.fiverr.com/profile_image/nathmad54"
+              onerror="this.src='https://ui-avatars.com/api/?name=Nathaniel+Madrid&background=00dbb4&color=05070f&size=200&bold=true'"
+              alt="Nathaniel Madrid"
+              class="about-avatar-img"
+            />
+          </div>
+          <div class="about-status-badge"><span class="dot"></span>Online</div>
+        </div>
+
+        <div class="about-facts">
+          <div class="about-fact">
+            <span class="about-fact-label">Name</span>
+            <span class="about-fact-val">Nathaniel Madrid</span>
+          </div>
+          <div class="about-fact">
+            <span class="about-fact-label">Handle</span>
+            <span class="about-fact-val">@nathmad54 / Cynex</span>
+          </div>
+          <div class="about-fact">
+            <span class="about-fact-label">Location</span>
+            <span class="about-fact-val">Philippines</span>
+          </div>
+          <div class="about-fact">
+            <span class="about-fact-label">Education</span>
+            <span class="about-fact-val">CS · Game Dev · AMA University</span>
+          </div>
+          <div class="about-fact">
+            <span class="about-fact-label">Languages</span>
+            <span class="about-fact-val">EN · JP · ES · DE · ID</span>
+          </div>
+        </div>
+
+        <div class="about-links">
+          <a href="https://www.linkedin.com/in/nathaniel-madrid" target="_blank" rel="noopener" class="about-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://x.com/cynexcodes" target="_blank" rel="noopener" class="about-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            @cynexcodes
+          </a>
+          <a href="https://www.facebook.com/nathanielgamindemadrid/" target="_blank" rel="noopener" class="about-link">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            Facebook
+          </a>
+          <a href="https://www.tiktok.com/@nathmadgam" target="_blank" rel="noopener" class="about-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg>
+            @nathmadgam
+          </a>
+          <a href="https://www.fiverr.com/users/nathmad54" target="_blank" rel="noopener" class="about-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M23.004 15.588a.995.995 0 1 0 .002-1.99.995.995 0 0 0-.002 1.99zm-.996-3.705h-1.33c-.459 0-.789.135-.789.566v2.043h2.12v1.329h-2.12V19h-1.51v-3.179h-.936v-1.329h.936v-1.98c0-1.225.784-1.842 2.226-1.842.418 0 .94.054 1.403.135v1.078zm-4.71 2.43c0-1.289-.996-2.119-2.389-2.119-1.73 0-2.767 1.048-2.767 2.686 0 1.664 1.037 2.632 2.875 2.632.916 0 1.73-.243 2.335-.7v-1.21c-.54.377-1.222.619-1.93.619-1.008 0-1.7-.43-1.808-1.237h3.684v-.672zm-3.738-.538c.107-.727.618-1.129 1.35-1.129.701 0 1.186.402 1.212 1.129h-2.562zm-1.347-2.119a3.46 3.46 0 0 1 .485.054v1.425a4.4 4.4 0 0 0-.647-.054c-.997 0-1.563.62-1.563 1.71V19h-1.51v-5.156h1.43v.808c.351-.566.916-.835 1.805-.835v-.027zm-4.898 5.184H5.804v-3.665H4.456v-1.33h1.348v-.35c0-1.343.754-2.119 2.146-2.119.485 0 .943.054 1.32.162V10.8a4.3 4.3 0 0 0-.943-.108c-.593 0-.862.296-.862.862v.35h1.805v1.33H7.465V19H5.316z"/></svg>
+            Fiverr
+          </a>
+        </div>
+      </div>
+
+      <!-- RIGHT: story + education timeline -->
+      <div class="about-right">
+        <div class="about-bio reveal" style="animation-delay:.1s">
+          <p>As a kid, I was obsessed with playing games and figured out I could build my own. I grew tired of repetitive gameplay loops, so around 8 years ago I started learning programming inside Roblox Studio. What started as curiosity turned into a craft.</p>
+          <p>I am a fullstack developer and a computer science student currently specializing in Game Development at AMA University. Before that I graduated senior high school in Accounting, Business and Management at FEU Alabang, which also shaped how I think about the business side of games and studios.</p>
+          <p>I speak English, Japanese, Spanish, German, and Indonesian. I love learning, building things people actually enjoy, and solving interesting problems.</p>
+        </div>
+
+        <div class="about-edu reveal" style="animation-delay:.2s">
+          <div class="about-edu-label">Education</div>
+          <div class="edu-timeline">
+            <div class="edu-item">
+              <div class="edu-dot"></div>
+              <div class="edu-content">
+                <div class="edu-school">AMA University</div>
+                <div class="edu-course">BS Computer Science — Game Development Specialization</div>
+                <div class="edu-period">Current</div>
+              </div>
+            </div>
+            <div class="edu-item">
+              <div class="edu-dot"></div>
+              <div class="edu-content">
+                <div class="edu-school">FEU Alabang</div>
+                <div class="edu-course">Senior High School — Accounting, Business and Management (ABM)</div>
+                <div class="edu-period">Graduated</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-langs reveal" style="animation-delay:.3s">
+          <div class="about-edu-label">Languages</div>
+          <div class="lang-chips">
+            <span class="lang-chip">🇺🇸 English</span>
+            <span class="lang-chip">🇯🇵 Japanese</span>
+            <span class="lang-chip">🇪🇸 Spanish</span>
+            <span class="lang-chip">🇩🇪 German</span>
+            <span class="lang-chip">🇮🇩 Indonesian</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -922,9 +1159,10 @@
             <div class="code-dot" style="background:#f9826c"></div>
             <div class="code-dot" style="background:#e5c07b"></div>
             <div class="code-dot" style="background:#00dbb4"></div>
-            <span class="code-filename">CookingSystem.lua</span>
+            <span class="code-filename" id="codeFilename">metatables.lua</span>
+            <div class="code-slide-dots" id="slideDots"></div>
           </div>
-          <div class="code-body" id="codeBody"></div>
+          <div class="code-body" id="codeBody"><span class="code-cursor"></span></div>
         </div>
       </div>
     </div>
@@ -1023,55 +1261,63 @@
     <div class="comm-grid">
 
       <a href="https://www.roblox.com/communities/34265738/Tenasa-Games" target="_blank" rel="noopener" class="comm-card reveal">
-        <img class="comm-icon" src="https://tr.rbxcdn.com/180DAY-df1d7676e53cdff558470978ce451245/150/150/Image/Png/noFilter" alt="Tenasa Games" />
-        <div class="comm-info">
-          <div class="comm-name">Tenasa Games</div>
-          <div class="comm-members">78 members</div>
-          <p class="comm-desc">Creating immersive worlds by blending technical precision with imagination.</p>
+        <div class="comm-top">
+          <img class="comm-icon" src="https://tr.rbxcdn.com/180DAY-df1d7676e53cdff558470978ce451245/150/150/Image/Png/noFilter" alt="Tenasa Games" />
+          <div class="comm-title-block">
+            <div class="comm-name">Tenasa Games</div>
+            <span class="comm-role founder">Founder</span>
+          </div>
         </div>
-        <span class="comm-role founder">Founder</span>
+        <div class="comm-members">78 members</div>
+        <p class="comm-desc">Creating immersive worlds by blending technical precision with imagination.</p>
       </a>
 
       <a href="https://www.roblox.com/communities/153339776/SOL-Co" target="_blank" rel="noopener" class="comm-card reveal" style="animation-delay:.07s">
-        <img class="comm-icon" src="https://www.google.com/s2/favicons?domain=roblox.com&sz=64" alt="SOL Co."
-          onerror="this.style.background='var(--surface)'" />
-        <div class="comm-info">
-          <div class="comm-name">SOL Co.</div>
-          <div class="comm-members">9,898 members</div>
-          <p class="comm-desc">Fun Roblox community focused on obbies, islands, and creative games.</p>
+        <div class="comm-top">
+          <img class="comm-icon" src="https://www.google.com/s2/favicons?domain=roblox.com&sz=64" onerror="this.style.background='var(--surface)'" alt="SOL Co." />
+          <div class="comm-title-block">
+            <div class="comm-name">SOL Co.</div>
+            <span class="comm-role main-dev">Main Dev</span>
+          </div>
         </div>
-        <span class="comm-role main-dev">Main Dev</span>
+        <div class="comm-members">9,898 members</div>
+        <p class="comm-desc">Fun Roblox community focused on obbies, islands, and creative games.</p>
       </a>
 
       <a href="https://www.roblox.com/communities/81081641/Skydda-Concord-Studio" target="_blank" rel="noopener" class="comm-card reveal" style="animation-delay:.14s">
-        <img class="comm-icon" src="https://tr.rbxcdn.com/180DAY-d2a5aaba50a7c42469b1940832cf4b06/150/150/Image/Png/noFilter" alt="Skydda Concord Studio" />
-        <div class="comm-info">
-          <div class="comm-name">Skydda Concord Studio</div>
-          <div class="comm-members">2,287 members</div>
-          <p class="comm-desc">Independent Roblox development studio.</p>
+        <div class="comm-top">
+          <img class="comm-icon" src="https://tr.rbxcdn.com/180DAY-d2a5aaba50a7c42469b1940832cf4b06/150/150/Image/Png/noFilter" alt="Skydda Concord Studio" />
+          <div class="comm-title-block">
+            <div class="comm-name">Skydda Concord Studio</div>
+            <span class="comm-role developer">Developer</span>
+          </div>
         </div>
-        <span class="comm-role developer">Developer</span>
+        <div class="comm-members">2,287 members</div>
+        <p class="comm-desc">Independent Roblox development studio.</p>
       </a>
 
       <a href="https://www.roblox.com/communities/312003009/Corebound-Games" target="_blank" rel="noopener" class="comm-card reveal" style="animation-delay:.21s">
-        <img class="comm-icon" src="https://tr.rbxcdn.com/180DAY-daa1fe27fa190e8d629865cda3ea76c3/150/150/Image/Png/noFilter" alt="Corebound Games" />
-        <div class="comm-info">
-          <div class="comm-name">Corebound Games</div>
-          <div class="comm-members">2 members</div>
-          <p class="comm-desc">Early-stage game studio building on Roblox.</p>
+        <div class="comm-top">
+          <img class="comm-icon" src="https://tr.rbxcdn.com/180DAY-daa1fe27fa190e8d629865cda3ea76c3/150/150/Image/Png/noFilter" alt="Corebound Games" />
+          <div class="comm-title-block">
+            <div class="comm-name">Corebound Games</div>
+            <span class="comm-role admin">Admin</span>
+          </div>
         </div>
-        <span class="comm-role admin">Admin</span>
+        <div class="comm-members">2 members</div>
+        <p class="comm-desc">Early-stage game studio building on Roblox.</p>
       </a>
 
       <a href="https://www.roblox.com/communities/35192007/Jollibee-Roblox" target="_blank" rel="noopener" class="comm-card reveal" style="animation-delay:.28s">
-        <img class="comm-icon" src="https://www.google.com/s2/favicons?domain=roblox.com&sz=64" alt="Jollibee Roblox"
-          onerror="this.style.background='var(--surface)'" />
-        <div class="comm-info">
-          <div class="comm-name">Jollibee Roblox</div>
-          <div class="comm-members">174 members</div>
-          <p class="comm-desc">Roleplay-only community. Not affiliated with the real brand.</p>
+        <div class="comm-top">
+          <img class="comm-icon" src="https://www.google.com/s2/favicons?domain=roblox.com&sz=64" onerror="this.style.background='var(--surface)'" alt="Jollibee Roblox" />
+          <div class="comm-title-block">
+            <div class="comm-name">Jollibee Roblox</div>
+            <span class="comm-role developer">Developer</span>
+          </div>
         </div>
-        <span class="comm-role developer">Developer</span>
+        <div class="comm-members">174 members</div>
+        <p class="comm-desc">Roleplay-only community. Not affiliated with the real brand.</p>
       </a>
 
     </div>
@@ -1154,58 +1400,219 @@
     requestAnimationFrame(ringLoop);
   })();
 
-  /* ── MOUSE-FOLLOW BLOBS ── */
-  const b1=document.getElementById('blob1'), b2=document.getElementById('blob2');
-  let bx1=-100,by1=-100,bx2=window.innerWidth,by2=window.innerHeight;
-  document.addEventListener('mousemove', e=>{
-    bx1 += (e.clientX-260-bx1)*.04; by1 += (e.clientY-260-by1)*.04;
-    bx2 += (e.clientX+40-bx2)*.025; by2 += (e.clientY+40-by2)*.025;
-    b1.style.left=bx1+'px'; b1.style.top=by1+'px';
-    b2.style.left=bx2+'px'; b2.style.top=by2+'px';
-  });
-
-  /* ── PARTICLES ── */
+  /* ══════════════════════════════════════════════
+     BACKGROUND: Constellation Web + Warp Trails
+     ══════════════════════════════════════════════ */
   const canvas = document.getElementById('particles');
-  const ctx = canvas.getContext('2d');
-  let W, H, pts=[];
-  function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
-  resize(); window.addEventListener('resize',resize);
-  for(let i=0;i<70;i++) pts.push({
-    x:Math.random()*window.innerWidth,
-    y:Math.random()*window.innerHeight,
-    vx:(Math.random()-.5)*.28,
-    vy:(Math.random()-.5)*.28,
-    r:Math.random()*1.4+.4,
-    a:Math.random()*.6+.15
-  });
-  function drawParticles(){
-    ctx.clearRect(0,0,W,H);
-    pts.forEach(p=>{
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
-      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  /* ── mouse ── */
+  let mouseX = W / 2, mouseY = H / 2;
+  document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+  /* ── node class ── */
+  const NODE_COUNT = 90;
+  const CONNECT_DIST = 140;
+  const MOUSE_REPEL  = 120;
+
+  class Node {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x  = Math.random() * W;
+      this.y  = Math.random() * H;
+      this.ox = this.x; this.oy = this.y;    // original pos
+      this.vx = (Math.random() - .5) * .35;
+      this.vy = (Math.random() - .5) * .35;
+      this.r  = Math.random() * 1.6 + .5;
+      this.baseAlpha = Math.random() * .5 + .2;
+      this.alpha = this.baseAlpha;
+      // pulse
+      this.pulseSpeed = Math.random() * .02 + .005;
+      this.pulsePhase = Math.random() * Math.PI * 2;
+      // trail
+      this.trail = [];
+      this.trailLen = Math.floor(Math.random() * 8 + 4);
+      // color: mostly teal, some indigo
+      this.col = Math.random() < .75 ? '0,219,180' : '79,108,255';
+    }
+    update(t) {
+      // save trail
+      this.trail.push({x: this.x, y: this.y});
+      if (this.trail.length > this.trailLen) this.trail.shift();
+
+      // mouse repel
+      const dx = this.x - mouseX, dy = this.y - mouseY;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < MOUSE_REPEL) {
+        const force = (MOUSE_REPEL - dist) / MOUSE_REPEL * .6;
+        this.vx += (dx / dist) * force * .08;
+        this.vy += (dy / dist) * force * .08;
+      }
+
+      // soft return to origin
+      this.vx += (this.ox - this.x) * .0003;
+      this.vy += (this.oy - this.y) * .0003;
+
+      // velocity damping
+      this.vx *= .985; this.vy *= .985;
+
+      this.x += this.vx; this.y += this.vy;
+
+      // wrap
+      if (this.x < -20) this.x = W + 20;
+      if (this.x > W+20) this.x = -20;
+      if (this.y < -20) this.y = H + 20;
+      if (this.y > H+20) this.y = -20;
+
+      // pulse alpha
+      this.alpha = this.baseAlpha + Math.sin(t * this.pulseSpeed + this.pulsePhase) * .18;
+    }
+    draw() {
+      // glow dot
+      const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r * 4);
+      grd.addColorStop(0, `rgba(${this.col},${this.alpha})`);
+      grd.addColorStop(1, `rgba(${this.col},0)`);
       ctx.beginPath();
-      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(0,219,180,${p.a})`;
+      ctx.arc(this.x, this.y, this.r * 4, 0, Math.PI * 2);
+      ctx.fillStyle = grd;
       ctx.fill();
-    });
-    // draw lines between nearby particles
-    for(let i=0;i<pts.length;i++)
-      for(let j=i+1;j<pts.length;j++){
-        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
-        const d=Math.sqrt(dx*dx+dy*dy);
-        if(d<120){
+
+      // crisp core
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${this.col},${Math.min(this.alpha + .3, 1)})`;
+      ctx.fill();
+    }
+    drawTrail() {
+      if (this.trail.length < 2) return;
+      ctx.beginPath();
+      ctx.moveTo(this.trail[0].x, this.trail[0].y);
+      for (let i = 1; i < this.trail.length; i++) ctx.lineTo(this.trail[i].x, this.trail[i].y);
+      ctx.strokeStyle = `rgba(${this.col}, ${this.alpha * .25})`;
+      ctx.lineWidth = this.r * .6;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    }
+  }
+
+  /* ── warp star class (occasional fast streaks) ── */
+  const warps = [];
+  class Warp {
+    constructor() {
+      this.x  = Math.random() * W;
+      this.y  = Math.random() * H;
+      const angle = Math.random() * Math.PI * 2;
+      const spd   = Math.random() * 3 + 2;
+      this.vx = Math.cos(angle) * spd;
+      this.vy = Math.sin(angle) * spd;
+      this.life = 1;
+      this.decay = Math.random() * .02 + .015;
+      this.len   = Math.random() * 30 + 10;
+      this.col   = Math.random() < .6 ? '0,219,180' : '79,108,255';
+    }
+    update() {
+      this.x += this.vx; this.y += this.vy;
+      this.life -= this.decay;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);
+      ctx.lineTo(this.x - this.vx * (this.len / 4), this.y - this.vy * (this.len / 4));
+      ctx.strokeStyle = `rgba(${this.col}, ${this.life * .5})`;
+      ctx.lineWidth = .8;
+      ctx.stroke();
+    }
+    dead() { return this.life <= 0 || this.x < 0 || this.x > W || this.y < 0 || this.y > H; }
+  }
+
+  /* ── spawn warp occasionally ── */
+  setInterval(() => {
+    if (warps.length < 12) warps.push(new Warp());
+  }, 400);
+
+  /* ── init nodes ── */
+  const nodes = Array.from({length: NODE_COUNT}, () => new Node());
+
+  /* ── mouse node (cursor attractor) ── */
+  const mouseNode = { x: W/2, y: H/2 };
+
+  /* ── main loop ── */
+  let t = 0;
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    t++;
+
+    mouseNode.x = mouseX; mouseNode.y = mouseY;
+
+    // trails first (below everything)
+    nodes.forEach(n => { n.update(t); n.drawTrail(); });
+
+    // edges between nodes
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        const d  = Math.sqrt(dx*dx + dy*dy);
+        if (d < CONNECT_DIST) {
+          const a = (1 - d / CONNECT_DIST) * .18;
+          // gradient line
+          const grad = ctx.createLinearGradient(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
+          grad.addColorStop(0, `rgba(${nodes[i].col},${a})`);
+          grad.addColorStop(1, `rgba(${nodes[j].col},${a})`);
           ctx.beginPath();
-          ctx.moveTo(pts[i].x,pts[i].y);
-          ctx.lineTo(pts[j].x,pts[j].y);
-          ctx.strokeStyle=`rgba(0,219,180,${.07*(1-d/120)})`;
-          ctx.lineWidth=.6;
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = (1 - d / CONNECT_DIST) * 1.2;
           ctx.stroke();
         }
       }
-    requestAnimationFrame(drawParticles);
+      // edges to mouse
+      const mdx = nodes[i].x - mouseX;
+      const mdy = nodes[i].y - mouseY;
+      const md  = Math.sqrt(mdx*mdx + mdy*mdy);
+      if (md < CONNECT_DIST * 1.4) {
+        const a = (1 - md / (CONNECT_DIST * 1.4)) * .3;
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(mouseX, mouseY);
+        ctx.strokeStyle = `rgba(0,219,180,${a})`;
+        ctx.lineWidth = .5;
+        ctx.stroke();
+      }
+    }
+
+    // nodes on top
+    nodes.forEach(n => n.draw());
+
+    // mouse glow
+    const mg = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 60);
+    mg.addColorStop(0, 'rgba(0,219,180,.08)');
+    mg.addColorStop(1, 'rgba(0,219,180,0)');
+    ctx.beginPath();
+    ctx.arc(mouseX, mouseY, 60, 0, Math.PI*2);
+    ctx.fillStyle = mg;
+    ctx.fill();
+
+    // warp streaks
+    for (let i = warps.length - 1; i >= 0; i--) {
+      warps[i].update();
+      warps[i].draw();
+      if (warps[i].dead()) warps.splice(i, 1);
+    }
+
+    requestAnimationFrame(loop);
   }
-  drawParticles();
+  loop();
+
 
   /* ── TYPEWRITER HERO ── */
   const lines=[
@@ -1276,48 +1683,269 @@
     });
   });
 
-  /* ── ANIMATED CODE BLOCK ── */
-  const code=`<span class="cm">-- Advanced Cooking System v2.4</span>
-<span class="kw">local</span> CookingService = {}
-CookingService.__index = CookingService
+  /* ── CODE SLIDESHOW TYPEWRITER ── */
+  const slides = [
+    {
+      file: 'metatables.lua',
+      lines: [
+        {t:'cm', v:'-- Metatables: custom behaviour on tables'},
+        {t:'kw', v:'local'},{t:'pl', v:' Animal = {}'},{t:'nl'},
+        {t:'pl', v:'Animal.__index = Animal'},{t:'nl'},{t:'nl'},
+        {t:'kw', v:'function'},{t:'pl', v:' '},{t:'fn', v:'Animal.new'},{t:'pl', v:'(name, sound)'},{t:'nl'},
+        {t:'pl', v:'  '},{t:'kw', v:'local'},{t:'pl', v:' self = setmetatable({}, Animal)'},{t:'nl'},
+        {t:'pl', v:'  self.name  = name'},{t:'nl'},
+        {t:'pl', v:'  self.sound = sound'},{t:'nl'},
+        {t:'kw', v:'  return'},{t:'pl', v:' self'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'nl'},{t:'nl'},
+        {t:'kw', v:'function'},{t:'pl', v:' Animal:'},{t:'fn', v:'Speak'},{t:'pl', v:'()'},{t:'nl'},
+        {t:'pl', v:'  print(self.name .. '},{t:'str', v:'" says "'},{t:'pl', v:' .. self.sound)'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'nl'},{t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' cat = Animal.'},{t:'fn', v:'new'},{t:'pl', v:'('},{t:'str', v:'"Cat"'},{t:'pl', v:', '},{t:'str', v:'"Meow"'},{t:'pl', v:')'},{t:'nl'},
+        {t:'pl', v:'cat:'},{t:'fn', v:'Speak'},{t:'pl', v:'()'},{t:'cm', v:'  --> Cat says Meow'},
+      ]
+    },
+    {
+      file: 'tables.lua',
+      lines: [
+        {t:'cm', v:'-- Tables: arrays, dicts, mixed'},
+        {t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' fruits = {'},{t:'str', v:'"apple"'},{t:'pl', v:', '},{t:'str', v:'"mango"'},{t:'pl', v:', '},{t:'str', v:'"grape"'},{t:'pl', v:'}'},{t:'nl'},
+        {t:'kw', v:'for'},{t:'pl', v:' i, v '},{t:'kw', v:'in'},{t:'pl', v:' ipairs(fruits) '},{t:'kw', v:'do'},{t:'nl'},
+        {t:'pl', v:'  print(i, v)'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'nl'},{t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' player = {'},{t:'nl'},
+        {t:'pl', v:'  name  = '},{t:'str', v:'"Cynex"'},{t:'pl', v:','},{t:'nl'},
+        {t:'pl', v:'  level = '},{t:'num', v:'42'},{t:'pl', v:','},{t:'nl'},
+        {t:'pl', v:'  alive = '},{t:'kw', v:'true'},{t:'nl'},
+        {t:'pl', v:'}'},{t:'nl'},{t:'nl'},
+        {t:'cm', v:'-- nested table access'},
+        {t:'nl'},
+        {t:'pl', v:'print(player.name, player.level)'},{t:'nl'},
+        {t:'pl', v:'table.insert(fruits, '},{t:'str', v:'"lemon"'},{t:'pl', v:')'},{t:'nl'},
+        {t:'pl', v:'table.remove(fruits, '},{t:'num', v:'1'},{t:'pl', v:')'},{t:'nl'},
+      ]
+    },
+    {
+      file: 'oop_inheritance.lua',
+      lines: [
+        {t:'cm', v:'-- OOP: inheritance via metatables'},
+        {t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' '},{t:'fn', v:'Base'},{t:'pl', v:' = {}'},{t:'nl'},
+        {t:'pl', v:'Base.__index = Base'},{t:'nl'},
+        {t:'kw', v:'function'},{t:'pl', v:' Base:'},{t:'fn', v:'Init'},{t:'pl', v:'(hp)'},{t:'nl'},
+        {t:'pl', v:'  self.hp = hp'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'nl'},{t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' '},{t:'fn', v:'Enemy'},{t:'pl', v:' = setmetatable({}, {__index = Base})'},{t:'nl'},
+        {t:'pl', v:'Enemy.__index = Enemy'},{t:'nl'},{t:'nl'},
+        {t:'kw', v:'function'},{t:'pl', v:' Enemy.'},{t:'fn', v:'new'},{t:'pl', v:'(hp, dmg)'},{t:'nl'},
+        {t:'pl', v:'  '},{t:'kw', v:'local'},{t:'pl', v:' self = setmetatable({}, Enemy)'},{t:'nl'},
+        {t:'pl', v:'  self:'},{t:'fn', v:'Init'},{t:'pl', v:'(hp)'},{t:'nl'},
+        {t:'pl', v:'  self.damage = dmg'},{t:'nl'},
+        {t:'kw', v:'  return'},{t:'pl', v:' self'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'nl'},{t:'nl'},
+        {t:'kw', v:'function'},{t:'pl', v:' Enemy:'},{t:'fn', v:'Attack'},{t:'pl', v:'(target)'},{t:'nl'},
+        {t:'pl', v:'  target.hp = target.hp - self.damage'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'nl'},
+      ]
+    },
+    {
+      file: 'closures.lua',
+      lines: [
+        {t:'cm', v:'-- Closures: functions that capture scope'},
+        {t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' '},{t:'kw', v:'function'},{t:'pl', v:' '},{t:'fn', v:'makeCounter'},{t:'pl', v:'(start)'},{t:'nl'},
+        {t:'pl', v:'  '},{t:'kw', v:'local'},{t:'pl', v:' count = start'},{t:'nl'},
+        {t:'kw', v:'  return'},{t:'pl', v:' '},{t:'kw', v:'function'},{t:'pl', v:'()'},{t:'nl'},
+        {t:'pl', v:'    count = count + '},{t:'num', v:'1'},{t:'nl'},
+        {t:'kw', v:'    return'},{t:'pl', v:' count'},{t:'nl'},
+        {t:'pl', v:'  '},{t:'kw', v:'end'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'nl'},{t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' next = '},{t:'fn', v:'makeCounter'},{t:'pl', v:'('},{t:'num', v:'0'},{t:'pl', v:')'},{t:'nl'},
+        {t:'pl', v:'print('},{t:'fn', v:'next'},{t:'pl', v:'())'},{t:'cm', v:'  --> 1'},{t:'nl'},
+        {t:'pl', v:'print('},{t:'fn', v:'next'},{t:'pl', v:'())'},{t:'cm', v:'  --> 2'},{t:'nl'},
+        {t:'pl', v:'print('},{t:'fn', v:'next'},{t:'pl', v:'())'},{t:'cm', v:'  --> 3'},{t:'nl'},
+      ]
+    },
+    {
+      file: 'pcall_errors.lua',
+      lines: [
+        {t:'cm', v:'-- pcall: safe error handling'},
+        {t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' '},{t:'kw', v:'function'},{t:'pl', v:' '},{t:'fn', v:'riskyOp'},{t:'pl', v:'(val)'},{t:'nl'},
+        {t:'kw', v:'  if'},{t:'pl', v:' val < '},{t:'num', v:'0'},{t:'kw', v:' then'},{t:'nl'},
+        {t:'pl', v:'    error('},{t:'str', v:'"Value cannot be negative"'},{t:'pl', v:')'},{t:'nl'},
+        {t:'kw', v:'  end'},{t:'nl'},
+        {t:'kw', v:'  return'},{t:'pl', v:' val * '},{t:'num', v:'2'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'nl'},{t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' ok, result = pcall('},{t:'fn', v:'riskyOp'},{t:'pl', v:', '},{t:'num', v:'-5'},{t:'pl', v:')'},{t:'nl'},
+        {t:'kw', v:'if'},{t:'pl', v:' ok '},{t:'kw', v:'then'},{t:'nl'},
+        {t:'pl', v:'  print('},{t:'str', v:'"Result:"'},{t:'pl', v:', result)'},{t:'nl'},
+        {t:'kw', v:'else'},{t:'nl'},
+        {t:'pl', v:'  print('},{t:'str', v:'"Error:"'},{t:'pl', v:', result)'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'nl'},
+      ]
+    },
+    {
+      file: 'coroutines.lua',
+      lines: [
+        {t:'cm', v:'-- Coroutines: cooperative multitasking'},
+        {t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' co = coroutine.create('},{t:'kw', v:'function'},{t:'pl', v:'()'},{t:'nl'},
+        {t:'pl', v:'  '},{t:'kw', v:'for'},{t:'pl', v:' i = '},{t:'num', v:'1'},{t:'pl', v:', '},{t:'num', v:'3'},{t:'kw', v:' do'},{t:'nl'},
+        {t:'pl', v:'    print('},{t:'str', v:'"step"'},{t:'pl', v:', i)'},{t:'nl'},
+        {t:'pl', v:'    coroutine.yield()'},{t:'nl'},
+        {t:'kw', v:'  end'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'pl', v:')'},{t:'nl'},{t:'nl'},
+        {t:'pl', v:'coroutine.resume(co)'},{t:'cm', v:'  --> step 1'},{t:'nl'},
+        {t:'pl', v:'coroutine.resume(co)'},{t:'cm', v:'  --> step 2'},{t:'nl'},
+        {t:'pl', v:'coroutine.resume(co)'},{t:'cm', v:'  --> step 3'},{t:'nl'},{t:'nl'},
+        {t:'cm', v:'-- wrap: returns a function directly'},
+        {t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' gen = coroutine.wrap('},{t:'kw', v:'function'},{t:'pl', v:'()'},{t:'nl'},
+        {t:'pl', v:'  coroutine.yield('},{t:'num', v:'10'},{t:'pl', v:')'},{t:'nl'},
+        {t:'pl', v:'  coroutine.yield('},{t:'num', v:'20'},{t:'pl', v:')'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'pl', v:')'},{t:'nl'},
+      ]
+    },
+    {
+      file: 'remoteevents.lua',
+      lines: [
+        {t:'cm', v:'-- RemoteEvents: client <-> server comms'},
+        {t:'nl'},
+        {t:'cm', v:'-- SERVER SIDE'},
+        {t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' RE = game.ReplicatedStorage.'},{t:'fn', v:'RemoteEvent'},{t:'nl'},{t:'nl'},
+        {t:'pl', v:'RE.OnServerEvent:Connect('},{t:'kw', v:'function'},{t:'pl', v:'(plr, data)'},{t:'nl'},
+        {t:'kw', v:'  if'},{t:'pl', v:' data.action == '},{t:'str', v:'"buy"'},{t:'kw', v:' then'},{t:'nl'},
+        {t:'pl', v:'    plr.leaderstats.Coins.Value'},{t:'nl'},
+        {t:'pl', v:'      = plr.leaderstats.Coins.Value - data.cost'},{t:'nl'},
+        {t:'kw', v:'  end'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'pl', v:')'},{t:'nl'},{t:'nl'},
+        {t:'cm', v:'-- CLIENT SIDE'},
+        {t:'nl'},
+        {t:'pl', v:'RE:FireServer({ action = '},{t:'str', v:'"buy"'},{t:'pl', v:', cost = '},{t:'num', v:'50'},{t:'pl', v:' })'},{t:'nl'},
+      ]
+    },
+    {
+      file: 'datastore.lua',
+      lines: [
+        {t:'cm', v:'-- DataStore: saving player data'},
+        {t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' DS = game:GetService('},{t:'str', v:'"DataStoreService"'},{t:'pl', v:')'},{t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' store = DS:GetDataStore('},{t:'str', v:'"PlayerData"'},{t:'pl', v:')'},{t:'nl'},{t:'nl'},
+        {t:'kw', v:'local'},{t:'pl', v:' '},{t:'kw', v:'function'},{t:'pl', v:' '},{t:'fn', v:'saveData'},{t:'pl', v:'(plr)'},{t:'nl'},
+        {t:'pl', v:'  '},{t:'kw', v:'local'},{t:'pl', v:' key = '},{t:'str', v:'"user_"'},{t:'pl', v:' .. plr.UserId'},{t:'nl'},
+        {t:'pl', v:'  '},{t:'kw', v:'local'},{t:'pl', v:' ok, err = pcall('},{t:'kw', v:'function'},{t:'pl', v:'()'},{t:'nl'},
+        {t:'pl', v:'    store:SetAsync(key, {'},{t:'nl'},
+        {t:'pl', v:'      coins = plr.leaderstats.Coins.Value,'},{t:'nl'},
+        {t:'pl', v:'      level = plr.leaderstats.Level.Value'},{t:'nl'},
+        {t:'pl', v:'    })'},{t:'nl'},
+        {t:'kw', v:'  end'},{t:'pl', v:')'},{t:'nl'},
+        {t:'kw', v:'  if not'},{t:'pl', v:' ok '},{t:'kw', v:'then'},{t:'nl'},
+        {t:'pl', v:'    warn('},{t:'str', v:'"Save failed: "'},{t:'pl', v:' .. err)'},{t:'nl'},
+        {t:'kw', v:'  end'},{t:'nl'},
+        {t:'kw', v:'end'},{t:'nl'},
+      ]
+    },
+  ];
 
-<span class="kw">function</span> <span class="fn">CookingService.new</span>(player)
-  <span class="kw">local</span> self = setmetatable({}, CookingService)
-  self.player  = player
-  self.recipes = <span class="fn">RecipeDB</span>:<span class="fn">GetAll</span>()
-  self.heat    = <span class="num">0</span>
-  <span class="kw">return</span> self
-<span class="kw">end</span>
-
-<span class="kw">function</span> CookingService:<span class="fn">ApplyIngredient</span>(item)
-  <span class="kw">if not</span> self:<span class="fn">ValidateIngredient</span>(item) <span class="kw">then</span>
-    <span class="kw">return</span> <span class="kw">false</span>, <span class="str">"Invalid ingredient"</span>
-  <span class="kw">end</span>
-  self.ingredients[#self.ingredients+<span class="num">1</span>] = item
-  <span class="fn">Events.IngredientAdded</span>:Fire(self.player, item)
-  <span class="kw">return</span> <span class="kw">true</span>
-<span class="kw">end</span>
-
-<span class="kw">function</span> CookingService:<span class="fn">Finish</span>()
-  <span class="kw">local</span> result = <span class="fn">RecipeMatcher</span>:<span class="fn">Check</span>(
-    self.ingredients, self.heat
-  )
-  <span class="fn">self.player.Inventory</span>:<span class="fn">Add</span>(result)
-  <span class="kw">return</span> result
-<span class="kw">end</span>
-
-<span class="kw">return</span> CookingService<span class="code-cursor"></span>`;
-  // strip tags to get raw length then type with HTML
-  const raw=code.replace(/<[^>]+>/g,'');
-  const cb=document.getElementById('codeBody');
-  let ci2=0;
-  function typeCode(){
-    // just show it in full after a short delay for performance
-    cb.innerHTML=code;
+  // Build token stream for a slide
+  function buildTokens(lines) {
+    const tokens = [];
+    for (const seg of lines) {
+      if (seg.t === 'nl') { tokens.push({type:'nl'}); continue; }
+      const chars = seg.v.split('');
+      for (const ch of chars) tokens.push({type: seg.t, char: ch});
+    }
+    return tokens;
   }
-  const codeObs=new IntersectionObserver(e=>{
-    if(e[0].isIntersecting){ setTimeout(typeCode,300); codeObs.unobserve(e[0].target); }
-  },{threshold:.2});
+
+  // Render tokens up to index n, return HTML
+  function renderTokens(tokens, n) {
+    const visible = tokens.slice(0, n);
+    let html = '';
+    let i = 0;
+    while (i < visible.length) {
+      const t = visible[i];
+      if (t.type === 'nl') { html += '\n'; i++; continue; }
+      if (t.type === 'pl') { html += escHtml(t.char); i++; continue; }
+      // group consecutive same-type
+      let run = '';
+      const type = t.type;
+      while (i < visible.length && visible[i].type === type && visible[i].type !== 'nl') {
+        run += visible[i].char; i++;
+      }
+      html += `<span class="${type}">${escHtml(run)}</span>`;
+    }
+    return html + '<span class="code-cursor"></span>';
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  const cb       = document.getElementById('codeBody');
+  const cfn      = document.getElementById('codeFilename');
+  const dotsEl   = document.getElementById('slideDots');
+  let   slideIdx = 0;
+  let   typingTimer = null;
+  let   waitTimer   = null;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'slide-dot' + (i===0 ? ' active' : '');
+    dotsEl.appendChild(d);
+  });
+
+  function getDots() { return dotsEl.querySelectorAll('.slide-dot'); }
+
+  function setActiveDot(i) {
+    getDots().forEach((d,j) => d.classList.toggle('active', j===i));
+  }
+
+  function runSlide(idx) {
+    slideIdx = idx;
+    setActiveDot(idx);
+    const slide  = slides[idx];
+    const tokens = buildTokens(slide.lines);
+    cfn.textContent = slide.file;
+
+    cb.style.opacity = '1';
+    cb.innerHTML = '<span class="code-cursor"></span>';
+
+    let pos = 0;
+    const speed = 18; // ms per char
+
+    function tick() {
+      if (pos <= tokens.length) {
+        cb.innerHTML = renderTokens(tokens, pos);
+        pos++;
+        typingTimer = setTimeout(tick, speed);
+      } else {
+        // done typing — wait 5s then fade out -> next
+        waitTimer = setTimeout(() => {
+          cb.style.transition = 'opacity .6s ease';
+          cb.style.opacity = '0';
+          setTimeout(() => {
+            cb.style.transition = '';
+            const next = (idx + 1) % slides.length;
+            runSlide(next);
+          }, 650);
+        }, 5000);
+      }
+    }
+    tick();
+  }
+
+  // Start when code block scrolls into view
+  let slideStarted = false;
+  const codeObs = new IntersectionObserver(e => {
+    if (e[0].isIntersecting && !slideStarted) {
+      slideStarted = true;
+      setTimeout(() => runSlide(0), 400);
+    }
+  }, { threshold: .2 });
   codeObs.observe(cb);
 
   /* ── PROJECT FILTERS ── */
