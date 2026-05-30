@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio — Roblox Studio Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #060810;
+      --surface:  #0c0f1a;
+      --border:   rgba(0,220,180,0.12);
+      --accent:   #00dbb4;
+      --accent2:  #4f6cff;
+      --muted:    rgba(255,255,255,0.35);
+      --text:     #e8eaf2;
+      --mono:     'Space Mono', monospace;
+      --sans:     'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CURSOR ── */
+    #cursor {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      transition: transform .12s ease, opacity .2s;
+      mix-blend-mode: difference;
+    }
+    #cursor-ring {
+      position: fixed; top: 0; left: 0; z-index: 9998;
+      width: 34px; height: 34px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      transition: transform .35s cubic-bezier(.23,1,.32,1), opacity .2s;
+      opacity: .5;
+    }
+
+    /* ── GRID BACKGROUND ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,219,180,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,219,180,.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* ── GLOW BLOBS ── */
+    .blob {
+      position: fixed; border-radius: 50%; filter: blur(120px);
+      pointer-events: none; z-index: 0; opacity: .18;
+    }
+    .blob-1 { width: 500px; height: 500px; background: #00dbb4; top: -100px; left: -100px; }
+    .blob-2 { width: 400px; height: 400px; background: #4f6cff; bottom: 0; right: -80px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 60px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(6,8,16,.7);
+      backdrop-filter: blur(20px);
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: .75rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .nav-logo span { color: var(--muted); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      position: relative;
+      transition: color .2s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute; left: 0; bottom: -4px;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width .25s ease;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-status {
+      font-family: var(--mono); font-size: .65rem;
+      color: var(--accent); letter-spacing: .1em;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .nav-status::before {
+      content: '';
+      width: 7px; height: 7px; background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 140px 60px 80px;
+    }
+    .hero-inner {
+      max-width: 680px;
+    }
+    .hero-tag {
+      font-family: var(--mono); font-size: .68rem;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-tag::before {
+      content: ''; display: block;
+      width: 24px; height: 1px; background: var(--accent);
+    }
+    .hero-name {
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 800; line-height: 1;
+      letter-spacing: -.02em;
+      margin-bottom: 10px;
+    }
+    .hero-name em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.05rem; color: var(--muted);
+      line-height: 1.7; margin-bottom: 36px;
+      max-width: 480px;
+      font-weight: 400;
+    }
+    .hero-chips {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 44px;
+    }
+    .chip {
+      font-family: var(--mono); font-size: .63rem;
+      letter-spacing: .12em; text-transform: uppercase;
+      border: 1px solid var(--border);
+      padding: 6px 14px; border-radius: 2px;
+      color: var(--muted);
+      transition: border-color .2s, color .2s;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent); }
+    .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      font-family: var(--mono); font-size: .7rem;
+      letter-spacing: .14em; text-transform: uppercase;
+      padding: 14px 28px; background: var(--accent);
+      color: var(--bg); border: none; border-radius: 2px;
+      cursor: none; text-decoration: none;
+      transition: opacity .2s, box-shadow .2s;
+      font-weight: 700;
+    }
+    .btn-primary:hover { opacity: .85; box-shadow: 0 0 20px rgba(0,219,180,.4); }
+    .btn-ghost {
+      font-family: var(--mono); font-size: .7rem;
+      letter-spacing: .14em; text-transform: uppercase;
+      padding: 14px 28px; background: transparent;
+      color: var(--text); border: 1px solid var(--border);
+      border-radius: 2px; cursor: none; text-decoration: none;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    .hero-exp {
+      position: absolute; right: 60px; bottom: 80px;
+      text-align: right;
+    }
+    .hero-exp-num {
+      font-size: 6rem; font-weight: 800;
+      background: linear-gradient(180deg, var(--accent) 0%, transparent 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1; letter-spacing: -.04em;
+    }
+    .hero-exp-label {
+      font-family: var(--mono); font-size: .65rem;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex; align-items: baseline; gap: 16px;
+      margin-bottom: 56px;
+    }
+    .section-num {
+      font-family: var(--mono); font-size: .65rem;
+      color: var(--accent); letter-spacing: .14em;
+    }
+    .section-title {
+      font-size: 2.2rem; font-weight: 800;
+      letter-spacing: -.02em;
+    }
+    .section-line {
+      flex: 1; height: 1px; background: var(--border);
+      max-width: 200px;
+    }
+
+    /* ── PROJECTS ── */
+    #projects { padding: 120px 60px; }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1px;
+      border: 1px solid var(--border);
+    }
+    .project-card {
+      padding: 36px 32px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      transition: background .2s;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 3px; height: 0;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      transition: height .35s ease;
+    }
+    .project-card:hover { background: rgba(0,219,180,.03); }
+    .project-card:hover::before { height: 100%; }
+    .project-tag {
+      font-family: var(--mono); font-size: .6rem;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 14px;
+    }
+    .project-title {
+      font-size: 1.2rem; font-weight: 700;
+      margin-bottom: 12px; line-height: 1.2;
+    }
+    .project-desc {
+      font-size: .88rem; color: var(--muted);
+      line-height: 1.65; margin-bottom: 24px;
+      font-weight: 400;
+    }
+    .project-footer {
+      display: flex; align-items: center;
+      justify-content: space-between;
+    }
+    .project-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag-sm {
+      font-family: var(--mono); font-size: .58rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      border: 1px solid var(--border);
+      padding: 3px 9px; border-radius: 2px; color: var(--muted);
+    }
+    .project-arrow {
+      font-size: 1rem; color: var(--muted);
+      transition: color .2s, transform .2s;
+    }
+    .project-card:hover .project-arrow { color: var(--accent); transform: translate(3px,-3px); }
+
+    /* ── SCRIPTING ── */
+    #scripting { padding: 120px 60px; }
+    .scripting-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: start;
+    }
+    .scripting-text p {
+      font-size: .95rem; color: var(--muted);
+      line-height: 1.8; margin-bottom: 20px;
+      font-weight: 400;
+    }
+    .skill-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .skill-item {
+      display: flex; align-items: center;
+      gap: 14px; padding: 16px 20px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      transition: border-color .2s, background .2s;
+    }
+    .skill-item:hover { border-color: var(--accent); background: rgba(0,219,180,.04); }
+    .skill-icon {
+      font-family: var(--mono); font-size: .7rem;
+      color: var(--accent); min-width: 30px;
+    }
+    .skill-name { font-weight: 600; font-size: .9rem; }
+    .skill-bar-wrap {
+      margin-left: auto; width: 80px; height: 2px;
+      background: var(--border); border-radius: 2px;
+    }
+    .skill-bar {
+      height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 2px;
+    }
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px; overflow: hidden;
+    }
+    .code-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .code-filename {
+      font-family: var(--mono); font-size: .65rem;
+      color: var(--muted); margin-left: 8px; letter-spacing: .08em;
+    }
+    .code-body {
+      padding: 24px 20px;
+      font-family: var(--mono); font-size: .72rem;
+      line-height: 1.8; color: var(--muted);
+      overflow-x: auto;
+    }
+    .kw { color: #4f6cff; }
+    .fn { color: #00dbb4; }
+    .str { color: #f9826c; }
+    .cm { color: rgba(255,255,255,.22); }
+    .num { color: #e5c07b; }
+
+    /* ── BUILDING ── */
+    #building { padding: 120px 60px; }
+    .building-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .build-card {
+      border: 1px solid var(--border); padding: 28px;
+      border-radius: 2px; position: relative;
+      transition: border-color .25s, background .25s;
+      overflow: hidden;
+    }
+    .build-card::after {
+      content: '';
+      position: absolute; bottom: 0; right: 0;
+      width: 60px; height: 60px;
+      background: linear-gradient(135deg, transparent 50%, rgba(0,219,180,.06) 50%);
+      transition: width .3s, height .3s;
+    }
+    .build-card:hover { border-color: var(--accent); background: rgba(0,219,180,.02); }
+    .build-card:hover::after { width: 120px; height: 120px; }
+    .build-icon {
+      font-size: 1.4rem; margin-bottom: 16px;
+      display: block;
+    }
+    .build-title { font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+    .build-desc { font-size: .83rem; color: var(--muted); line-height: 1.6; font-weight: 400; }
+    .build-num {
+      position: absolute; top: 24px; right: 24px;
+      font-family: var(--mono); font-size: .6rem;
+      color: var(--border); letter-spacing: .1em;
+    }
+
+    /* ── CLIENTS / WORKED WITH ── */
+    #clients { padding: 80px 60px; }
+    .clients-inner {
+      border: 1px solid var(--border); padding: 48px;
+      display: flex; align-items: center; gap: 60px;
+      flex-wrap: wrap;
+    }
+    .clients-label {
+      font-family: var(--mono); font-size: .65rem;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted); white-space: nowrap;
+    }
+    .clients-divider {
+      width: 1px; height: 40px; background: var(--border);
+    }
+    .clients-list { display: flex; gap: 40px; align-items: center; flex-wrap: wrap; }
+    .client-item {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+      opacity: .5; filter: grayscale(1);
+      transition: opacity .2s, filter .2s;
+    }
+    .client-item:hover { opacity: 1; filter: grayscale(0); }
+    .client-favicon {
+      width: 22px; height: 22px; border-radius: 4px;
+      object-fit: cover;
+    }
+    .client-name {
+      font-family: var(--mono); font-size: .72rem;
+      letter-spacing: .08em; color: var(--text);
+      text-transform: uppercase;
+    }
+
+    /* ── CONTACT ── */
+    #contact { padding: 120px 60px; }
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .contact-text h2 {
+      font-size: 2.8rem; font-weight: 800;
+      line-height: 1.05; margin-bottom: 20px;
+      letter-spacing: -.02em;
+    }
+    .contact-text h2 em {
+      font-style: normal;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .contact-text p {
+      font-size: .95rem; color: var(--muted);
+      line-height: 1.8; margin-bottom: 36px;
+      font-weight: 400;
+    }
+    .contact-links { display: flex; flex-direction: column; gap: 14px; }
+    .contact-link {
+      display: flex; align-items: center; gap: 14px;
+      font-family: var(--mono); font-size: .75rem;
+      letter-spacing: .1em; color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+      border: 1px solid var(--border);
+      padding: 14px 20px; border-radius: 2px;
+      transition: border-color .2s, color .2s;
+    }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+    .contact-link-icon { font-size: .9rem; color: var(--accent); }
+
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-label {
+      font-family: var(--mono); font-size: .62rem;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .form-input, .form-textarea {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text); font-family: var(--sans);
+      font-size: .88rem; padding: 14px 16px;
+      border-radius: 2px; outline: none;
+      transition: border-color .2s;
+      resize: vertical;
+    }
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--accent);
+    }
+    .form-textarea { min-height: 120px; }
+    .form-btn {
+      font-family: var(--mono); font-size: .7rem;
+      letter-spacing: .14em; text-transform: uppercase;
+      padding: 16px; background: var(--accent);
+      color: var(--bg); border: none; border-radius: 2px;
+      cursor: none; font-weight: 700;
+      transition: opacity .2s, box-shadow .2s;
+    }
+    .form-btn:hover { opacity: .85; box-shadow: 0 0 24px rgba(0,219,180,.4); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: relative; z-index: 1;
+    }
+    .footer-left {
+      font-family: var(--mono); font-size: .62rem;
+      letter-spacing: .14em; color: var(--muted);
+    }
+    .footer-right {
+      font-family: var(--mono); font-size: .62rem;
+      letter-spacing: .14em; color: var(--muted);
+    }
+
+    /* ── SCANLINE ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 9990;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,.04) 2px,
+        rgba(0,0,0,.04) 4px
+      );
+      pointer-events: none;
+    }
+
+    /* ── ANIMATIONS ── */
+    .fade-in { opacity: 0; transform: translateY(24px); }
+    .fade-in.visible {
+      animation: fadeUp .6s ease forwards;
+    }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .nav-status { display: none; }
+      #hero { padding: 120px 24px 80px; }
+      .hero-exp { display: none; }
+      .section-header, #projects, #scripting,
+      #building, #clients, #contact, footer { padding-left: 24px; padding-right: 24px; }
+      .scripting-layout, .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+      .building-grid { grid-template-columns: 1fr 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .building-grid { grid-template-columns: 1fr; }
+      .clients-inner { flex-direction: column; align-items: flex-start; gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CUSTOM CURSOR -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- GLOW BLOBS -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Portfolio<span>.dev</span></div>
+    <ul class="nav-links">
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#scripting">Scripting</a></li>
+      <li><a href="#building">Building</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-status">Available for work</div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-inner">
+      <div class="hero-tag fade-in">Roblox Studio Developer · Philippines</div>
+      <h1 class="hero-name fade-in" style="animation-delay:.1s">
+        Your<br><em>Name Here</em>
+      </h1>
+      <p class="hero-sub fade-in" style="animation-delay:.2s">
+        I build immersive gameplay systems, NPC AI, and realistic environments in Roblox Studio.
+        8 years of crafting experiences that players actually remember.
+      </p>
+      <div class="hero-chips fade-in" style="animation-delay:.3s">
+        <div class="chip">Roblox Lua</div>
+        <div class="chip">Game Systems</div>
+        <div class="chip">UI Design</div>
+        <div class="chip">3D Building</div>
+        <div class="chip">NPC AI</div>
+        <div class="chip">Cooking Mechanics</div>
+      </div>
+      <div class="hero-cta fade-in" style="animation-delay:.4s">
+        <a href="#projects" class="btn-primary">View Projects</a>
+        <a href="#contact" class="btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+
+    <div class="hero-exp fade-in" style="animation-delay:.5s">
+      <div class="hero-exp-num">8</div>
+      <div class="hero-exp-label">Years of<br>Experience</div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header fade-in">
+      <span class="section-num">01 /</span>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card fade-in">
+        <div class="project-tag">Gameplay System</div>
+        <div class="project-title">Advanced Cooking Simulator</div>
+        <p class="project-desc">Full cooking mechanic with recipe progression, ingredient physics, heat management, and visual feedback. Built for a top-charting experience.</p>
+        <div class="project-footer">
+          <div class="project-chips">
+            <span class="tag-sm">Roblox Lua</span>
+            <span class="tag-sm">UI</span>
+          </div>
+          <span class="project-arrow">↗</span>
+        </div>
+      </div>
+      <div class="project-card fade-in" style="animation-delay:.05s">
+        <div class="project-tag">AI System</div>
+        <div class="project-title">NPC Behavior Engine</div>
+        <p class="project-desc">State-machine driven NPC AI with patrol, chase, flee, and dialogue states. Supports dynamic spawning and pathfinding on complex terrain.</p>
+        <div class="project-footer">
+          <div class="project-chips">
+            <span class="tag-sm">AI</span>
+            <span class="tag-sm">Scripting</span>
+          </div>
+          <span class="project-arrow">↗</span>
+        </div>
+      </div>
+      <div class="project-card fade-in" style="animation-delay:.1s">
+        <div class="project-tag">Client Work</div>
+        <div class="project-title">Brand Activation — Byten21</div>
+        <p class="project-desc">Developed interactive gameplay systems for a branded Roblox experience. Focused on onboarding flow, mini-games, and performance optimization.</p>
+        <div class="project-footer">
+          <div class="project-chips">
+            <span class="tag-sm">Branded</span>
+            <span class="tag-sm">Systems</span>
+          </div>
+          <span class="project-arrow">↗</span>
+        </div>
+      </div>
+      <div class="project-card fade-in" style="animation-delay:.15s">
+        <div class="project-tag">Client Work</div>
+        <div class="project-title">Immersive World — Event Punks</div>
+        <p class="project-desc">Contributed scripting for an immersive interactive world. Handled event triggers, cutscenes, UI overlays, and multiplayer synchronization.</p>
+        <div class="project-footer">
+          <div class="project-chips">
+            <span class="tag-sm">Multiplayer</span>
+            <span class="tag-sm">UI</span>
+          </div>
+          <span class="project-arrow">↗</span>
+        </div>
+      </div>
+      <div class="project-card fade-in" style="animation-delay:.2s">
+        <div class="project-tag">Tool</div>
+        <div class="project-title">Inventory & Economy System</div>
+        <p class="project-desc">DataStore-backed inventory with trading, rarity tiers, crafting recipes, and anti-exploit validation on the server side.</p>
+        <div class="project-footer">
+          <div class="project-chips">
+            <span class="tag-sm">DataStore</span>
+            <span class="tag-sm">Economy</span>
+          </div>
+          <span class="project-arrow">↗</span>
+        </div>
+      </div>
+      <div class="project-card fade-in" style="animation-delay:.25s">
+        <div class="project-tag">Environment</div>
+        <div class="project-title">Modular Map Kit</div>
+        <p class="project-desc">Reusable building system with 200+ modular props, LOD groups, lighting rigs, and a procedural terrain pipeline for rapid level design.</p>
+        <div class="project-footer">
+          <div class="project-chips">
+            <span class="tag-sm">3D</span>
+            <span class="tag-sm">Building</span>
+          </div>
+          <span class="project-arrow">↗</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCRIPTING -->
+  <section id="scripting">
+    <div class="section-header fade-in">
+      <span class="section-num">02 /</span>
+      <h2 class="section-title">Scripting</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="scripting-layout">
+      <div class="scripting-left">
+        <div class="scripting-text fade-in">
+          <p>8 years deep in Roblox Lua — from tight gameplay loops to large-scale multiplayer architecture. I write clean, maintainable code that performs under load.</p>
+          <p>Every system is built server-authoritative, exploit-resistant, and optimized for Roblox's unique constraints.</p>
+        </div>
+        <ul class="skill-list">
+          <li class="skill-item fade-in" style="animation-delay:.05s">
+            <span class="skill-icon">//</span>
+            <span class="skill-name">Roblox Lua / Luau</span>
+            <div class="skill-bar-wrap"><div class="skill-bar" style="width:96%"></div></div>
+          </li>
+          <li class="skill-item fade-in" style="animation-delay:.1s">
+            <span class="skill-icon">//</span>
+            <span class="skill-name">Game Systems Design</span>
+            <div class="skill-bar-wrap"><div class="skill-bar" style="width:92%"></div></div>
+          </li>
+          <li class="skill-item fade-in" style="animation-delay:.15s">
+            <span class="skill-icon">//</span>
+            <span class="skill-name">UI / UX Scripting</span>
+            <div class="skill-bar-wrap"><div class="skill-bar" style="width:88%"></div></div>
+          </li>
+          <li class="skill-item fade-in" style="animation-delay:.2s">
+            <span class="skill-icon">//</span>
+            <span class="skill-name">NPC & AI Behavior</span>
+            <div class="skill-bar-wrap"><div class="skill-bar" style="width:85%"></div></div>
+          </li>
+          <li class="skill-item fade-in" style="animation-delay:.25s">
+            <span class="skill-icon">//</span>
+            <span class="skill-name">DataStore & Persistence</span>
+            <div class="skill-bar-wrap"><div class="skill-bar" style="width:90%"></div></div>
+          </li>
+          <li class="skill-item fade-in" style="animation-delay:.3s">
+            <span class="skill-icon">//</span>
+            <span class="skill-name">Multiplayer Sync</span>
+            <div class="skill-bar-wrap"><div class="skill-bar" style="width:87%"></div></div>
+          </li>
+        </ul>
+      </div>
+      <div class="fade-in" style="animation-delay:.1s">
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-dot" style="background:#f9826c"></div>
+            <div class="code-dot" style="background:#e5c07b"></div>
+            <div class="code-dot" style="background:#00dbb4"></div>
+            <span class="code-filename">CookingSystem.lua</span>
+          </div>
+          <div class="code-body">
+<span class="cm">-- Advanced Cooking System v2.4</span>
+<span class="kw">local</span> CookingService = {}
+CookingService.__index = CookingService
+
+<span class="kw">function</span> <span class="fn">CookingService.new</span>(player)
+  <span class="kw">local</span> self = setmetatable({}, CookingService)
+  self.player  = player
+  self.recipes = <span class="fn">RecipeDB</span>:<span class="fn">GetAll</span>()
+  self.heat    = <span class="num">0</span>
+  <span class="kw">return</span> self
+<span class="kw">end</span>
+
+<span class="kw">function</span> CookingService:<span class="fn">ApplyIngredient</span>(item)
+  <span class="kw">if not</span> self:<span class="fn">ValidateIngredient</span>(item) <span class="kw">then</span>
+    <span class="kw">return</span> <span class="kw">false</span>, <span class="str">"Invalid ingredient"</span>
+  <span class="kw">end</span>
+  self.ingredients[#self.ingredients+<span class="num">1</span>] = item
+  <span class="fn">Events.IngredientAdded</span>:Fire(self.player, item)
+  <span class="kw">return</span> <span class="kw">true</span>
+<span class="kw">end</span>
+
+<span class="kw">function</span> CookingService:<span class="fn">Finish</span>()
+  <span class="kw">local</span> result = <span class="fn">RecipeMatcher</span>:<span class="fn">Check</span>(
+    self.ingredients, self.heat
+  )
+  <span class="fn">self.player.Inventory</span>:<span class="fn">Add</span>(result)
+  <span class="kw">return</span> result
+<span class="kw">end</span>
+
+<span class="kw">return</span> CookingService
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILDING -->
+  <section id="building">
+    <div class="section-header fade-in">
+      <span class="section-num">03 /</span>
+      <h2 class="section-title">Building</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="building-grid">
+      <div class="build-card fade-in">
+        <span class="build-icon">◈</span>
+        <span class="build-num">01</span>
+        <div class="build-title">Realistic Environments</div>
+        <p class="build-desc">Detailed, atmospheric worlds with proper lighting, terrain sculpting, and immersive set dressing that draws players in immediately.</p>
+      </div>
+      <div class="build-card fade-in" style="animation-delay:.08s">
+        <span class="build-icon">⬡</span>
+        <span class="build-num">02</span>
+        <div class="build-title">Modular Prop Systems</div>
+        <p class="build-desc">Reusable, scalable building kits designed for efficiency — consistent style, optimized part count, snap-ready geometry.</p>
+      </div>
+      <div class="build-card fade-in" style="animation-delay:.16s">
+        <span class="build-icon">◉</span>
+        <span class="build-num">03</span>
+        <div class="build-title">Interactive Props</div>
+        <p class="build-desc">Objects that respond to player input — doors, containers, switches, machines — all scripted cleanly and server-validated.</p>
+      </div>
+      <div class="build-card fade-in" style="animation-delay:.24s">
+        <span class="build-icon">⟁</span>
+        <span class="build-num">04</span>
+        <div class="build-title">Terrain Sculpting</div>
+        <p class="build-desc">Natural landscapes built with Roblox Terrain and custom meshes, optimised for visual fidelity without wrecking performance.</p>
+      </div>
+      <div class="build-card fade-in" style="animation-delay:.32s">
+        <span class="build-icon">▣</span>
+        <span class="build-num">05</span>
+        <div class="build-title">Lighting & Atmosphere</div>
+        <p class="build-desc">Mood-driven lighting rigs using future lighting, atmosphere, bloom, and color correction tuned per scene to hit the right feel.</p>
+      </div>
+      <div class="build-card fade-in" style="animation-delay:.4s">
+        <span class="build-icon">◫</span>
+        <span class="build-num">06</span>
+        <div class="build-title">Brand Worlds</div>
+        <p class="build-desc">Translating brand identity into playable Roblox spaces — worked with studios like Byten21 and Event Punks on live activations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLIENTS -->
+  <section id="clients">
+    <div class="clients-inner fade-in">
+      <span class="clients-label">Worked with</span>
+      <div class="clients-divider"></div>
+      <div class="clients-list">
+        <a href="https://www.byten21.com" target="_blank" rel="noopener" class="client-item">
+          <img
+            class="client-favicon"
+            src="https://www.google.com/s2/favicons?domain=byten21.com&sz=64"
+            alt="Byten21 favicon"
+          />
+          <span class="client-name">Byten21</span>
+        </a>
+        <a href="https://event-punks.com" target="_blank" rel="noopener" class="client-item">
+          <img
+            class="client-favicon"
+            src="https://www.google.com/s2/favicons?domain=event-punks.com&sz=64"
+            alt="Event Punks favicon"
+          />
+          <span class="client-name">Event Punks</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-header fade-in">
+      <span class="section-num">04 /</span>
+      <h2 class="section-title">Contact</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="contact-layout">
+      <div class="contact-text fade-in">
+        <h2>Let's build<br>something <em>great.</em></h2>
+        <p>Open to commissions, collaborations, and full-time opportunities. Whether it's a quick script fix or a full game system from scratch — let's talk.</p>
+        <div class="contact-links">
+          <a href="mailto:your@email.com" class="contact-link">
+            <span class="contact-link-icon">✉</span>
+            your@email.com
+          </a>
+          <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener" class="contact-link">
+            <span class="contact-link-icon">𝕏</span>
+            @yourhandle
+          </a>
+          <a href="https://discord.com/users/yourDiscordID" target="_blank" rel="noopener" class="contact-link">
+            <span class="contact-link-icon">#</span>
+            Discord: yourhandle
+          </a>
+        </div>
+      </div>
+      <div class="fade-in" style="animation-delay:.1s">
+        <div class="contact-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Name</label>
+              <input class="form-input" type="text" placeholder="Your name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-input" type="email" placeholder="your@email.com" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <input class="form-input" type="text" placeholder="What do you need?" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" placeholder="Tell me about your project..."></textarea>
+          </div>
+          <button class="form-btn">Send Message →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left">© 2026 — Cynex</div>
+    <div class="footer-right">Built for GitHub Pages · Roblox Studio Developer</div>
+  </footer>
+
+  <script>
+    // ── CURSOR
+    const cur = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animateCursor() {
+      cur.style.transform  = `translate(${mx - 5}px, ${my - 5}px)`;
+      rx += (mx - rx) * .14; ry += (my - ry) * .14;
+      ring.style.transform = `translate(${rx - 17}px, ${ry - 17}px)`;
+      requestAnimationFrame(animateCursor);
+    })();
+
+    // ── SCROLL REVEAL
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+    // ── ACTIVE NAV
+    const sections = document.querySelectorAll('section[id]');
+    const links = document.querySelectorAll('.nav-links a');
+    const spy = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.style.color = '');
+          const lnk = document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+          if (lnk) lnk.style.color = 'var(--accent)';
+        }
+      });
+    }, { threshold: 0.4 });
+    sections.forEach(s => spy.observe(s));
+  </script>
+</body>
+</html>
