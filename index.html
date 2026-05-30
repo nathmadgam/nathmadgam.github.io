@@ -146,6 +146,8 @@
 
     section { position:relative; z-index:1; }
 
+
+
     /* ─────────── HERO ─────────── */
     #hero {
       min-height: 100vh;
@@ -294,6 +296,9 @@
     .section-num { font-family:var(--mono); font-size:.63rem; color:var(--accent); letter-spacing:.14em; }
     .section-title { font-size:2.1rem; font-weight:800; letter-spacing:-.02em; }
     .section-line { flex:1; height:1px; background:var(--border); max-width:180px; }
+
+    /* Wide screen cap for games carousel */
+    .games-carousel-wrap { max-width: 100%; }
 
     /* ─────────── PROJECTS ─────────── */
     #projects { padding:120px 60px; }
@@ -563,45 +568,92 @@
     }
     .project-card.hidden { display: none; }
 
-    /* ─────────── GAMES ─────────── */
-    .games-grid {
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 20px;
+    /* ─────────── GAMES CAROUSEL ─────────── */
+    #games { padding: 120px 0; }
+    #games .section-header,
+    #games .games-intro { padding-left: 60px; padding-right: 60px; }
+
+    .games-carousel-wrap {
+      position: relative; overflow: hidden;
+      cursor: none;
     }
+    /* fade masks on both edges */
+    .games-carousel-wrap::before,
+    .games-carousel-wrap::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0; width: 140px; z-index: 10;
+      pointer-events: none;
+    }
+    .games-carousel-wrap::before {
+      left: 0;
+      background: linear-gradient(to right, var(--bg) 0%, transparent 100%);
+    }
+    .games-carousel-wrap::after {
+      right: 0;
+      background: linear-gradient(to left, var(--bg) 0%, transparent 100%);
+    }
+
+    .games-track {
+      display: flex; gap: 20px;
+      padding: 12px 60px 20px;
+      will-change: transform;
+      user-select: none;
+    }
+
     .game-card {
+      flex: 0 0 260px;
       display: flex; flex-direction: column;
-      border: 1px solid var(--border); border-radius: 4px;
+      border: 1px solid var(--border); border-radius: 6px;
       overflow: hidden; text-decoration: none; color: var(--text);
       transition: border-color .22s, transform .22s, box-shadow .22s;
+      position: relative;
     }
     .game-card:hover {
       border-color: var(--accent);
-      transform: translateY(-5px);
-      box-shadow: 0 16px 48px rgba(0,219,180,.1);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(0,219,180,.12);
     }
-    .game-thumb-wrap { position: relative; aspect-ratio: 16/9; overflow: hidden; background: var(--surface); }
+    .game-thumb-wrap {
+      position: relative; aspect-ratio: 16/9; overflow: hidden;
+      background: var(--surface);
+    }
     .game-thumb {
-      width: 100%; height: 100%; object-fit: cover;
+      width: 100%; height: 100%; object-fit: cover; display: block;
       transition: transform .4s ease;
-      display: block;
     }
-    .game-card:hover .game-thumb { transform: scale(1.05); }
+    .game-card:hover .game-thumb { transform: scale(1.06); }
     .game-thumb-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(5,7,15,.85) 100%);
+      background: linear-gradient(180deg, transparent 40%, rgba(5,7,15,.9) 100%);
     }
-    .game-info { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
-    .game-name { font-size: 1rem; font-weight: 700; letter-spacing: -.01em; }
-    .game-desc { font-size: .81rem; color: var(--muted); line-height: 1.6; font-weight: 400; flex: 1; }
+    .game-info { padding: 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 7px; }
+    .game-name { font-size: .88rem; font-weight: 700; letter-spacing: -.01em; line-height: 1.2; }
+    .game-desc { font-size: .75rem; color: var(--muted); line-height: 1.55; font-weight: 400; flex: 1; }
     .game-footer {
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-      margin-top: 4px;
+      display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-top: 4px;
     }
     .game-play {
-      margin-left: auto; font-family: var(--mono); font-size: .65rem;
+      margin-left: auto; font-family: var(--mono); font-size: .6rem;
       letter-spacing: .1em; color: var(--accent);
       transition: transform .18s;
     }
     .game-card:hover .game-play { transform: translate(2px,-2px); }
+
+    /* nav arrows */
+    .games-nav {
+      display: flex; gap: 10px;
+      position: absolute; right: 60px; top: -52px;
+      opacity: 0; transition: opacity .25s;
+    }
+    .games-carousel-wrap:hover .games-nav { opacity: 1; }
+    .games-nav-btn {
+      width: 36px; height: 36px; border-radius: 2px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--accent); font-size: 1rem; cursor: none;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .18s, background .18s, transform .18s;
+    }
+    .games-nav-btn:hover { border-color: var(--accent); background: rgba(0,219,180,.08); transform: scale(1.1); }
 
     /* ─────────── COMMUNITIES ─────────── */
     .comm-grid {
@@ -748,17 +800,99 @@
     }
     .lang-chip:hover { border-color: var(--accent); color: var(--accent); }
 
+    /* ─────────── MUSIC PLAYER ─────────── */
+    #music-player {
+      position: fixed; bottom: 24px; right: 24px; z-index: 500;
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(11,14,28,.82);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 8px 16px 8px 10px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 4px 30px rgba(0,0,0,.4);
+      transition: opacity .3s, transform .3s;
+      cursor: none;
+      max-width: 280px;
+    }
+    #music-player.hidden { opacity: 0; transform: translateY(8px); pointer-events: none; }
+
+    .mp-vinyl {
+      width: 34px; height: 34px; flex-shrink: 0; position: relative;
+    }
+    .mp-vinyl-disc {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: conic-gradient(
+        #0b0e1c 0deg, #1a1d2e 30deg, #0b0e1c 60deg,
+        #1a1d2e 90deg, #0b0e1c 120deg, #1a1d2e 150deg,
+        #0b0e1c 180deg, #1a1d2e 210deg, #0b0e1c 240deg,
+        #1a1d2e 270deg, #0b0e1c 300deg, #1a1d2e 330deg, #0b0e1c 360deg
+      );
+      border: 1px solid rgba(0,219,180,.2);
+      animation: spinVinyl 3s linear infinite;
+      animation-play-state: paused;
+    }
+    .mp-vinyl-disc.playing { animation-play-state: running; }
+    .mp-vinyl-center {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+    }
+    @keyframes spinVinyl { to { transform: rotate(360deg); } }
+
+    .mp-info { min-width: 0; flex: 1; }
+    .mp-title {
+      font-family: var(--mono); font-size: .58rem;
+      letter-spacing: .08em; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 160px;
+      animation: marquee 12s linear infinite;
+      animation-play-state: paused;
+      display: inline-block;
+    }
+    .mp-title.playing { animation-play-state: running; }
+    @keyframes marquee {
+      0%,20%   { transform: translateX(0); }
+      80%,100% { transform: translateX(calc(-100% + 140px)); }
+    }
+    .mp-artist {
+      font-family: var(--mono); font-size: .52rem;
+      color: var(--muted); letter-spacing: .06em;
+      margin-top: 2px;
+    }
+    .mp-credit {
+      font-family: var(--mono); font-size: .48rem;
+      color: rgba(255,255,255,.2); letter-spacing: .06em;
+      margin-top: 1px;
+    }
+
+    .mp-btn {
+      width: 26px; height: 26px; flex-shrink: 0;
+      border-radius: 50%; background: rgba(0,219,180,.12);
+      border: 1px solid rgba(0,219,180,.25);
+      color: var(--accent); cursor: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; transition: background .18s, transform .18s;
+      padding: 0;
+    }
+    .mp-btn:hover { background: rgba(0,219,180,.25); transform: scale(1.1); }
+
+    /* hide the actual YT iframe */
+    #yt-frame { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
     /* ─────────── RESPONSIVE ─────────── */
     @media(max-width:900px){
       nav { padding:16px 22px; }
       .nav-status { display:none; }
       #hero { padding:110px 22px 70px; }
       .hero-exp { display:none; }
-      #projects,#scripting,#building,#clients,#contact,#games,#communities,#about,footer,
+      #projects,#scripting,#building,#clients,#contact,#communities,#about,footer,
       .section-header { padding-left:22px; padding-right:22px; }
-      #games, #communities, #about { padding-left:22px; padding-right:22px; }
+      #games .section-header, #games .games-intro { padding-left:22px; padding-right:22px; }
+      #communities, #about { padding-left:22px; padding-right:22px; }
       .proj-filters { padding: 0 22px; }
-      .games-grid { grid-template-columns: 1fr; }
       .about-layout { grid-template-columns: 1fr; gap: 40px; }
       .about-avatar-wrap { margin: 0; }
       .scripting-layout,.contact-layout { grid-template-columns:1fr; gap:36px; }
@@ -789,21 +923,21 @@
 
   <!-- NAV -->
   <nav>
-    <div class="nav-logo">Cynex<span>.dev</span></div>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#scripting">Scripting</a></li>
-      <li><a href="#building">Building</a></li>
-      <li><a href="#games">Games</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <div class="nav-status"><div class="dot"></div>Available for work</div>
+          <div class="nav-logo">Cynex<span>.dev</span></div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#scripting">Scripting</a></li>
+        <li><a href="#building">Building</a></li>
+        <li><a href="#games">Games</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-status"><div class="dot"></div>Available for work</div>
   </nav>
 
   <!-- HERO -->
   <section id="hero">
-    <div class="hero-inner">
+        <div class="hero-inner">
       <div class="hero-tag">Roblox Studio Developer · Philippines</div>
       <p class="hero-eyebrow">Hey, I'm</p>
       <h1 class="hero-name"><span class="grad">Cynex</span></h1>
@@ -816,7 +950,6 @@
         <div class="chip">UI Design</div>
         <div class="chip">3D Building</div>
         <div class="chip">NPC AI</div>
-        <div class="chip">Cooking Mechanics</div>
       </div>
       <div class="hero-cta">
         <a href="#about" class="btn-primary">About Me</a>
@@ -844,8 +977,8 @@
           <div class="about-avatar-ring"></div>
           <div class="about-avatar-inner">
             <img
-              src="https://www.fiverr.com/profile_image/nathmad54"
-              onerror="this.src='https://ui-avatars.com/api/?name=Nathaniel+Madrid&background=00dbb4&color=05070f&size=200&bold=true'"
+              src="avatar.png"
+              onerror="this.style.background='var(--surface)'"
               alt="Nathaniel Madrid"
               class="about-avatar-img"
             />
@@ -1186,74 +1319,82 @@
   </section>
 
   <!-- GAMES WORKED ON -->
-  <section id="games" style="padding:120px 60px;">
+  <section id="games">
     <div class="section-header reveal">
       <span class="section-num">04 /</span>
       <h2 class="section-title">Games</h2>
       <div class="section-line"></div>
     </div>
-    <p class="reveal" style="font-size:.93rem;color:var(--muted);line-height:1.75;max-width:540px;margin-bottom:44px;font-weight:400;animation-delay:.05s">
-      Roblox games I have contributed to as a developer. Click any card to play.
+    </div><p class="games-intro reveal" style="font-size:.88rem;color:var(--muted);line-height:1.75;max-width:500px;margin-bottom:36px;font-weight:400;animation-delay:.05s;padding-left:60px;">
+      Roblox games I have contributed to. Hover to browse, click to play.
     </p>
-    <div class="games-grid">
 
-      <a href="https://www.roblox.com/games/110811521450324/GROW-YOUR-PET" target="_blank" rel="noopener" class="game-card reveal">
-        <div class="game-thumb-wrap">
-          <img class="game-thumb" src="https://tr.rbxcdn.com/180DAY-b2c5b9a7e2c2c0f1e3d4a5f6b7c8d9e0/500/280/Image/Jpeg/noFilter"
-            onerror="this.src='https://www.roblox.com/Thumbs/GameIcon.ashx?universeId=110811521450324&width=512&height=512&format=png'"
-            alt="GROW YOUR PET thumbnail" loading="lazy" />
-          <div class="game-thumb-overlay"></div>
-        </div>
-        <div class="game-info">
-          <div class="game-name">GROW YOUR PET</div>
-          <p class="game-desc">Pet growth idle game with prestige mechanics, weather mutations, gifting, and weekly updates. Harvest fruits, feed your pets, and climb the global leaderboards.</p>
-          <div class="game-footer">
-            <span class="tag-sm">Scripting</span>
-            <span class="game-play">Play ↗</span>
+    <div class="games-carousel-wrap reveal" id="gamesWrap" style="animation-delay:.1s">
+      <!-- nav arrows (shown on hover) -->
+      <div class="games-nav" id="gamesNav" style="position:absolute;right:60px;top:-44px;">
+        <button class="games-nav-btn" id="gamesPrev">&#8592;</button>
+        <button class="games-nav-btn" id="gamesNext">&#8594;</button>
+      </div>
+
+      <div class="games-track" id="gamesTrack">
+
+        <a href="https://www.roblox.com/games/110811521450324/GROW-YOUR-PET" target="_blank" rel="noopener" class="game-card">
+          <div class="game-thumb-wrap">
+            <img class="game-thumb" src="https://tr.rbxcdn.com/180DAY-b2c5b9a7e2c2c0f1e3d4a5f6b7c8d9e0/500/280/Image/Jpeg/noFilter"
+              onerror="this.src='https://thumbnails.roblox.com/v1/games/icons?universeIds=5860240804&returnPolicy=PlaceHolder&size=512x512&format=Png&isCircular=false'"
+              alt="GROW YOUR PET" loading="lazy" />
+            <div class="game-thumb-overlay"></div>
           </div>
-        </div>
-      </a>
-
-      <a href="https://www.roblox.com/games/95624995252294/Soft-Pink-Tower" target="_blank" rel="noopener" class="game-card reveal" style="animation-delay:.1s">
-        <div class="game-thumb-wrap">
-          <img class="game-thumb" src="https://tr.rbxcdn.com/180DAY-e89c51807171bd92436460213ebdf622/500/280/Image/Jpeg/noFilter"
-            alt="Soft Pink Tower thumbnail" loading="lazy" />
-          <div class="game-thumb-overlay"></div>
-        </div>
-        <div class="game-info">
-          <div class="game-name">Soft Pink Tower</div>
-          <p class="game-desc">Carry-style obby tower with a soft pink aesthetic. Clean level progression with scripted checkpoints, carry mechanics, and a polished UI experience.</p>
-          <div class="game-footer">
-            <span class="tag-sm">Scripting</span>
-            <span class="tag-sm">UI</span>
-            <span class="game-play">Play ↗</span>
+          <div class="game-info">
+            <div class="game-name">GROW YOUR PET</div>
+            <p class="game-desc">Pet growth idle game with prestige, weather mutations, and weekly updates.</p>
+            <div class="game-footer">
+              <span class="tag-sm">Scripting</span>
+              <span class="game-play">Play ↗</span>
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      <a href="https://www.roblox.com/games/101848404389998/Soft-Pink-Wallhop-Tower" target="_blank" rel="noopener" class="game-card reveal" style="animation-delay:.2s">
-        <div class="game-thumb-wrap">
-          <img class="game-thumb" src="https://tr.rbxcdn.com/180DAY-bb3bf8c5658a02ce389aca41c2ab756d/500/280/Image/Jpeg/noFilter"
-            alt="Soft Pink Wallhop Tower thumbnail" loading="lazy" />
-          <div class="game-thumb-overlay"></div>
-        </div>
-        <div class="game-info">
-          <div class="game-name">Soft Pink Wallhop Tower</div>
-          <p class="game-desc">Wallhop variant of the Soft Pink Tower series. More technical movement challenges built on top of the same scripted framework with added wallhop mechanics.</p>
-          <div class="game-footer">
-            <span class="tag-sm">Scripting</span>
-            <span class="tag-sm">Obby</span>
-            <span class="game-play">Play ↗</span>
+        <a href="https://www.roblox.com/games/95624995252294/Soft-Pink-Tower" target="_blank" rel="noopener" class="game-card">
+          <div class="game-thumb-wrap">
+            <img class="game-thumb" src="https://tr.rbxcdn.com/180DAY-e89c51807171bd92436460213ebdf622/500/280/Image/Jpeg/noFilter"
+              alt="Soft Pink Tower" loading="lazy" />
+            <div class="game-thumb-overlay"></div>
           </div>
-        </div>
-      </a>
+          <div class="game-info">
+            <div class="game-name">Soft Pink Tower</div>
+            <p class="game-desc">Carry-style obby with scripted checkpoints and a polished UI experience.</p>
+            <div class="game-footer">
+              <span class="tag-sm">Scripting</span>
+              <span class="tag-sm">UI</span>
+              <span class="game-play">Play ↗</span>
+            </div>
+          </div>
+        </a>
 
+        <a href="https://www.roblox.com/games/101848404389998/Soft-Pink-Wallhop-Tower" target="_blank" rel="noopener" class="game-card">
+          <div class="game-thumb-wrap">
+            <img class="game-thumb" src="https://tr.rbxcdn.com/180DAY-bb3bf8c5658a02ce389aca41c2ab756d/500/280/Image/Jpeg/noFilter"
+              alt="Soft Pink Wallhop Tower" loading="lazy" />
+            <div class="game-thumb-overlay"></div>
+          </div>
+          <div class="game-info">
+            <div class="game-name">Soft Pink Wallhop Tower</div>
+            <p class="game-desc">Technical wallhop movement challenges on the Soft Pink framework.</p>
+            <div class="game-footer">
+              <span class="tag-sm">Scripting</span>
+              <span class="tag-sm">Obby</span>
+              <span class="game-play">Play ↗</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
     </div>
   </section>
 
   <!-- COMMUNITIES -->
-  <section id="communities" style="padding:0 60px 120px;">
-    <div class="section-header reveal">
+  <section id="communities">    <div class="section-header reveal">
       <span class="section-num">05 /</span>
       <h2 class="section-title">Communities</h2>
       <div class="section-line"></div>
@@ -1324,8 +1465,7 @@
   </section>
 
   <!-- CLIENTS STRIP -->
-  <section id="clients" style="padding:0 60px 80px;">
-    <div class="clients-inner reveal">
+  <section id="clients">    <div class="clients-inner reveal">
       <span class="clients-label">Also worked with</span>
       <div class="clients-divider"></div>
       <div class="clients-list">
@@ -1376,10 +1516,10 @@
         </div>
       </div>
     </div>
-  </section>
+  </div></section>
 
   <footer>
-    <div class="footer-left">© 2026 — Cynex</div>
+        <div class="footer-left">© 2026 — Cynex</div>
     <div class="footer-right">GitHub Pages · Roblox Studio Developer · Philippines</div>
   </footer>
 
@@ -1405,91 +1545,65 @@
      ══════════════════════════════════════════════ */
   const canvas = document.getElementById('particles');
   const ctx    = canvas.getContext('2d');
-  let W, H;
-
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
+  let W = window.innerWidth, H = window.innerHeight;
+  canvas.width = W; canvas.height = H;
 
   /* ── mouse ── */
   let mouseX = W / 2, mouseY = H / 2;
   document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
 
   /* ── node class ── */
-  const NODE_COUNT = 90;
+  const NODE_COUNT   = 90;
   const CONNECT_DIST = 140;
   const MOUSE_REPEL  = 120;
 
   class Node {
-    constructor() { this.reset(true); }
-    reset(init) {
+    constructor() { this.reset(); }
+    reset() {
       this.x  = Math.random() * W;
       this.y  = Math.random() * H;
-      this.ox = this.x; this.oy = this.y;    // original pos
+      this.ox = this.x; this.oy = this.y;
       this.vx = (Math.random() - .5) * .35;
       this.vy = (Math.random() - .5) * .35;
       this.r  = Math.random() * 1.6 + .5;
       this.baseAlpha = Math.random() * .5 + .2;
       this.alpha = this.baseAlpha;
-      // pulse
       this.pulseSpeed = Math.random() * .02 + .005;
       this.pulsePhase = Math.random() * Math.PI * 2;
-      // trail
       this.trail = [];
       this.trailLen = Math.floor(Math.random() * 8 + 4);
-      // color: mostly teal, some indigo
       this.col = Math.random() < .75 ? '0,219,180' : '79,108,255';
     }
     update(t) {
-      // save trail
       this.trail.push({x: this.x, y: this.y});
       if (this.trail.length > this.trailLen) this.trail.shift();
-
-      // mouse repel
       const dx = this.x - mouseX, dy = this.y - mouseY;
       const dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < MOUSE_REPEL) {
+      if (dist < MOUSE_REPEL && dist > 0) {
         const force = (MOUSE_REPEL - dist) / MOUSE_REPEL * .6;
         this.vx += (dx / dist) * force * .08;
         this.vy += (dy / dist) * force * .08;
       }
-
-      // soft return to origin
       this.vx += (this.ox - this.x) * .0003;
       this.vy += (this.oy - this.y) * .0003;
-
-      // velocity damping
       this.vx *= .985; this.vy *= .985;
-
       this.x += this.vx; this.y += this.vy;
-
-      // wrap
       if (this.x < -20) this.x = W + 20;
       if (this.x > W+20) this.x = -20;
       if (this.y < -20) this.y = H + 20;
       if (this.y > H+20) this.y = -20;
-
-      // pulse alpha
       this.alpha = this.baseAlpha + Math.sin(t * this.pulseSpeed + this.pulsePhase) * .18;
     }
     draw() {
-      // glow dot
       const grd = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r * 4);
       grd.addColorStop(0, `rgba(${this.col},${this.alpha})`);
       grd.addColorStop(1, `rgba(${this.col},0)`);
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.r * 4, 0, Math.PI * 2);
-      ctx.fillStyle = grd;
-      ctx.fill();
-
-      // crisp core
+      ctx.fillStyle = grd; ctx.fill();
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${this.col},${Math.min(this.alpha + .3, 1)})`;
-      ctx.fill();
+      ctx.fillStyle = `rgba(${this.col},${Math.min(this.alpha + .3, 1)})`; ctx.fill();
     }
     drawTrail() {
       if (this.trail.length < 2) return;
@@ -1497,118 +1611,88 @@
       ctx.moveTo(this.trail[0].x, this.trail[0].y);
       for (let i = 1; i < this.trail.length; i++) ctx.lineTo(this.trail[i].x, this.trail[i].y);
       ctx.strokeStyle = `rgba(${this.col}, ${this.alpha * .25})`;
-      ctx.lineWidth = this.r * .6;
-      ctx.lineCap = 'round';
-      ctx.stroke();
+      ctx.lineWidth = this.r * .6; ctx.lineCap = 'round'; ctx.stroke();
     }
   }
 
-  /* ── warp star class (occasional fast streaks) ── */
+  /* ── warp streaks ── */
   const warps = [];
   class Warp {
     constructor() {
-      this.x  = Math.random() * W;
-      this.y  = Math.random() * H;
-      const angle = Math.random() * Math.PI * 2;
-      const spd   = Math.random() * 3 + 2;
-      this.vx = Math.cos(angle) * spd;
-      this.vy = Math.sin(angle) * spd;
-      this.life = 1;
-      this.decay = Math.random() * .02 + .015;
-      this.len   = Math.random() * 30 + 10;
-      this.col   = Math.random() < .6 ? '0,219,180' : '79,108,255';
+      this.x = Math.random() * W; this.y = Math.random() * H;
+      const angle = Math.random() * Math.PI * 2, spd = Math.random() * 3 + 2;
+      this.vx = Math.cos(angle) * spd; this.vy = Math.sin(angle) * spd;
+      this.life = 1; this.decay = Math.random() * .02 + .015;
+      this.len = Math.random() * 30 + 10;
+      this.col = Math.random() < .6 ? '0,219,180' : '79,108,255';
     }
-    update() {
-      this.x += this.vx; this.y += this.vy;
-      this.life -= this.decay;
-    }
+    update() { this.x += this.vx; this.y += this.vy; this.life -= this.decay; }
     draw() {
       ctx.beginPath();
       ctx.moveTo(this.x, this.y);
       ctx.lineTo(this.x - this.vx * (this.len / 4), this.y - this.vy * (this.len / 4));
-      ctx.strokeStyle = `rgba(${this.col}, ${this.life * .5})`;
-      ctx.lineWidth = .8;
-      ctx.stroke();
+      ctx.strokeStyle = `rgba(${this.col}, ${this.life * .5})`; ctx.lineWidth = .8; ctx.stroke();
     }
     dead() { return this.life <= 0 || this.x < 0 || this.x > W || this.y < 0 || this.y > H; }
   }
 
-  /* ── spawn warp occasionally ── */
-  setInterval(() => {
-    if (warps.length < 12) warps.push(new Warp());
-  }, 400);
+  setInterval(() => { if (warps.length < 12) warps.push(new Warp()); }, 400);
 
-  /* ── init nodes ── */
+  /* ── init nodes — MUST be before resize listener ── */
   const nodes = Array.from({length: NODE_COUNT}, () => new Node());
 
-  /* ── mouse node (cursor attractor) ── */
-  const mouseNode = { x: W/2, y: H/2 };
+  /* ── resize — safe to reference nodes now ── */
+  function resize() {
+    const oldW = W, oldH = H;
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    const scaleX = W / oldW, scaleY = H / oldH;
+    nodes.forEach(n => {
+      n.x  *= scaleX; n.y  *= scaleY;
+      n.ox *= scaleX; n.oy *= scaleY;
+      n.trail = [];
+      const spd = Math.sqrt(n.vx*n.vx + n.vy*n.vy);
+      if (spd > .6) { n.vx = n.vx / spd * .6; n.vy = n.vy / spd * .6; }
+    });
+    mouseX = W / 2; mouseY = H / 2;
+  }
+  window.addEventListener('resize', resize);
 
   /* ── main loop ── */
   let t = 0;
   function loop() {
     ctx.clearRect(0, 0, W, H);
     t++;
-
-    mouseNode.x = mouseX; mouseNode.y = mouseY;
-
-    // trails first (below everything)
     nodes.forEach(n => { n.update(t); n.drawTrail(); });
-
-    // edges between nodes
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
-        const dx = nodes[i].x - nodes[j].x;
-        const dy = nodes[i].y - nodes[j].y;
-        const d  = Math.sqrt(dx*dx + dy*dy);
+        const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+        const d = Math.sqrt(dx*dx + dy*dy);
         if (d < CONNECT_DIST) {
           const a = (1 - d / CONNECT_DIST) * .18;
-          // gradient line
           const grad = ctx.createLinearGradient(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
           grad.addColorStop(0, `rgba(${nodes[i].col},${a})`);
           grad.addColorStop(1, `rgba(${nodes[j].col},${a})`);
-          ctx.beginPath();
-          ctx.moveTo(nodes[i].x, nodes[i].y);
-          ctx.lineTo(nodes[j].x, nodes[j].y);
-          ctx.strokeStyle = grad;
-          ctx.lineWidth = (1 - d / CONNECT_DIST) * 1.2;
-          ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.strokeStyle = grad; ctx.lineWidth = (1 - d / CONNECT_DIST) * 1.2; ctx.stroke();
         }
       }
-      // edges to mouse
-      const mdx = nodes[i].x - mouseX;
-      const mdy = nodes[i].y - mouseY;
-      const md  = Math.sqrt(mdx*mdx + mdy*mdy);
+      const mdx = nodes[i].x - mouseX, mdy = nodes[i].y - mouseY;
+      const md = Math.sqrt(mdx*mdx + mdy*mdy);
       if (md < CONNECT_DIST * 1.4) {
         const a = (1 - md / (CONNECT_DIST * 1.4)) * .3;
-        ctx.beginPath();
-        ctx.moveTo(nodes[i].x, nodes[i].y);
-        ctx.lineTo(mouseX, mouseY);
-        ctx.strokeStyle = `rgba(0,219,180,${a})`;
-        ctx.lineWidth = .5;
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(mouseX, mouseY);
+        ctx.strokeStyle = `rgba(0,219,180,${a})`; ctx.lineWidth = .5; ctx.stroke();
       }
     }
-
-    // nodes on top
     nodes.forEach(n => n.draw());
-
-    // mouse glow
     const mg = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 60);
-    mg.addColorStop(0, 'rgba(0,219,180,.08)');
-    mg.addColorStop(1, 'rgba(0,219,180,0)');
-    ctx.beginPath();
-    ctx.arc(mouseX, mouseY, 60, 0, Math.PI*2);
-    ctx.fillStyle = mg;
-    ctx.fill();
-
-    // warp streaks
+    mg.addColorStop(0, 'rgba(0,219,180,.08)'); mg.addColorStop(1, 'rgba(0,219,180,0)');
+    ctx.beginPath(); ctx.arc(mouseX, mouseY, 60, 0, Math.PI*2); ctx.fillStyle = mg; ctx.fill();
     for (let i = warps.length - 1; i >= 0; i--) {
-      warps[i].update();
-      warps[i].draw();
+      warps[i].update(); warps[i].draw();
       if (warps[i].dead()) warps.splice(i, 1);
     }
-
     requestAnimationFrame(loop);
   }
   loop();
@@ -1948,7 +2032,138 @@
   }, { threshold: .2 });
   codeObs.observe(cb);
 
-  /* ── PROJECT FILTERS ── */
+  /* ── GAMES CAROUSEL ── */
+  (function() {
+    const wrap    = document.getElementById('gamesWrap');
+    const track   = document.getElementById('gamesTrack');
+    const btnPrev = document.getElementById('gamesPrev');
+    const btnNext = document.getElementById('gamesNext');
+    if (!track) return;
+
+    const CARD_W = 260 + 20; // card width + gap (must match CSS)
+
+    // Get original cards only
+    const origCards = [...track.querySelectorAll('.game-card')];
+    const origCount = origCards.length;
+    const setW = origCount * CARD_W; // pixel width of one full set
+
+    // Clone enough sets to fill at least 3x the screen width on any monitor
+    function buildTrack() {
+      // Remove any existing clones first
+      track.querySelectorAll('[aria-hidden]').forEach(el => el.remove());
+
+      const screenW = window.innerWidth;
+      // How many full sets do we need so there's always content on both sides
+      const setsNeeded = Math.ceil((screenW * 3) / setW) + 2;
+
+      // Build: [copies before] [originals] [copies after]
+      // We put `setsNeeded` copies before and after
+      const frag = document.createDocumentFragment();
+      for (let s = 0; s < setsNeeded; s++) {
+        origCards.forEach(c => {
+          const cl = c.cloneNode(true);
+          cl.setAttribute('aria-hidden', 'true');
+          cl.setAttribute('tabindex', '-1');
+          frag.appendChild(cl);
+        });
+      }
+      track.appendChild(frag);
+
+      const fragPre = document.createDocumentFragment();
+      for (let s = 0; s < setsNeeded; s++) {
+        // prepend in reverse so order stays correct
+        const set = origCards.map(c => {
+          const cl = c.cloneNode(true);
+          cl.setAttribute('aria-hidden', 'true');
+          cl.setAttribute('tabindex', '-1');
+          return cl;
+        });
+        set.reverse().forEach(cl => track.prepend(cl));
+      }
+
+      return setsNeeded;
+    }
+
+    let setsNeeded = buildTrack();
+
+    // Start offset = beginning of the original set (after setsNeeded prepended copies)
+    let offset = setsNeeded * setW;
+    let target = offset;
+    track.style.transform = `translateX(${-offset}px)`;
+
+    const autoSpeed = 0.22; // px per frame — slow and calm
+    let paused      = false;
+    let isDragging  = false;
+    let dragStart   = 0;
+    let dragBase    = 0;
+    let dragMoved   = false;
+
+    function loop() {
+      if (!paused && !isDragging) target += autoSpeed;
+
+      // smooth lerp toward target
+      offset += (target - offset) * 0.1;
+
+      // Seamless wrap: keep offset inside [setsNeeded*setW, (setsNeeded+1)*setW)
+      // This means we're always "in the middle" — surrounded by clones on both sides
+      if (offset >= (setsNeeded + 1) * setW) {
+        const shift = setW;
+        offset -= shift; target -= shift;
+      }
+      if (offset < setsNeeded * setW - setW) {
+        const shift = setW;
+        offset += shift; target += shift;
+      }
+
+      track.style.transform = `translateX(${-offset}px)`;
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    // Pause/resume on hover
+    wrap.addEventListener('mouseenter', () => { paused = true; });
+    wrap.addEventListener('mouseleave', () => { paused = false; isDragging = false; });
+
+    // Arrow buttons — snap to next card
+    btnNext.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); target += CARD_W; });
+    btnPrev.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); target -= CARD_W; });
+
+    // Drag to scroll
+    wrap.addEventListener('mousedown', e => {
+      if (e.target.closest('.games-nav-btn')) return;
+      isDragging = true; dragStart = e.clientX; dragBase = target; dragMoved = false;
+      wrap.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const delta = e.clientX - dragStart;
+      if (Math.abs(delta) > 3) dragMoved = true;
+      target = dragBase - delta;
+    });
+    window.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      wrap.style.cursor = '';
+    });
+
+    // Block link navigation if we dragged
+    wrap.addEventListener('click', e => {
+      if (dragMoved) { e.preventDefault(); dragMoved = false; }
+    }, true);
+
+    // Rebuild clones on resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        setsNeeded = buildTrack();
+        offset = setsNeeded * setW;
+        target = offset;
+        track.style.transform = `translateX(${-offset}px)`;
+      }, 120);
+    });
+  })();
+
   document.querySelectorAll('.pf-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
       document.querySelectorAll('.pf-btn').forEach(b=>b.classList.remove('active'));
@@ -1967,6 +2182,82 @@
       });
     });
   });
+  </script>
+
+  <!-- MUSIC PLAYER -->
+  <div id="yt-frame"></div>
+  <div id="music-player" class="hidden">
+    <div class="mp-vinyl">
+      <div class="mp-vinyl-disc" id="mpDisc"></div>
+      <div class="mp-vinyl-center"></div>
+    </div>
+    <div class="mp-info">
+      <div class="mp-title" id="mpTitle">Lady Killers II × Tumblr Girls</div>
+      <div class="mp-artist">G-Eazy &amp; Genevieve</div>
+      <div class="mp-credit">via YouTube · faint music</div>
+    </div>
+    <button class="mp-btn" id="mpToggle" title="Play / Pause">▶</button>
+  </div>
+
+  <!-- YouTube IFrame API -->
+  <script>
+    var ytPlayer;
+    var mpReady = false;
+    var mpPlaying = false;
+
+    window.onYouTubeIframeAPIReady = function() {
+      ytPlayer = new YT.Player('yt-frame', {
+        videoId: 'sQMuoIHqMfQ',
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          disablekb: 1,
+          loop: 1,
+          playlist: 'sQMuoIHqMfQ',
+          mute: 1,       // start muted to satisfy autoplay policy
+          playsinline: 1
+        },
+        events: {
+          onReady: function(e) {
+            e.target.setVolume(40);
+            e.target.playVideo();
+            mpReady = true;
+            // Attempt to unmute after a short delay
+            setTimeout(function() {
+              try { e.target.unMute(); } catch(_) {}
+            }, 800);
+          },
+          onStateChange: function(e) {
+            // YT.PlayerState.PLAYING = 1
+            const playing = e.data === 1;
+            mpPlaying = playing;
+            document.getElementById('mpToggle').textContent = playing ? '⏸' : '▶';
+            document.getElementById('mpDisc').classList.toggle('playing', playing);
+            document.getElementById('mpTitle').classList.toggle('playing', playing);
+            document.getElementById('music-player').classList.remove('hidden');
+          }
+        }
+      });
+    };
+
+    // Load YT API script
+    (function() {
+      var tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    })();
+
+    // Toggle play/pause button
+    document.getElementById('mpToggle').addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (!mpReady || !ytPlayer) return;
+      if (mpPlaying) {
+        ytPlayer.pauseVideo();
+      } else {
+        ytPlayer.unMute();
+        ytPlayer.playVideo();
+      }
+    });
   </script>
 </body>
 </html>
