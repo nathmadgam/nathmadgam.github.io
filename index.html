@@ -157,22 +157,44 @@
     }
     .hero-inner { max-width: 700px; }
 
+    .hero-availability-row {
+      display: flex; align-items: center; gap: 18px;
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp .5s .08s forwards;
+    }
+    .hero-avail-pill {
+      display: flex; align-items: center; gap: 7px;
+      font-family: var(--mono); font-size: .6rem; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--accent);
+      border: 1px solid rgba(77,184,160,.3);
+      background: rgba(77,184,160,.07);
+      padding: 5px 12px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .avail-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 6px var(--accent);
+      animation: pulse 2s infinite;
+    }
     .hero-tag {
-      font-family: var(--mono); font-size:.66rem;
-      letter-spacing:.12em; text-transform:uppercase;
-      color:var(--accent); margin-bottom:22px;
-      display:flex; align-items:center; gap:10px;
-      opacity:0; animation: fadeUp .5s .1s forwards;
+      font-family: var(--mono); font-size: .6rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted);
+      display: flex; align-items: center; gap: 8px;
     }
     .hero-tag::before {
-      content:''; display:block;
-      width:24px; height:1px; background:var(--accent);
+      content: ''; display: block; width: 18px; height: 1px; background: var(--border);
     }
-
     .hero-eyebrow {
-      font-size:1rem; font-weight:300; color:var(--muted); letter-spacing:.02em;
-      margin-bottom:4px;
-      opacity:0; animation: fadeUp .5s .2s forwards;
+      font-size: 1rem; font-weight: 300; color: var(--muted); letter-spacing: .02em;
+      margin-bottom: 4px;
+      opacity: 0; animation: fadeUp .5s .18s forwards;
+    }
+    .hero-tagline {
+      font-size: .9rem; color: var(--muted); font-weight: 400;
+      letter-spacing: .01em; margin-top: 4px; margin-bottom: 28px;
+      opacity: 0; animation: fadeUp .5s .35s forwards;
+      border-left: 2px solid var(--border); padding-left: 14px;
     }
 
     .hero-name {
@@ -193,8 +215,8 @@
     }
 
     .hero-sub {
-      font-size:.98rem; color:var(--muted);
-      line-height:1.75; margin-bottom:32px;
+      font-size:.95rem; color:var(--muted);
+      line-height:1.75; margin-bottom:28px;
       max-width:500px; font-weight:400;
       opacity:0; animation: fadeUp .5s .4s forwards;
     }
@@ -449,25 +471,76 @@
     .build-num { position:absolute; top:22px; right:20px; font-family:var(--mono); font-size:.58rem; color:var(--border); letter-spacing:.1em; }
 
     /* ─────────── CLIENTS ─────────── */
-    #clients { padding:70px 60px; }
-    .clients-inner {
-      border:1px solid var(--border); padding:44px;
-      display:flex; align-items:center; gap:52px; flex-wrap:wrap;
+    #clients { padding: 0 60px 100px; }
+    .clients-block {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--surface);
     }
-    .clients-label {
-      font-family:var(--mono); font-size:.63rem;
-      letter-spacing:.18em; text-transform:uppercase; color:var(--muted); white-space:nowrap;
+    .clients-top {
+      padding: 36px 44px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      flex-wrap: wrap;
     }
-    .clients-divider { width:1px; height:38px; background:var(--border); }
-    .clients-list { display:flex; gap:36px; align-items:center; flex-wrap:wrap; }
+    .clients-heading {
+      font-family: var(--display); font-size: 1.3rem; font-weight: 700;
+      color: var(--text); letter-spacing: -.01em;
+    }
+    .clients-heading span {
+      display: block; font-family: var(--mono); font-size: .6rem;
+      font-weight: 400; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .clients-tagline {
+      font-size: .88rem; color: var(--muted); max-width: 340px; line-height: 1.6;
+      font-weight: 400;
+    }
+    .clients-list {
+      display: flex; align-items: stretch; flex-wrap: wrap;
+    }
     .client-item {
-      display:flex; align-items:center; gap:11px;
-      text-decoration:none; opacity:.45; filter:grayscale(1);
-      transition:opacity .22s, filter .22s, transform .22s;
+      display: flex; align-items: center; gap: 16px;
+      padding: 32px 44px;
+      text-decoration: none; color: var(--text);
+      border-right: 1px solid var(--border);
+      flex: 1; min-width: 200px;
+      transition: background .2s, transform .2s;
+      position: relative;
     }
-    .client-item:hover { opacity:1; filter:grayscale(0); transform:translateY(-2px); }
-    .client-favicon { width:22px; height:22px; border-radius:4px; object-fit:cover; }
-    .client-name { font-family:var(--mono); font-size:.7rem; letter-spacing:.08em; color:var(--text); text-transform:uppercase; }
+    .client-item:last-child { border-right: none; }
+    .client-item::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0); transition: transform .3s ease;
+      transform-origin: left;
+    }
+    .client-item:hover { background: rgba(255,255,255,.03); }
+    .client-item:hover::before { transform: scaleX(1); }
+    .client-logo-wrap {
+      width: 48px; height: 48px; border-radius: 10px;
+      overflow: hidden; flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .client-favicon { width: 28px; height: 28px; border-radius: 4px; object-fit: cover; }
+    .client-info { display: flex; flex-direction: column; gap: 3px; }
+    .client-name {
+      font-family: var(--sans); font-size: .95rem; font-weight: 600;
+      color: var(--text); letter-spacing: -.01em;
+    }
+    .client-desc {
+      font-family: var(--mono); font-size: .58rem; color: var(--muted);
+      letter-spacing: .06em; text-transform: uppercase;
+    }
+    .client-arrow {
+      margin-left: auto; font-size: .85rem; color: var(--muted);
+      transition: color .2s, transform .2s;
+    }
+    .client-item:hover .client-arrow { color: var(--accent); transform: translate(3px, -3px); }
 
     /* ─────────── CONTACT ─────────── */
     #contact { padding:120px 60px; }
@@ -1071,9 +1144,13 @@
   <!-- HERO -->
   <section id="hero">
         <div class="hero-inner">
-      <div class="hero-tag">Roblox Studio Developer · Philippines</div>
+      <div class="hero-availability-row">
+        <div class="hero-avail-pill"><span class="avail-dot"></span>Available for commissions</div>
+        <div class="hero-tag">Roblox Studio Developer · Philippines</div>
+      </div>
       <p class="hero-eyebrow">Hey, I'm</p>
       <h1 class="hero-name"><span class="grad">Cynex</span></h1>
+      <p class="hero-tagline">Crafting gameplay systems, tools &amp; worlds in Roblox Studio since 2016.</p>
       <p class="hero-sub">
         <span class="tw" id="tw"></span>
       </p>
@@ -1645,18 +1722,36 @@
     </div>
   </section>
 
-  <!-- CLIENTS STRIP -->
-  <section id="clients">    <div class="clients-inner reveal">
-      <span class="clients-label">Also worked with</span>
-      <div class="clients-divider"></div>
+  <!-- CLIENTS -->
+  <section id="clients">
+    <div class="clients-block reveal">
+      <div class="clients-top">
+        <div class="clients-heading">
+          <span>Professional Experience</span>
+          Trusted by Studios &amp; Brands
+        </div>
+        <p class="clients-tagline">Shipped production-quality Roblox work for international studios building real, live experiences.</p>
+      </div>
       <div class="clients-list">
         <a href="https://www.byten21.com" target="_blank" rel="noopener" class="client-item">
-          <img class="client-favicon" src="https://www.google.com/s2/favicons?domain=byten21.com&sz=64" alt="Byten21" />
-          <span class="client-name">Byten21</span>
+          <div class="client-logo-wrap">
+            <img class="client-favicon" src="https://www.google.com/s2/favicons?domain=byten21.com&sz=64" alt="Byten21" />
+          </div>
+          <div class="client-info">
+            <div class="client-name">Byten21</div>
+            <div class="client-desc">Branded Roblox Experiences</div>
+          </div>
+          <span class="client-arrow">↗</span>
         </a>
         <a href="https://event-punks.com" target="_blank" rel="noopener" class="client-item">
-          <img class="client-favicon" src="https://www.google.com/s2/favicons?domain=event-punks.com&sz=64" alt="Event Punks" />
-          <span class="client-name">Event Punks</span>
+          <div class="client-logo-wrap">
+            <img class="client-favicon" src="https://www.google.com/s2/favicons?domain=event-punks.com&sz=64" alt="Event Punks" />
+          </div>
+          <div class="client-info">
+            <div class="client-name">Event Punks</div>
+            <div class="client-desc">Immersive Creative Studio</div>
+          </div>
+          <span class="client-arrow">↗</span>
         </a>
       </div>
     </div>
