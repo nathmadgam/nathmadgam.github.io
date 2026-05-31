@@ -153,9 +153,77 @@
     #hero {
       min-height: 100vh;
       display: flex; align-items: center; justify-content: space-between; gap: 60px;
-      padding: 140px 60px 80px;
+      padding: 0 60px;
+      position: relative;
     }
-    .hero-inner { max-width: 700px; }
+    .hero-inner { max-width: 640px; padding: 140px 0 80px; }
+
+    /* ── scroll indicator ── */
+    .hero-scroll {
+      position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0; animation: fadeUp .5s 1.4s forwards;
+      cursor: none;
+    }
+    .hero-scroll-label {
+      font-family: var(--mono); font-size: .55rem;
+      letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+    }
+    .hero-scroll-line {
+      width: 1px; height: 48px;
+      background: linear-gradient(180deg, var(--border), transparent);
+      position: relative; overflow: hidden;
+    }
+    .hero-scroll-line::after {
+      content: '';
+      position: absolute; top: -100%; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(180deg, transparent, var(--accent), transparent);
+      animation: scrollDrop 1.8s ease-in-out infinite;
+    }
+    @keyframes scrollDrop {
+      0%   { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    /* ── hero right: decorative panel ── */
+    .hero-panel {
+      flex-shrink: 0; width: 300px;
+      display: flex; flex-direction: column; gap: 0;
+      opacity: 0; animation: fadeUp .5s .8s forwards;
+    }
+    .hero-panel-card {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 20px 22px;
+      margin-bottom: -1px;
+      transition: border-color .2s, background .2s;
+      position: relative;
+    }
+    .hero-panel-card:first-child { border-radius: 8px 8px 0 0; }
+    .hero-panel-card:last-child  { border-radius: 0 0 8px 8px; margin-bottom: 0; }
+    .hero-panel-card:hover { background: rgba(255,255,255,.03); border-color: var(--accent); z-index: 1; }
+    .hp-label {
+      font-family: var(--mono); font-size: .55rem;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .hp-value {
+      font-family: var(--sans); font-size: .9rem; font-weight: 600; color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hp-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    }
+    .hp-dot.green { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+    .hp-dot.blue  { background: var(--accent2); }
+    .hp-dot.teal  { background: var(--accent); }
+    .hp-sub {
+      font-family: var(--mono); font-size: .62rem; color: var(--muted);
+      margin-top: 3px; letter-spacing: .04em;
+    }
+    .hp-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+    .hp-bar { height: 100%; border-radius: 2px; }
 
     .hero-availability-row {
       display: flex; align-items: center; gap: 18px;
@@ -277,41 +345,27 @@
 
     .hero-exp {
       flex-shrink: 0;
-      display: flex; flex-direction: column; gap: 0;
-      align-items: flex-end;
-      opacity: 0; animation: fadeUp .5s .7s forwards;
     }
     .hero-stat-card {
-      display: flex; flex-direction: column; align-items: flex-end;
-      padding: 18px 0;
-      position: relative;
+      display: flex; flex-direction: column;
     }
-    .hero-stat-card + .hero-stat-card {
-      border-top: 1px solid var(--border);
-    }
+    .hero-stat-card { }
     .hero-stat-num,
     .hero-exp-num {
-      font-family: 'Playfair Display', serif;
-      font-weight: 900;
-      font-size: 3.4rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 2.8rem;
       line-height: 1;
-      letter-spacing: -.02em;
-      background: linear-gradient(135deg, var(--accent) 0%, #7affea 50%, var(--accent2) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
-      background-size: 200% auto;
-      animation: gradShift 4s linear infinite;
-      min-width: 3ch; text-align: right;
-    }
-    /* first stat is larger */
-    .hero-exp .hero-stat-card:first-child .hero-exp-num {
-      font-size: 4.8rem;
+      letter-spacing: -.04em;
+      color: var(--text);
+      background: none;
+      -webkit-text-fill-color: var(--text);
     }
     .hero-exp-label {
-      font-family: var(--mono); font-size: .55rem;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: var(--muted); line-height: 1.6;
-      text-align: right; margin-top: 6px;
+      font-family: var(--mono); font-size: .54rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); line-height: 1.5;
+      margin-top: 5px;
     }
     /* remove old separate divider element */
     .hero-stat-divider { display: none; }
@@ -992,10 +1046,9 @@
       display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
     }
     .testi-score {
-      font-size: 3rem; font-weight: 800; line-height: 1; letter-spacing: -.03em;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-family: 'Inter', sans-serif;
+      font-size: 2.8rem; font-weight: 800; line-height: 1; letter-spacing: -.04em;
+      color: var(--text);
     }
     .testi-stars { display: flex; gap: 3px; }
     .testi-star { color: #f9c74f; font-size: .85rem; }
@@ -1088,7 +1141,8 @@
       nav { padding:16px 22px; }
       .nav-status { display:none; }
       #hero { padding:110px 22px 70px; }
-      .hero-exp { display:none; }
+      .hero-exp { flex-direction:column !important; gap:20px !important; margin-top:28px !important; }
+      .hero-panel { display:none; }
       #projects,#scripting,#building,#clients,#contact,#communities,#about,#testimonials,footer,
       .section-header { padding-left:22px; padding-right:22px; }
       #games .section-header, #games .games-intro { padding-left:22px; padding-right:22px; }
@@ -1143,7 +1197,7 @@
 
   <!-- HERO -->
   <section id="hero">
-        <div class="hero-inner">
+    <div class="hero-inner">
       <div class="hero-availability-row">
         <div class="hero-avail-pill"><span class="avail-dot"></span>Available for commissions</div>
         <div class="hero-tag">Roblox Studio Developer · Philippines</div>
@@ -1151,9 +1205,7 @@
       <p class="hero-eyebrow">Hey, I'm</p>
       <h1 class="hero-name"><span class="grad">Cynex</span></h1>
       <p class="hero-tagline">Crafting gameplay systems, tools &amp; worlds in Roblox Studio since 2016.</p>
-      <p class="hero-sub">
-        <span class="tw" id="tw"></span>
-      </p>
+      <p class="hero-sub"><span class="tw" id="tw"></span></p>
       <div class="hero-chips">
         <div class="chip">Roblox Lua</div>
         <div class="chip">Game Systems</div>
@@ -1165,20 +1217,62 @@
         <a href="#about" class="btn-primary">About Me</a>
         <a href="#contact" class="btn-ghost">Get in Touch</a>
       </div>
+
+      <!-- stat row under CTAs -->
+      <div class="hero-exp" style="display:flex;flex-direction:row;gap:32px;margin-top:44px;padding-top:32px;border-top:1px solid var(--border);align-items:flex-start;">
+        <div class="hero-stat-card" style="align-items:flex-start;">
+          <div class="hero-exp-num stat-count" id="expNum" data-target="8" data-suffix="">0</div>
+          <div class="hero-exp-label">Years of Experience</div>
+        </div>
+        <div class="hero-stat-card" style="align-items:flex-start;">
+          <div class="hero-stat-num stat-count" data-target="14" data-suffix="+">0</div>
+          <div class="hero-exp-label">Projects Completed</div>
+        </div>
+        <div class="hero-stat-card" style="align-items:flex-start;">
+          <div class="hero-stat-num stat-count" data-target="7" data-suffix="">0</div>
+          <div class="hero-exp-label">Communities Contributed</div>
+        </div>
+      </div>
     </div>
-    <div class="hero-exp reveal" style="animation-delay:.6s">
-      <div class="hero-stat-card">
-        <div class="hero-exp-num stat-count" id="expNum" data-target="8" data-suffix="">0</div>
-        <div class="hero-exp-label">Years of<br>Experience</div>
+
+    <!-- right decorative info panel -->
+    <div class="hero-panel">
+      <div class="hero-panel-card">
+        <div class="hp-label">Status</div>
+        <div class="hp-value"><span class="hp-dot green"></span>Online &amp; Accepting Work</div>
+        <div class="hp-sub">Typically responds within 24h</div>
       </div>
-      <div class="hero-stat-card">
-        <div class="hero-stat-num stat-count" data-target="14" data-suffix="+">0</div>
-        <div class="hero-exp-label">Projects<br>Completed</div>
+      <div class="hero-panel-card">
+        <div class="hp-label">Primary Skill</div>
+        <div class="hp-value"><span class="hp-dot teal"></span>Roblox Lua / Luau</div>
+        <div class="hp-bar-wrap"><div class="hp-bar" style="width:96%;background:linear-gradient(90deg,var(--accent),var(--accent2));"></div></div>
       </div>
-      <div class="hero-stat-card">
-        <div class="hero-stat-num stat-count" data-target="7" data-suffix="">0</div>
-        <div class="hero-exp-label">Communities<br>Contributed</div>
+      <div class="hero-panel-card">
+        <div class="hp-label">Game Systems</div>
+        <div class="hp-value"><span class="hp-dot teal"></span>Architecture &amp; Design</div>
+        <div class="hp-bar-wrap"><div class="hp-bar" style="width:92%;background:linear-gradient(90deg,var(--accent),var(--accent2));"></div></div>
       </div>
+      <div class="hero-panel-card">
+        <div class="hp-label">UI / UX Scripting</div>
+        <div class="hp-value"><span class="hp-dot blue"></span>Interfaces &amp; Flows</div>
+        <div class="hp-bar-wrap"><div class="hp-bar" style="width:88%;background:linear-gradient(90deg,var(--accent2),#8fa8ff);"></div></div>
+      </div>
+      <div class="hero-panel-card">
+        <div class="hp-label">NPC &amp; AI Behavior</div>
+        <div class="hp-value"><span class="hp-dot blue"></span>Pathfinding &amp; Logic</div>
+        <div class="hp-bar-wrap"><div class="hp-bar" style="width:85%;background:linear-gradient(90deg,var(--accent2),#8fa8ff);"></div></div>
+      </div>
+      <div class="hero-panel-card">
+        <div class="hp-label">Location</div>
+        <div class="hp-value">🇵🇭 Philippines</div>
+        <div class="hp-sub">UTC+8 · Open to remote</div>
+      </div>
+    </div>
+
+    <!-- scroll cue -->
+    <div class="hero-scroll">
+      <div class="hero-scroll-label">Scroll</div>
+      <div class="hero-scroll-line"></div>
     </div>
   </section>
 
@@ -2108,8 +2202,8 @@
   document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
 
   /* ── node class ── */
-  const NODE_COUNT   = 55;
-  const CONNECT_DIST = 120;
+  const NODE_COUNT   = 110;
+  const CONNECT_DIST = 130;
   const MOUSE_REPEL  = 120;
 
   class Node {
@@ -2121,7 +2215,7 @@
       this.vx = (Math.random() - .5) * .35;
       this.vy = (Math.random() - .5) * .35;
       this.r  = Math.random() * 1.6 + .5;
-      this.baseAlpha = Math.random() * .28 + .08;
+      this.baseAlpha = Math.random() * .38 + .10;
       this.alpha = this.baseAlpha;
       this.pulseSpeed = Math.random() * .02 + .005;
       this.pulsePhase = Math.random() * Math.PI * 2;
@@ -2224,7 +2318,7 @@
         const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
         const d = Math.sqrt(dx*dx + dy*dy);
         if (d < CONNECT_DIST) {
-          const a = (1 - d / CONNECT_DIST) * .09;
+          const a = (1 - d / CONNECT_DIST) * .13;
           const grad = ctx.createLinearGradient(nodes[i].x, nodes[i].y, nodes[j].x, nodes[j].y);
           grad.addColorStop(0, `rgba(${nodes[i].col},${a})`);
           grad.addColorStop(1, `rgba(${nodes[j].col},${a})`);
