@@ -20,6 +20,7 @@ test("metadata, removed sections, and secure external links", async () => {
   const html = await read("index.html");
   assert.match(html, /<title>Cynex \| Roblox Scripter Portfolio<\/title>/);
   assert.doesNotMatch(html, /extra services/i);
+  assert.doesNotMatch(html, /your toolbox|maximum impact|skip the template/i);
   assert.doesNotMatch(html, /id=["']extras["']/i);
   assert.doesNotMatch(html, /tr\.rbxcdn\.com/i);
   assert.match(html, /assets\/js\/site\.bundle\.js/);
@@ -43,6 +44,18 @@ test("project media is intentionally limited and data driven", async () => {
   assert.equal(videos.length, 6);
   assert.equal(posters.length, 6);
   videos.forEach(name => assert.match(data, new RegExp(name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))));
+});
+
+
+test("compact project collage and typed testimonial carousel are present", async () => {
+  const app = await read("assets/js/app.js");
+  const css = await read("assets/css/styles.css");
+  const data = await read("assets/js/data.js");
+  assert.match(app, /setupReviewCarousel/);
+  assert.match(app, /data-review-typed/);
+  assert.match(css, /grid-auto-flow:\s*dense/);
+  assert.match(css, /type-caret/);
+  assert.match(data, /platform:\s*"Fiverr"/);
 });
 
 test("frontend source contains no obvious secrets", async () => {

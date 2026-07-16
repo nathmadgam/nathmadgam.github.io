@@ -124,10 +124,10 @@ const skills = [
 ];
 
 const process = [
-  { title: "Define", description: "Translate the mechanic into states, owners, constraints, success conditions, and concrete failure cases." },
-  { title: "Prototype", description: "Build the smallest end-to-end path first so interaction, networking, and data assumptions can be tested early." },
-  { title: "Harden", description: "Add validation, cancellation, retries, persistence safeguards, instrumentation, and reduced-motion or low-end considerations." },
-  { title: "Handoff", description: "Document modules, configuration, extension points, known limits, and the checks required before release." },
+  { title: "Scope", description: "Define the Roblox mechanic, player flow, server ownership, saved data, edge cases, and the exact result the feature must deliver." },
+  { title: "Build", description: "Create a working end-to-end version with the core Luau modules, remotes, UI feedback, and data flow connected early." },
+  { title: "Test", description: "Check validation, exploits, respawns, disconnects, DataStore failures, mobile layouts, performance, and interaction edge cases." },
+  { title: "Deliver", description: "Clean the code, document configuration and extension points, verify the final build, and hand over a system the team can maintain." },
 ];
 
 /** @type {RobloxGroup[]} */
@@ -145,9 +145,9 @@ const discordServers = [
 ];
 
 const reviews = [
-  { name: "lotteryshot", location: "United States", quote: "Went beyond and helped with extra work, excellent and fair." },
-  { name: "skyebsu", location: "United Kingdom · repeat client", quote: "Pays keen attention to detail, extremely good at scripting, very quick to respond!" },
-  { name: "loaf_bread", location: "Philippines", quote: "He was able to fulfill all of my requests and even provided some valuable ideas. Any minor issues were promptly resolved." },
+  { name: "lotteryshot", location: "United States", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Went beyond and helped with extra work, excellent and fair." },
+  { name: "skyebsu", location: "United Kingdom · repeat client", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Pays keen attention to detail, extremely good at scripting, very quick to respond!" },
+  { name: "loaf_bread", location: "Philippines", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "He was able to fulfill all of my requests and even provided some valuable ideas. Any minor issues were promptly resolved." },
 ];
 
 
@@ -568,11 +568,171 @@ function renderReviews() {
     list.innerHTML = '<p class="network-empty">Verified client feedback will appear here.</p>';
     return;
   }
-  list.innerHTML = reviews.map((review, index) => `
-    <article class="review-card reveal" style="--reveal-delay:${index * 70}ms">
-      <div class="review-person">${escapeHtml(review.name)}</div>
-      <blockquote>“${escapeHtml(review.quote)}”<cite>${escapeHtml(review.location)}</cite></blockquote>
-    </article>`).join("");
+  list.innerHTML = `
+    <div class="review-stage reveal" data-review-stage tabindex="0" aria-label="Client testimonial slideshow">
+      <article class="review-card" data-review-card>
+        <div class="review-topline">
+          <span class="review-index" data-review-count>01 / ${String(reviews.length).padStart(2, "0")}</span>
+          <span class="review-rating" aria-label="5 out of 5 stars">★★★★★</span>
+        </div>
+        <blockquote>
+          <span class="review-quote-mark" aria-hidden="true">“</span>
+          <span data-review-typed aria-hidden="true"></span><span class="type-caret" aria-hidden="true"></span>
+        </blockquote>
+        <p class="sr-only" data-review-full aria-live="polite"></p>
+        <div class="review-source" data-review-source>
+          <div>
+            <strong data-review-name></strong>
+            <span data-review-location></span>
+          </div>
+          <a data-review-platform target="_blank" rel="noopener noreferrer"></a>
+        </div>
+        <div class="review-footer">
+          <div class="review-dots" role="tablist" aria-label="Choose testimonial">
+            ${reviews.map((_, index) => `<button type="button" role="tab" aria-label="Show testimonial ${index + 1}" data-review-dot="${index}"></button>`).join("")}
+          </div>
+          <div class="review-controls">
+            <button type="button" data-review-prev aria-label="Previous testimonial">←</button>
+            <button type="button" data-review-next aria-label="Next testimonial">→</button>
+          </div>
+        </div>
+      </article>
+      <div class="review-progress" aria-hidden="true"><span data-review-progress></span></div>
+    </div>`;
+}
+
+function setupReviewCarousel() {
+  const stage = qs("[data-review-stage]");
+  if (!stage || !reviews.length) return;
+
+  const card = qs("[data-review-card]", stage);
+  const typed = qs("[data-review-typed]", stage);
+  const full = qs("[data-review-full]", stage);
+  const name = qs("[data-review-name]", stage);
+  const location = qs("[data-review-location]", stage);
+  const platform = qs("[data-review-platform]", stage);
+  const count = qs("[data-review-count]", stage);
+  const progress = qs("[data-review-progress]", stage);
+  const dots = qsa("[data-review-dot]", stage);
+  let current = 0;
+  let frame = 0;
+  let transitionTimer = 0;
+  let advanceTimer = 0;
+  let progressFrame = 0;
+  let paused = false;
+  let started = false;
+  let complete = false;
+
+  const clearMotion = () => {
+    cancelAnimationFrame(frame);
+    cancelAnimationFrame(progressFrame);
+    clearTimeout(transitionTimer);
+    clearTimeout(advanceTimer);
+  };
+
+  const updateStaticContent = review => {
+    name.textContent = review.name;
+    location.textContent = review.location;
+    platform.textContent = `Posted on ${review.platform}`;
+    platform.href = review.platformUrl;
+    count.textContent = `${String(current + 1).padStart(2, "0")} / ${String(reviews.length).padStart(2, "0")}`;
+    full.textContent = `“${review.quote}” — ${review.name}, ${review.platform}`;
+    dots.forEach((dot, index) => {
+      dot.classList.toggle("is-active", index === current);
+      dot.setAttribute("aria-selected", String(index === current));
+      dot.tabIndex = index === current ? 0 : -1;
+    });
+  };
+
+  const scheduleAdvance = () => {
+    clearTimeout(advanceTimer);
+    cancelAnimationFrame(progressFrame);
+    progress.style.transform = "scaleX(0)";
+    if (paused || reducedMotion) return;
+    const duration = 4600;
+    const start = performance.now();
+    const tick = now => {
+      const amount = Math.min((now - start) / duration, 1);
+      progress.style.transform = `scaleX(${amount})`;
+      if (amount < 1 && !paused) progressFrame = requestAnimationFrame(tick);
+    };
+    progressFrame = requestAnimationFrame(tick);
+    advanceTimer = setTimeout(() => showSlide(current + 1), duration);
+  };
+
+  const finishTyping = () => {
+    complete = true;
+    card.classList.add("is-complete");
+    scheduleAdvance();
+  };
+
+  const typeQuote = text => {
+    typed.textContent = "";
+    complete = false;
+    const duration = Math.min(Math.max(text.length * 27, 900), 2500);
+    const start = performance.now();
+    const tick = now => {
+      const amount = Math.min((now - start) / duration, 1);
+      const characters = Math.max(1, Math.floor(text.length * amount));
+      typed.textContent = text.slice(0, characters);
+      if (amount < 1) frame = requestAnimationFrame(tick);
+      else finishTyping();
+    };
+    frame = requestAnimationFrame(tick);
+  };
+
+  function showSlide(nextIndex, instant = false) {
+    clearMotion();
+    current = (nextIndex + reviews.length) % reviews.length;
+    complete = false;
+    card.classList.remove("is-complete");
+    card.classList.add("is-changing");
+    progress.style.transform = "scaleX(0)";
+
+    const swap = () => {
+      const review = reviews[current];
+      updateStaticContent(review);
+      typed.textContent = reducedMotion || instant ? review.quote : "";
+      card.classList.remove("is-changing");
+      if (reducedMotion || instant) finishTyping();
+      else typeQuote(review.quote);
+    };
+
+    transitionTimer = setTimeout(swap, instant ? 0 : 260);
+  }
+
+  qs("[data-review-prev]", stage).addEventListener("click", () => showSlide(current - 1));
+  qs("[data-review-next]", stage).addEventListener("click", () => showSlide(current + 1));
+  dots.forEach(dot => dot.addEventListener("click", () => showSlide(Number(dot.dataset.reviewDot))));
+
+  const pause = () => {
+    paused = true;
+    clearTimeout(advanceTimer);
+    cancelAnimationFrame(progressFrame);
+  };
+  const resume = () => {
+    paused = false;
+    if (complete) scheduleAdvance();
+  };
+  stage.addEventListener("pointerenter", pause);
+  stage.addEventListener("pointerleave", resume);
+  stage.addEventListener("focusin", pause);
+  stage.addEventListener("focusout", event => { if (!stage.contains(event.relatedTarget)) resume(); });
+
+  if (reducedMotion) {
+    started = true;
+    showSlide(0, true);
+    return;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    if (!started && entries.some(entry => entry.isIntersecting)) {
+      started = true;
+      showSlide(0);
+      observer.disconnect();
+    }
+  }, { threshold: .35 });
+  observer.observe(stage);
 }
 
 async function hydrateGameMedia() {
@@ -818,6 +978,7 @@ function init() {
   renderProcess();
   renderNetwork();
   renderReviews();
+  setupReviewCarousel();
   setupDialog();
   setupNavigation();
   setupReveal();

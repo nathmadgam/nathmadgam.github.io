@@ -101,10 +101,10 @@ export const skills = [
 ];
 
 export const process = [
-  { title: "Define", description: "Translate the mechanic into states, owners, constraints, success conditions, and concrete failure cases." },
-  { title: "Prototype", description: "Build the smallest end-to-end path first so interaction, networking, and data assumptions can be tested early." },
-  { title: "Harden", description: "Add validation, cancellation, retries, persistence safeguards, instrumentation, and reduced-motion or low-end considerations." },
-  { title: "Handoff", description: "Document modules, configuration, extension points, known limits, and the checks required before release." },
+  { title: "Scope", description: "Define the Roblox mechanic, player flow, server ownership, saved data, edge cases, and the exact result the feature must deliver." },
+  { title: "Build", description: "Create a working end-to-end version with the core Luau modules, remotes, UI feedback, and data flow connected early." },
+  { title: "Test", description: "Check validation, exploits, respawns, disconnects, DataStore failures, mobile layouts, performance, and interaction edge cases." },
+  { title: "Deliver", description: "Clean the code, document configuration and extension points, verify the final build, and hand over a system the team can maintain." },
 ];
 
 /** @type {RobloxGroup[]} */
@@ -122,7 +122,7 @@ export const discordServers = [
 ];
 
 export const reviews = [
-  { name: "lotteryshot", location: "United States", quote: "Went beyond and helped with extra work, excellent and fair." },
-  { name: "skyebsu", location: "United Kingdom · repeat client", quote: "Pays keen attention to detail, extremely good at scripting, very quick to respond!" },
-  { name: "loaf_bread", location: "Philippines", quote: "He was able to fulfill all of my requests and even provided some valuable ideas. Any minor issues were promptly resolved." },
+  { name: "lotteryshot", location: "United States", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Went beyond and helped with extra work, excellent and fair." },
+  { name: "skyebsu", location: "United Kingdom · repeat client", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Pays keen attention to detail, extremely good at scripting, very quick to respond!" },
+  { name: "loaf_bread", location: "Philippines", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "He was able to fulfill all of my requests and even provided some valuable ideas. Any minor issues were promptly resolved." },
 ];
