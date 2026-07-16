@@ -5,6 +5,7 @@ The portfolio first tries Roblox's public thumbnail/universe endpoints and Disco
 ## Routes
 
 - `GET /api/roblox/universe?placeId=...`
+- `GET /api/roblox/place-icons?placeIds=...`
 - `GET /api/roblox/thumbnails?universeIds=...`
 - `GET /api/roblox/groups?groupIds=...`
 - `GET /api/discord/invite?code=...&guildId=...`

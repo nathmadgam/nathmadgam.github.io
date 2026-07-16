@@ -58,3 +58,21 @@ test("Discord invite response is sanitized and does not expose upstream fields",
     source: "public-invite",
   });
 });
+
+test("proxy fetches Roblox place icons without exposing extra data", async () => {
+  installCache();
+  globalThis.fetch = async input => {
+    const url = new URL(input);
+    assert.equal(url.pathname, "/v1/places/gameicons");
+    assert.equal(url.searchParams.get("placeIds"), "12345,67890");
+    return Response.json({ data: [
+      { targetId: 12345, state: "Completed", imageUrl: "https://images.example/12345.webp", extra: "ignored-by-frontend" },
+      { targetId: 67890, state: "Blocked", imageUrl: null },
+    ] });
+  };
+  const response = await invoke("https://proxy.example/api/roblox/place-icons?placeIds=12345,67890");
+  assert.equal(response.status, 200);
+  const payload = await response.json();
+  assert.equal(payload.data.length, 2);
+  assert.equal(payload.data[0].targetId, 12345);
+});

@@ -60,6 +60,14 @@ def route_request(route: Route) -> None:
             fulfill_json(route, {'errors': [{'message': 'Not found'}]}, 404)
         return
 
+    if host == 'thumbnails.roblox.com' and path.endswith('/places/gameicons'):
+        ids = query.get('placeIds', [''])[0].split(',')
+        fulfill_json(route, {'data': [
+            {'targetId': int(pid), 'state': 'Completed', 'imageUrl': f'https://cynex.test/mock/place-{pid}.svg'}
+            for pid in ids if pid
+        ]})
+        return
+
     if host == 'thumbnails.roblox.com' and path.endswith('/games/icons'):
         ids = query.get('universeIds', [''])[0].split(',')
         fulfill_json(route, {'data': [
@@ -124,6 +132,9 @@ def audit_page(browser, viewport: dict, screenshot_name: str, mobile: bool = Fal
     assert page.locator('text=Extra Services').count() == 0
     assert page.locator('[data-project-grid] .project-card').count() == 6
     assert page.locator('[data-game-grid] .game-card').count() == 3
+    assert page.locator('.game-credits').count() == 3
+    assert page.locator('.game-credits dd', has_text='Programmer').count() == 3
+    assert page.locator('[data-source-download]').count() >= 2
     assert page.locator('[data-roblox-groups] .network-card').count() == 4
     assert page.locator('[data-discord-servers] .network-card').count() == 2
     assert page.locator('.media-shell[data-state="loaded"]').count() == 3

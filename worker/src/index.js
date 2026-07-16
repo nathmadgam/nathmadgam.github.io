@@ -74,6 +74,15 @@ async function robloxUniverse(url, env, request) {
   return json({ universeId: String(payload.universeId) }, 200, env, request);
 }
 
+async function robloxPlaceIcons(url, env, request) {
+  const ids = parseIdList(url.searchParams.get("placeIds"));
+  if (!ids) return json({ error: "invalid_place_ids", data: [] }, 400, env, request);
+  const query = new URLSearchParams({ placeIds: ids.join(","), returnPolicy: "PlaceHolder", size: "512x512", format: "Webp", isCircular: "false" });
+  const { response, payload } = await upstreamJson(`${ROBLOX_THUMBNAILS}/places/gameicons?${query}`);
+  if (!response.ok) return json({ error: response.status === 429 ? "rate_limited" : "place_icon_request_failed", data: [] }, response.status, env, request, { "retry-after": response.headers.get("retry-after") || "" });
+  return json({ data: Array.isArray(payload?.data) ? payload.data : [] }, 200, env, request);
+}
+
 async function robloxGameThumbnails(url, env, request) {
   const ids = parseIdList(url.searchParams.get("universeIds"));
   if (!ids) return json({ error: "invalid_universe_ids", data: [] }, 400, env, request);
@@ -145,6 +154,7 @@ export default {
     const url = new URL(request.url);
     try {
       if (url.pathname === "/api/roblox/universe") return cached(request, env, ctx, 86400, () => robloxUniverse(url, env, request));
+      if (url.pathname === "/api/roblox/place-icons") return cached(request, env, ctx, 3600, () => robloxPlaceIcons(url, env, request));
       if (url.pathname === "/api/roblox/thumbnails") return cached(request, env, ctx, 3600, () => robloxGameThumbnails(url, env, request));
       if (url.pathname === "/api/roblox/groups") return cached(request, env, ctx, 21600, () => robloxGroupIcons(url, env, request));
       if (url.pathname === "/api/discord/invite") return cached(request, env, ctx, 1800, () => discordInvite(url, env, request));

@@ -22,9 +22,9 @@ const MEDIA_CACHE_TTL = {
 
 /* ---- assets/js/data.js ---- */
 /** @typedef {{title:string, category:string, year:string, description:string, tags:string[], video:string, poster:string}} Project */
-/** @typedef {{name:string, id:string, idType:'place'|'universe', url:string, description:string, fallback:string}} RobloxGame */
-/** @typedef {{name:string, groupId:string, role:string, description:string, url:string, fallback:string}} RobloxGroup */
-/** @typedef {{name:string, role:string, description:string, inviteCode:string, url:string, fallback:string, guildId?:string, iconHash?:string}} DiscordServer */
+/** @typedef {{name:string, id:string, idType:'place'|'universe', universeId?:string, creator:string, role:string, url:string, description:string, fallback:string, cachedImage?:string}} RobloxGame */
+/** @typedef {{name:string, groupId:string, role:string, description:string, url:string, fallback:string, cachedImage?:string}} RobloxGroup */
+/** @typedef {{name:string, role:string, description:string, inviteCode:string, url:string, fallback:string, cachedImage?:string, guildId?:string, iconHash?:string}} DiscordServer */
 
 /** @type {Project[]} */
 const projects = [
@@ -90,58 +90,69 @@ const games = [
     name: "Grow Your Pet",
     id: "110811521450324",
     idType: "place",
+    creator: "Skydda Concord Studio",
+    role: "Programmer",
     url: "https://www.roblox.com/games/110811521450324/GROW-YOUR-PET",
-    description: "Published Roblox experience included in the original portfolio.",
+    description: "A pet-growth experience featuring progression, player-facing systems, and production gameplay scripting.",
+    cachedImage: "assets/cached-media/grow-your-pet.webp",
     fallback: "assets/fallbacks/grow-your-pet.svg",
   },
   {
     name: "Soft Pink Tower",
     id: "95624995252294",
     idType: "place",
+    universeId: "9333955742",
+    creator: "Lazy Tower Studio",
+    role: "Programmer",
     url: "https://www.roblox.com/games/95624995252294/Soft-Pink-Tower",
-    description: "Tower experience with development contribution listed in the original portfolio.",
+    description: "A polished tower experience with gameplay and production scripting contributions.",
+    cachedImage: "assets/cached-media/soft-pink-tower.jpg",
     fallback: "assets/fallbacks/soft-pink-tower.svg",
   },
   {
     name: "Soft Pink Wallhop Tower",
     id: "101848404389998",
     idType: "place",
+    universeId: "9397456825",
+    creator: "Lazy Tower Studio",
+    role: "Programmer",
     url: "https://www.roblox.com/games/101848404389998/Soft-Pink-Wallhop-Tower",
-    description: "Wallhop tower experience with development contribution listed in the original portfolio.",
+    description: "A wallhop-focused tower experience with gameplay and systems programming contributions.",
+    cachedImage: "assets/cached-media/soft-pink-wallhop.jpg",
     fallback: "assets/fallbacks/soft-pink-wallhop.svg",
   },
 ];
 
 const skills = [
-  { title: "Luau architecture", description: "Module boundaries, explicit state, typed Luau patterns, reusable APIs, and maintainable service layers." },
-  { title: "Server-authoritative gameplay", description: "Validation, remotes, round systems, interaction mechanics, cooldowns, and exploit-resistant ownership." },
-  { title: "Persistent data", description: "DataStore strategy, profile/session handling, autosave, migrations, failure recovery, and cross-server state." },
-  { title: "UI systems", description: "Responsive Roblox interfaces, state-driven flows, camera transitions, menus, voting, shops, and feedback." },
-  { title: "NPC + pathfinding", description: "Target selection, route refreshes, obstacle handling, configurable behaviours, and performance constraints." },
-  { title: "Moderation + platform APIs", description: "Ban workflows, permissions, audit-friendly actions, safe API boundaries, and visitor-friendly error states." },
-  { title: "Economy systems", description: "Purchases, donations, global boards, progression dependencies, and consistent display of changing values." },
-  { title: "Performance + debugging", description: "Profiling, event cleanup, request deduplication, cache design, clear development logging, and graceful fallback." },
+  { title: "Software architecture", description: "Clear module boundaries, typed Luau, reusable services, explicit state, and code that remains practical for a team to extend." },
+  { title: "Gameplay programming", description: "Player mechanics, round flow, interactions, combat rules, cooldowns, remotes, and responsive client feedback." },
+  { title: "Backend systems", description: "Server-authoritative logic, validation, permissions, session ownership, failure handling, and secure system boundaries." },
+  { title: "Data + persistence", description: "DataStore design, profiles, autosave, migrations, cross-server state, recovery paths, and consistent progression data." },
+  { title: "Interface development", description: "Responsive UI, state-driven menus, camera transitions, voting, shops, onboarding, and readable player feedback." },
+  { title: "API + platform integration", description: "Roblox services, external web endpoints, moderation workflows, caching, request limits, and safe fallback states." },
+  { title: "Performance + quality", description: "Profiling, event cleanup, network efficiency, edge-case testing, debugging, and production-focused optimization." },
+  { title: "Team delivery", description: "Version-control habits, documentation, configurable systems, scope communication, and clean handoff for continued development." },
 ];
 
 const process = [
-  { title: "Scope", description: "Define the Roblox mechanic, player flow, server ownership, saved data, edge cases, and the exact result the feature must deliver." },
-  { title: "Build", description: "Create a working end-to-end version with the core Luau modules, remotes, UI feedback, and data flow connected early." },
-  { title: "Test", description: "Check validation, exploits, respawns, disconnects, DataStore failures, mobile layouts, performance, and interaction edge cases." },
-  { title: "Deliver", description: "Clean the code, document configuration and extension points, verify the final build, and hand over a system the team can maintain." },
+  { title: "Scope", description: "Define the player flow, technical ownership, saved data, edge cases, success criteria, and exact production requirements." },
+  { title: "Build", description: "Create a working end-to-end version early, then organize the feature into clear client, server, UI, and data responsibilities." },
+  { title: "Test", description: "Check validation, exploits, respawns, disconnects, persistence failures, mobile layouts, performance, and interaction edge cases." },
+  { title: "Deliver", description: "Clean the code, document configuration and extension points, verify the final build, and hand over a maintainable system." },
 ];
 
 /** @type {RobloxGroup[]} */
 const robloxGroups = [
-  { name: "Tenasa Games", groupId: "34265738", role: "Founder", description: "Roblox development group listed in the original portfolio.", url: "https://www.roblox.com/communities/34265738/Tenasa-Games", fallback: "assets/fallbacks/group-tenasa.svg" },
-  { name: "SOL Co.", groupId: "153339776", role: "Main developer", description: "Creative game community and development group.", url: "https://www.roblox.com/communities/153339776/SOL-Co", fallback: "assets/fallbacks/group-sol.svg" },
-  { name: "Skydda Concord Studio", groupId: "81081641", role: "Developer", description: "Independent Roblox development studio.", url: "https://www.roblox.com/communities/81081641/Skydda-Concord-Studio", fallback: "assets/fallbacks/group-skydda.svg" },
-  { name: "Corebound Games", groupId: "312003009", role: "Admin", description: "Early-stage Roblox game studio.", url: "https://www.roblox.com/communities/312003009/Corebound-Games", fallback: "assets/fallbacks/group-corebound.svg" },
+  { name: "Tenasa Games", groupId: "34265738", role: "Founder", description: "Roblox development group for original projects and collaborative production work.", url: "https://www.roblox.com/communities/34265738/Tenasa-Games", fallback: "assets/fallbacks/group-tenasa.svg" },
+  { name: "SOL Co.", groupId: "153339776", role: "Main developer", description: "Creative Roblox community with development and systems contributions.", url: "https://www.roblox.com/communities/153339776/SOL-Co", cachedImage: "assets/cached-media/group-sol.webp", fallback: "assets/fallbacks/group-sol.svg" },
+  { name: "Skydda Concord Studio", groupId: "81081641", role: "Developer", description: "Independent Roblox studio behind collaborative experience development.", url: "https://www.roblox.com/communities/81081641/Skydda-Concord-Studio", cachedImage: "assets/cached-media/group-skydda.webp", fallback: "assets/fallbacks/group-skydda.svg" },
+  { name: "Corebound Games", groupId: "312003009", role: "Admin", description: "Roblox game studio focused on building and organizing new projects.", url: "https://www.roblox.com/communities/312003009/Corebound-Games", fallback: "assets/fallbacks/group-corebound.svg" },
 ];
 
 /** @type {DiscordServer[]} */
 const discordServers = [
-  { name: "Summit Developers", role: "Pioneer", description: "Roblox developer community listed in the original portfolio.", inviteCode: "UXsEATcmaa", url: "https://discord.gg/UXsEATcmaa", fallback: "assets/fallbacks/discord-summit.svg" },
-  { name: "Cynex Services", role: "Founder", description: "The portfolio's primary Discord contact server.", inviteCode: "Pnjjkc6FHY", url: "https://discord.gg/Pnjjkc6FHY", fallback: "assets/fallbacks/discord-cynex.svg" },
+  { name: "Summit Developers", role: "Pioneer", description: "A Roblox developer community for collaboration, feedback, and technical discussion.", inviteCode: "UXsEATcmaa", url: "https://discord.gg/UXsEATcmaa", fallback: "assets/fallbacks/discord-summit.svg" },
+  { name: "Cynex Services", role: "Founder", description: "The primary server for project inquiries, development updates, and direct contact.", inviteCode: "Pnjjkc6FHY", url: "https://discord.gg/Pnjjkc6FHY", fallback: "assets/fallbacks/discord-cynex.svg" },
 ];
 
 const reviews = [
@@ -153,13 +164,14 @@ const reviews = [
 
 /* ---- assets/js/media-service.js ---- */
 
-const inflight = new Map();
+const STORAGE_PREFIX = "cynex-media-v3:";
 const memory = new Map();
-const STORAGE_PREFIX = "cynex-media-v2:";
-const DEV = typeof location !== "undefined" && (location.hostname === "localhost" || location.hostname === "127.0.0.1");
+const inflight = new Map();
+const debug = globalThis.location?.hostname === "localhost" || globalThis.location?.hostname === "127.0.0.1";
+const remoteRequestsAllowed = globalThis.location?.protocol !== "file:" || Boolean(API_PROXY_BASE);
 
-function log(message, detail) {
-  if (DEV) console.warn(`[media] ${message}`, detail ?? "");
+function log(message, error) {
+  if (debug) console.warn(`[Cynex media] ${message}`, error ?? "");
 }
 
 function cacheRead(key) {
@@ -241,6 +253,7 @@ function proxyUrl(path, params) {
 }
 
 async function withProxyFallback(directUrl, proxyPath, proxyParams) {
+  if (!remoteRequestsAllowed) throw new Error("Remote media refresh is disabled for file:// previews");
   try {
     return await fetchJson(directUrl);
   } catch (directError) {
@@ -251,7 +264,23 @@ async function withProxyFallback(directUrl, proxyPath, proxyParams) {
   }
 }
 
+function batchesOf(items, size = 50) {
+  const batches = [];
+  for (let index = 0; index < items.length; index += size) batches.push(items.slice(index, index + size));
+  return batches;
+}
+
+function thumbnailValue(item) {
+  const state = item?.state ?? "Missing";
+  return {
+    state,
+    imageUrl: state === "Completed" && item?.imageUrl ? item.imageUrl : null,
+    reason: String(state).toLowerCase(),
+  };
+}
+
 async function resolveUniverseId(game) {
+  if (game.universeId && /^\d+$/.test(String(game.universeId))) return String(game.universeId);
   if (game.idType === "universe") return game.id;
   if (game.idType !== "place") throw new Error(`Unsupported Roblox ID type: ${game.idType}`);
 
@@ -268,30 +297,41 @@ async function resolveUniverseId(game) {
   return universeId;
 }
 
-async function getRobloxGameImages(games) {
-  const results = new Map();
-  const unresolved = [];
+async function requestPlaceIcons(entries, results) {
+  for (const batch of batchesOf(entries)) {
+    const ids = [...new Set(batch.map(({ game }) => game.id))].join(",");
+    const params = new URLSearchParams({
+      placeIds: ids,
+      returnPolicy: "PlaceHolder",
+      size: "512x512",
+      format: "Webp",
+      isCircular: "false",
+    });
+    const direct = `https://thumbnails.roblox.com/v1/places/gameicons?${params}`;
+    const payload = await withProxyFallback(direct, "/api/roblox/place-icons", { placeIds: ids });
+    const byTarget = new Map((payload?.data ?? []).map(item => [String(item.targetId), item]));
+    batch.forEach(entry => {
+      const value = thumbnailValue(byTarget.get(entry.game.id));
+      results.set(entry.game.id, value);
+      cacheWrite(entry.cacheKey, value, MEDIA_CACHE_TTL.robloxThumbnail);
+    });
+  }
+}
 
-  await Promise.all(games.map(async game => {
-    const cacheKey = `game-image:${game.idType}:${game.id}`;
-    const cached = cacheRead(cacheKey);
-    if (cached) {
-      results.set(game.id, cached);
-      return;
-    }
+async function requestUniverseIcons(entries, results) {
+  const resolved = [];
+  await Promise.all(entries.map(async entry => {
     try {
-      const universeId = await resolveUniverseId(game);
-      unresolved.push({ game, universeId, cacheKey });
+      resolved.push({ ...entry, universeId: await resolveUniverseId(entry.game) });
     } catch (error) {
-      results.set(game.id, { state: "Error", imageUrl: null, reason: "invalid-or-unavailable-id" });
-      log(`Universe resolution failed for ${game.name}`, error);
+      const value = { state: "Error", imageUrl: null, reason: "invalid-or-unavailable-id" };
+      results.set(entry.game.id, value);
+      cacheWrite(entry.cacheKey, value, Math.min(MEDIA_CACHE_TTL.robloxThumbnail, 5 * 60 * 1000));
+      log(`Universe resolution failed for ${entry.game.name}`, error);
     }
   }));
 
-  const batches = [];
-  for (let index = 0; index < unresolved.length; index += 50) batches.push(unresolved.slice(index, index + 50));
-
-  for (const batch of batches) {
+  for (const batch of batchesOf(resolved)) {
     const ids = [...new Set(batch.map(item => item.universeId))].join(",");
     const params = new URLSearchParams({
       universeIds: ids,
@@ -301,26 +341,55 @@ async function getRobloxGameImages(games) {
       isCircular: "false",
     });
     const direct = `https://thumbnails.roblox.com/v1/games/icons?${params}`;
-
     try {
       const payload = await withProxyFallback(direct, "/api/roblox/thumbnails", { universeIds: ids });
       const byTarget = new Map((payload?.data ?? []).map(item => [String(item.targetId), item]));
-      for (const entry of batch) {
-        const item = byTarget.get(entry.universeId);
-        const value = {
-          state: item?.state ?? "Missing",
-          imageUrl: item?.state === "Completed" && item?.imageUrl ? item.imageUrl : null,
-          reason: item?.state ? item.state.toLowerCase() : "missing",
-        };
+      batch.forEach(entry => {
+        const value = thumbnailValue(byTarget.get(entry.universeId));
         results.set(entry.game.id, value);
         cacheWrite(entry.cacheKey, value, MEDIA_CACHE_TTL.robloxThumbnail);
-      }
+      });
     } catch (error) {
-      log("Roblox game thumbnail batch failed", error);
-      batch.forEach(entry => results.set(entry.game.id, { state: "Error", imageUrl: null, reason: "request-failed" }));
+      log("Roblox universe icon batch failed", error);
+      batch.forEach(entry => {
+        const value = { state: "Error", imageUrl: null, reason: "request-failed" };
+        results.set(entry.game.id, value);
+        cacheWrite(entry.cacheKey, value, 2 * 60 * 1000);
+      });
+    }
+  }
+}
+
+async function getRobloxGameImages(games) {
+  const results = new Map();
+  const pendingPlaces = [];
+  const pendingUniverses = [];
+
+  for (const game of games) {
+    const cacheKey = `game-image:${game.idType}:${game.id}`;
+    const cached = cacheRead(cacheKey);
+    if (cached) {
+      results.set(game.id, cached);
+      continue;
+    }
+    const entry = { game, cacheKey };
+    if (game.idType === "place") pendingPlaces.push(entry);
+    else if (game.idType === "universe") pendingUniverses.push(entry);
+    else results.set(game.id, { state: "Error", imageUrl: null, reason: "invalid-id-type" });
+  }
+
+  if (pendingPlaces.length) {
+    try {
+      await requestPlaceIcons(pendingPlaces, results);
+      const needsUniverseFallback = pendingPlaces.filter(entry => !results.get(entry.game.id)?.imageUrl);
+      if (needsUniverseFallback.length) await requestUniverseIcons(needsUniverseFallback, results);
+    } catch (error) {
+      log("Roblox place icon request failed; trying universe lookup", error);
+      await requestUniverseIcons(pendingPlaces, results);
     }
   }
 
+  if (pendingUniverses.length) await requestUniverseIcons(pendingUniverses, results);
   return results;
 }
 
@@ -335,22 +404,23 @@ async function getRobloxGroupImages(groups) {
   }
   if (!pending.length) return results;
 
-  const ids = pending.map(item => item.group.groupId).join(",");
-  const params = new URLSearchParams({ groupIds: ids, size: "150x150", format: "Webp", isCircular: "false" });
-  const direct = `https://thumbnails.roblox.com/v1/groups/icons?${params}`;
+  for (const batch of batchesOf(pending)) {
+    const ids = batch.map(item => item.group.groupId).join(",");
+    const params = new URLSearchParams({ groupIds: ids, size: "150x150", format: "Webp", isCircular: "false" });
+    const direct = `https://thumbnails.roblox.com/v1/groups/icons?${params}`;
 
-  try {
-    const payload = await withProxyFallback(direct, "/api/roblox/groups", { groupIds: ids });
-    const byTarget = new Map((payload?.data ?? []).map(item => [String(item.targetId), item]));
-    pending.forEach(({ group, key }) => {
-      const item = byTarget.get(group.groupId);
-      const value = { state: item?.state ?? "Missing", imageUrl: item?.state === "Completed" ? item.imageUrl : null };
-      results.set(group.groupId, value);
-      cacheWrite(key, value, MEDIA_CACHE_TTL.robloxGroup);
-    });
-  } catch (error) {
-    log("Roblox group icon request failed", error);
-    pending.forEach(({ group }) => results.set(group.groupId, { state: "Error", imageUrl: null }));
+    try {
+      const payload = await withProxyFallback(direct, "/api/roblox/groups", { groupIds: ids });
+      const byTarget = new Map((payload?.data ?? []).map(item => [String(item.targetId), item]));
+      batch.forEach(({ group, key }) => {
+        const value = thumbnailValue(byTarget.get(group.groupId));
+        results.set(group.groupId, value);
+        cacheWrite(key, value, MEDIA_CACHE_TTL.robloxGroup);
+      });
+    } catch (error) {
+      log("Roblox group icon request failed", error);
+      batch.forEach(({ group }) => results.set(group.groupId, { state: "Error", imageUrl: null, reason: "request-failed" }));
+    }
   }
   return results;
 }
@@ -473,6 +543,7 @@ function icon(name, className = "ui-icon") {
     roblox: '<path d="m8 4 12 4-4 12-12-4Z"/><path d="m10.5 9.5 4 1.3-1.3 4-4-1.3Z"/>',
     discord: '<path d="M7.4 6.2A16 16 0 0 1 12 5.5a16 16 0 0 1 4.6.7c1.6 2.2 2.2 4.5 2 6.8-1.4 1-2.8 1.6-4.2 1.9l-1-1.3c.7-.2 1.3-.5 1.9-.9-1.8.8-4.8.8-6.6 0 .6.4 1.2.7 1.9.9l-1 1.3A11.5 11.5 0 0 1 5.4 13c-.2-2.3.4-4.6 2-6.8Z"/><path d="M9 11.7h.01M15 11.7h.01"/>',
     code: '<path d="m9 7-5 5 5 5M15 7l5 5-5 5M13.5 5 10.5 19"/>',
+    download: '<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/>',
   };
   return `<svg class="${className}" viewBox="0 0 24 24" aria-hidden="true">${paths[name] ?? paths.code}</svg>`;
 }
@@ -508,20 +579,27 @@ function renderGames() {
     grid.innerHTML = '<p class="network-empty">No Roblox experiences are configured yet.</p>';
     return;
   }
-  grid.innerHTML = games.map((game, index) => `
-    <a class="game-card reveal" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer" data-game-id="${game.id}" data-tilt style="--reveal-delay:${Math.min(index * 70, 210)}ms">
+  grid.innerHTML = games.map((game, index) => {
+    const initialImage = game.cachedImage || game.fallback;
+    return `
+    <a class="game-card reveal" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer" data-game-id="${game.id}" data-tilt style="--reveal-delay:${Math.min(index * 90, 270)}ms;--card-index:${index}">
       <div class="media-shell" data-state="fallback">
         <div class="media-skeleton" aria-hidden="true"></div>
-        <img class="media-image" src="${escapeHtml(game.fallback)}" alt="Roblox thumbnail for ${escapeHtml(game.name)}" width="512" height="512" loading="lazy" decoding="async">
+        <img class="media-image" src="${escapeHtml(initialImage)}" alt="Roblox experience artwork for ${escapeHtml(game.name)}" width="512" height="512" loading="lazy" decoding="async">
         <span class="media-type-badge">${icon("roblox")} Roblox</span>
-        <span class="media-state-label">Local preview</span>
+        <span class="media-state-label">Saved Roblox thumbnail</span>
       </div>
       <div class="game-card-body">
         <div class="game-card-head"><h3>${escapeHtml(game.name)}</h3><span class="game-card-arrow" aria-hidden="true">${icon("external")}</span></div>
         <p>${escapeHtml(game.description)}</p>
+        <dl class="game-credits">
+          <div><dt>Creator</dt><dd>${escapeHtml(game.creator)}</dd></div>
+          <div><dt>My role</dt><dd>${escapeHtml(game.role)}</dd></div>
+        </dl>
         <span class="game-id">${game.idType.toUpperCase()} ID / ${escapeHtml(game.id)}</span>
       </div>
-    </a>`).join("");
+    </a>`;
+  }).join("");
 }
 
 function renderSkills() {
@@ -545,7 +623,7 @@ function networkCard(item, type, index) {
     <a class="network-card reveal" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" data-network-type="${type}" data-network-id="${escapeHtml(id)}" data-tilt style="--reveal-delay:${Math.min(index * 55, 220)}ms">
       <div class="network-icon-shell" data-state="fallback">
         <div class="media-skeleton" aria-hidden="true"></div>
-        <img class="network-icon" src="${escapeHtml(item.fallback)}" alt="${escapeHtml(item.name)} icon" width="150" height="150" loading="lazy" decoding="async">
+        <img class="network-icon" src="${escapeHtml(item.cachedImage || item.fallback)}" alt="${escapeHtml(item.name)} icon" width="150" height="150" loading="lazy" decoding="async">
         <span class="network-platform" aria-hidden="true">${icon(typeIcon)}</span>
       </div>
       <div><h4>${escapeHtml(item.name)}</h4><p>${escapeHtml(item.description)}</p><span class="network-role">${escapeHtml(item.role)}</span></div>
@@ -744,10 +822,11 @@ async function hydrateGameMedia() {
     const img = qs(".media-image", card);
     const label = qs(".media-state-label", card);
     const media = results.get(game.id);
-    const loaded = await loadImageSafely(img, media?.imageUrl, game.fallback, shell);
+    const localImage = game.cachedImage || game.fallback;
+    const loaded = await loadImageSafely(img, media?.imageUrl, localImage, shell);
     label.textContent = loaded === "loaded"
-      ? "Official Roblox media"
-      : media?.reason === "blocked" ? "Roblox media moderated" : "Local preview";
+      ? "Live Roblox thumbnail"
+      : media?.reason === "blocked" ? "Thumbnail unavailable" : "Saved Roblox thumbnail";
   }));
 }
 
@@ -756,7 +835,7 @@ async function hydrateRobloxGroups() {
   await Promise.all(robloxGroups.map(async group => {
     const card = qs(`[data-network-type="roblox"][data-network-id="${group.groupId}"]`);
     if (!card) return;
-    await loadImageSafely(qs(".network-icon", card), results.get(group.groupId)?.imageUrl, group.fallback, qs(".network-icon-shell", card));
+    await loadImageSafely(qs(".network-icon", card), results.get(group.groupId)?.imageUrl, group.cachedImage || group.fallback, qs(".network-icon-shell", card));
   }));
 }
 
@@ -966,6 +1045,102 @@ function setupCounters() {
   counters.forEach(counter => observer.observe(counter));
 }
 
+function setupLiveClock() {
+  const clocks = qsa("[data-live-clock]");
+  if (!clocks.length) return;
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Manila",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+  const update = () => clocks.forEach(clock => { clock.textContent = `${formatter.format(new Date())} PHT`; });
+  update();
+  setInterval(update, 1000);
+}
+
+function setupLiveMetrics() {
+  const metrics = qsa("[data-live-count]");
+  if (!metrics.length || reducedMotion) return;
+  metrics.forEach((metric, index) => {
+    const target = Number(metric.dataset.liveCount);
+    let cycle = 0;
+    const animate = () => {
+      const start = performance.now();
+      const from = Math.max(0, target - Math.max(3, Math.round(target * .35)));
+      const duration = 1250 + index * 180;
+      const tick = now => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 4);
+        metric.textContent = String(Math.round(from + (target - from) * eased));
+        if (progress < 1) requestAnimationFrame(tick);
+        else metric.closest(".live-metric")?.classList.add("is-counted");
+      };
+      requestAnimationFrame(tick);
+      cycle += 1;
+      if (cycle < 3) setTimeout(animate, 8500 + index * 700);
+    };
+    setTimeout(animate, 380 + index * 180);
+  });
+}
+
+function setupTextScramble() {
+  if (reducedMotion || !finePointer) return;
+  const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/+-";
+  qsa(".section-kicker span:last-child, [data-scramble]").forEach(element => {
+    const original = element.textContent;
+    let running = false;
+    element.addEventListener("pointerenter", () => {
+      if (running) return;
+      running = true;
+      const start = performance.now();
+      const duration = 520;
+      const tick = now => {
+        const progress = Math.min((now - start) / duration, 1);
+        const revealed = Math.floor(original.length * progress);
+        element.textContent = [...original].map((character, index) => {
+          if (character === " ") return " ";
+          return index < revealed ? character : glyphs[Math.floor(Math.random() * glyphs.length)];
+        }).join("");
+        if (progress < 1) requestAnimationFrame(tick);
+        else {
+          element.textContent = original;
+          running = false;
+        }
+      };
+      requestAnimationFrame(tick);
+    });
+  });
+}
+
+function setupHeroParallax() {
+  if (reducedMotion || !finePointer) return;
+  const hero = qs(".hero");
+  if (!hero) return;
+  hero.addEventListener("pointermove", event => {
+    const rect = hero.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - .5;
+    const y = (event.clientY - rect.top) / rect.height - .5;
+    hero.style.setProperty("--hero-x", x.toFixed(3));
+    hero.style.setProperty("--hero-y", y.toFixed(3));
+  });
+  hero.addEventListener("pointerleave", () => {
+    hero.style.setProperty("--hero-x", "0");
+    hero.style.setProperty("--hero-y", "0");
+  });
+}
+
+function setupDownloadPulse() {
+  qsa("[data-source-download]").forEach(link => {
+    link.addEventListener("click", () => {
+      link.classList.remove("is-downloading");
+      requestAnimationFrame(() => link.classList.add("is-downloading"));
+      setTimeout(() => link.classList.remove("is-downloading"), 1300);
+    });
+  });
+}
+
 function validateExternalLinks() {
   const invalid = qsa('a[target="_blank"]').filter(link => !/^https:\/\//.test(link.href));
   if (invalid.length) console.warn("Invalid external links detected", invalid);
@@ -985,6 +1160,11 @@ function init() {
   setupScrollEffects();
   setupPointerInteractions();
   setupCounters();
+  setupLiveClock();
+  setupLiveMetrics();
+  setupTextScramble();
+  setupHeroParallax();
+  setupDownloadPulse();
   validateExternalLinks();
 
   Promise.allSettled([hydrateGameMedia(), hydrateRobloxGroups(), hydrateDiscordServers()]).then(results => {

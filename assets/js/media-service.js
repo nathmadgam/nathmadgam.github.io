@@ -1,12 +1,13 @@
 import { API_PROXY_BASE, MEDIA_CACHE_TTL } from "./config.js";
 
-const inflight = new Map();
+const STORAGE_PREFIX = "cynex-media-v3:";
 const memory = new Map();
-const STORAGE_PREFIX = "cynex-media-v2:";
-const DEV = typeof location !== "undefined" && (location.hostname === "localhost" || location.hostname === "127.0.0.1");
+const inflight = new Map();
+const debug = globalThis.location?.hostname === "localhost" || globalThis.location?.hostname === "127.0.0.1";
+const remoteRequestsAllowed = globalThis.location?.protocol !== "file:" || Boolean(API_PROXY_BASE);
 
-function log(message, detail) {
-  if (DEV) console.warn(`[media] ${message}`, detail ?? "");
+function log(message, error) {
+  if (debug) console.warn(`[Cynex media] ${message}`, error ?? "");
 }
 
 function cacheRead(key) {
@@ -88,6 +89,7 @@ function proxyUrl(path, params) {
 }
 
 async function withProxyFallback(directUrl, proxyPath, proxyParams) {
+  if (!remoteRequestsAllowed) throw new Error("Remote media refresh is disabled for file:// previews");
   try {
     return await fetchJson(directUrl);
   } catch (directError) {
@@ -98,7 +100,23 @@ async function withProxyFallback(directUrl, proxyPath, proxyParams) {
   }
 }
 
+function batchesOf(items, size = 50) {
+  const batches = [];
+  for (let index = 0; index < items.length; index += size) batches.push(items.slice(index, index + size));
+  return batches;
+}
+
+function thumbnailValue(item) {
+  const state = item?.state ?? "Missing";
+  return {
+    state,
+    imageUrl: state === "Completed" && item?.imageUrl ? item.imageUrl : null,
+    reason: String(state).toLowerCase(),
+  };
+}
+
 export async function resolveUniverseId(game) {
+  if (game.universeId && /^\d+$/.test(String(game.universeId))) return String(game.universeId);
   if (game.idType === "universe") return game.id;
   if (game.idType !== "place") throw new Error(`Unsupported Roblox ID type: ${game.idType}`);
 
@@ -115,30 +133,41 @@ export async function resolveUniverseId(game) {
   return universeId;
 }
 
-export async function getRobloxGameImages(games) {
-  const results = new Map();
-  const unresolved = [];
+async function requestPlaceIcons(entries, results) {
+  for (const batch of batchesOf(entries)) {
+    const ids = [...new Set(batch.map(({ game }) => game.id))].join(",");
+    const params = new URLSearchParams({
+      placeIds: ids,
+      returnPolicy: "PlaceHolder",
+      size: "512x512",
+      format: "Webp",
+      isCircular: "false",
+    });
+    const direct = `https://thumbnails.roblox.com/v1/places/gameicons?${params}`;
+    const payload = await withProxyFallback(direct, "/api/roblox/place-icons", { placeIds: ids });
+    const byTarget = new Map((payload?.data ?? []).map(item => [String(item.targetId), item]));
+    batch.forEach(entry => {
+      const value = thumbnailValue(byTarget.get(entry.game.id));
+      results.set(entry.game.id, value);
+      cacheWrite(entry.cacheKey, value, MEDIA_CACHE_TTL.robloxThumbnail);
+    });
+  }
+}
 
-  await Promise.all(games.map(async game => {
-    const cacheKey = `game-image:${game.idType}:${game.id}`;
-    const cached = cacheRead(cacheKey);
-    if (cached) {
-      results.set(game.id, cached);
-      return;
-    }
+async function requestUniverseIcons(entries, results) {
+  const resolved = [];
+  await Promise.all(entries.map(async entry => {
     try {
-      const universeId = await resolveUniverseId(game);
-      unresolved.push({ game, universeId, cacheKey });
+      resolved.push({ ...entry, universeId: await resolveUniverseId(entry.game) });
     } catch (error) {
-      results.set(game.id, { state: "Error", imageUrl: null, reason: "invalid-or-unavailable-id" });
-      log(`Universe resolution failed for ${game.name}`, error);
+      const value = { state: "Error", imageUrl: null, reason: "invalid-or-unavailable-id" };
+      results.set(entry.game.id, value);
+      cacheWrite(entry.cacheKey, value, Math.min(MEDIA_CACHE_TTL.robloxThumbnail, 5 * 60 * 1000));
+      log(`Universe resolution failed for ${entry.game.name}`, error);
     }
   }));
 
-  const batches = [];
-  for (let index = 0; index < unresolved.length; index += 50) batches.push(unresolved.slice(index, index + 50));
-
-  for (const batch of batches) {
+  for (const batch of batchesOf(resolved)) {
     const ids = [...new Set(batch.map(item => item.universeId))].join(",");
     const params = new URLSearchParams({
       universeIds: ids,
@@ -148,26 +177,58 @@ export async function getRobloxGameImages(games) {
       isCircular: "false",
     });
     const direct = `https://thumbnails.roblox.com/v1/games/icons?${params}`;
-
     try {
       const payload = await withProxyFallback(direct, "/api/roblox/thumbnails", { universeIds: ids });
       const byTarget = new Map((payload?.data ?? []).map(item => [String(item.targetId), item]));
-      for (const entry of batch) {
-        const item = byTarget.get(entry.universeId);
-        const value = {
-          state: item?.state ?? "Missing",
-          imageUrl: item?.state === "Completed" && item?.imageUrl ? item.imageUrl : null,
-          reason: item?.state ? item.state.toLowerCase() : "missing",
-        };
+      batch.forEach(entry => {
+        const value = thumbnailValue(byTarget.get(entry.universeId));
         results.set(entry.game.id, value);
         cacheWrite(entry.cacheKey, value, MEDIA_CACHE_TTL.robloxThumbnail);
-      }
+      });
     } catch (error) {
-      log("Roblox game thumbnail batch failed", error);
-      batch.forEach(entry => results.set(entry.game.id, { state: "Error", imageUrl: null, reason: "request-failed" }));
+      log("Roblox universe icon batch failed", error);
+      batch.forEach(entry => {
+        const value = { state: "Error", imageUrl: null, reason: "request-failed" };
+        results.set(entry.game.id, value);
+        cacheWrite(entry.cacheKey, value, 2 * 60 * 1000);
+      });
+    }
+  }
+}
+
+export async function getRobloxGameImages(games) {
+  const results = new Map();
+  const pendingPlaces = [];
+  const pendingUniverses = [];
+
+  for (const game of games) {
+    const cacheKey = `game-image:${game.idType}:${game.id}`;
+    const cached = cacheRead(cacheKey);
+    if (cached) {
+      results.set(game.id, cached);
+      continue;
+    }
+    const entry = { game, cacheKey };
+    if (game.idType === "place") pendingPlaces.push(entry);
+    else if (game.idType === "universe") pendingUniverses.push(entry);
+    else results.set(game.id, { state: "Error", imageUrl: null, reason: "invalid-id-type" });
+  }
+
+  if (pendingPlaces.length) {
+    try {
+      await requestPlaceIcons(pendingPlaces, results);
+      const needsUniverseFallback = pendingPlaces.filter(entry => {
+        const value = results.get(entry.game.id);
+        return !value?.imageUrl && (value?.state === "Missing" || value?.state === "Error");
+      });
+      if (needsUniverseFallback.length) await requestUniverseIcons(needsUniverseFallback, results);
+    } catch (error) {
+      log("Roblox place icon request failed; trying universe lookup", error);
+      await requestUniverseIcons(pendingPlaces, results);
     }
   }
 
+  if (pendingUniverses.length) await requestUniverseIcons(pendingUniverses, results);
   return results;
 }
 
@@ -182,22 +243,23 @@ export async function getRobloxGroupImages(groups) {
   }
   if (!pending.length) return results;
 
-  const ids = pending.map(item => item.group.groupId).join(",");
-  const params = new URLSearchParams({ groupIds: ids, size: "150x150", format: "Webp", isCircular: "false" });
-  const direct = `https://thumbnails.roblox.com/v1/groups/icons?${params}`;
+  for (const batch of batchesOf(pending)) {
+    const ids = batch.map(item => item.group.groupId).join(",");
+    const params = new URLSearchParams({ groupIds: ids, size: "150x150", format: "Webp", isCircular: "false" });
+    const direct = `https://thumbnails.roblox.com/v1/groups/icons?${params}`;
 
-  try {
-    const payload = await withProxyFallback(direct, "/api/roblox/groups", { groupIds: ids });
-    const byTarget = new Map((payload?.data ?? []).map(item => [String(item.targetId), item]));
-    pending.forEach(({ group, key }) => {
-      const item = byTarget.get(group.groupId);
-      const value = { state: item?.state ?? "Missing", imageUrl: item?.state === "Completed" ? item.imageUrl : null };
-      results.set(group.groupId, value);
-      cacheWrite(key, value, MEDIA_CACHE_TTL.robloxGroup);
-    });
-  } catch (error) {
-    log("Roblox group icon request failed", error);
-    pending.forEach(({ group }) => results.set(group.groupId, { state: "Error", imageUrl: null }));
+    try {
+      const payload = await withProxyFallback(direct, "/api/roblox/groups", { groupIds: ids });
+      const byTarget = new Map((payload?.data ?? []).map(item => [String(item.targetId), item]));
+      batch.forEach(({ group, key }) => {
+        const value = thumbnailValue(byTarget.get(group.groupId));
+        results.set(group.groupId, value);
+        cacheWrite(key, value, MEDIA_CACHE_TTL.robloxGroup);
+      });
+    } catch (error) {
+      log("Roblox group icon request failed", error);
+      batch.forEach(({ group }) => results.set(group.groupId, { state: "Error", imageUrl: null, reason: "request-failed" }));
+    }
   }
   return results;
 }

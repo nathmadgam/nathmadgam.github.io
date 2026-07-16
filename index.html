@@ -32,6 +32,7 @@
       <a href="#skills">Skills</a>
       <a href="#process">Process</a>
       <a href="#network">Network</a>
+      <a href="#source">Source</a>
       <a href="#contact">Contact</a>
     </nav>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" data-menu-toggle>
@@ -45,7 +46,8 @@
     <a href="#skills">02 / Skills</a>
     <a href="#process">03 / Process</a>
     <a href="#network">04 / Network</a>
-    <a href="#contact">05 / Contact</a>
+    <a href="#source">05 / Source</a>
+    <a href="#contact">06 / Contact</a>
   </nav>
 
   <main id="main">
@@ -62,6 +64,7 @@
         <div class="hero-actions">
           <a class="button button-primary" href="#work"><span>Explore selected work</span><span aria-hidden="true">↘</span></a>
           <a class="button button-ghost" href="#contact"><span>Start a conversation</span><span aria-hidden="true">→</span></a>
+          <a class="button button-download" href="downloads/cynex-portfolio-source.zip" download data-source-download><span>Download editable source</span><span aria-hidden="true">↓</span></a>
         </div>
       </div>
 
@@ -80,6 +83,7 @@
             <div><dt>Experience</dt><dd>8+ years in Roblox Studio</dd></div>
             <div><dt>Location</dt><dd>Philippines · UTC+8</dd></div>
             <div><dt>Delivery</dt><dd>Remote collaboration</dd></div>
+            <div><dt>Local time</dt><dd data-live-clock>--:--:-- PHT</dd></div>
           </dl>
           <div class="console-signal" aria-hidden="true">
             <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
@@ -89,6 +93,19 @@
 
       <div class="hero-index" aria-hidden="true">PORTFOLIO / 2026</div>
     </section>
+
+    <aside class="live-rail" aria-label="Live portfolio status">
+      <div class="live-rail-status"><span class="live-blink" aria-hidden="true"></span><span>Currently accepting Roblox development inquiries</span></div>
+      <div class="live-metrics">
+        <div class="live-metric"><strong data-live-count="8">8</strong><span>years building</span></div>
+        <div class="live-metric"><strong data-live-count="6">6</strong><span>system demos</span></div>
+        <div class="live-metric"><strong data-live-count="3">3</strong><span>live experiences</span></div>
+      </div>
+      <div class="work-ticker" aria-label="Development specialties">
+        <div><span>GAMEPLAY SYSTEMS</span><i>+</i><span>BACKEND LOGIC</span><i>+</i><span>DATA PERSISTENCE</span><i>+</i><span>UI ENGINEERING</span><i>+</i><span>DEBUGGING</span><i>+</i><span>ROBLOX LUAU</span><i>+</i></div>
+        <div aria-hidden="true"><span>GAMEPLAY SYSTEMS</span><i>+</i><span>BACKEND LOGIC</span><i>+</i><span>DATA PERSISTENCE</span><i>+</i><span>UI ENGINEERING</span><i>+</i><span>DEBUGGING</span><i>+</i><span>ROBLOX LUAU</span><i>+</i></div>
+      </div>
+    </aside>
 
     <section class="section about" id="about" aria-labelledby="about-title">
       <div class="section-kicker"><span>00</span><span>ABOUT THE WORK</span></div>
@@ -131,11 +148,11 @@
     </section>
 
     <section class="section skills" id="skills" aria-labelledby="skills-title">
-      <div class="section-kicker"><span>03</span><span>TECHNICAL RANGE</span></div>
+      <div class="section-kicker"><span>03</span><span>PROFESSIONAL RANGE</span></div>
       <div class="skills-layout">
         <div class="skills-lead reveal">
-          <h2 id="skills-title">Gameplay, data, UI, and backend systems.</h2>
-          <p>My Roblox work covers the full path from player interaction to server validation, saved data, interface feedback, debugging, and release-ready handoff.</p>
+          <h2 id="skills-title">Software development across the full product stack.</h2>
+          <p>I work across architecture, gameplay, server logic, data, interfaces, integrations, testing, optimization, and maintainable team delivery.</p>
         </div>
         <div class="skill-matrix reveal" data-skill-grid></div>
       </div>
@@ -175,17 +192,36 @@
       <div class="section-kicker"><span>06</span><span>CLIENT FEEDBACK</span></div>
       <div class="reviews-layout">
         <div class="reviews-head reveal">
-          <h2 id="reviews-title">Feedback from Roblox development clients.</h2>
-          <p>A rotating selection of real Fiverr reviews from completed scripting work. Each quote is shown with its original reviewer and platform.</p>
+          <h2 id="reviews-title">Client feedback.</h2>
+          <p>Verified reviews from completed Roblox scripting projects, presented with the original reviewer and platform.</p>
         </div>
         <div class="review-list" data-review-list></div>
+      </div>
+    </section>
+
+    <section class="section source" id="source" aria-labelledby="source-title">
+      <div class="source-panel reveal" data-tilt-soft>
+        <div class="source-grid" aria-hidden="true"></div>
+        <div class="section-kicker"><span>07</span><span>EDITABLE SOURCE</span></div>
+        <div class="source-layout">
+          <div>
+            <p class="source-status"><span class="live-blink" aria-hidden="true"></span> READY TO DOWNLOAD</p>
+            <h2 id="source-title">View the work. Download the build. Make it yours.</h2>
+            <p>The complete portfolio package includes the editable HTML, CSS, JavaScript, media files, API proxy, tests, and deployment notes.</p>
+          </div>
+          <a class="source-download" href="downloads/cynex-portfolio-source.zip" download data-source-download data-magnetic>
+            <span class="source-download-icon" aria-hidden="true">↓</span>
+            <span><small>PROJECT PACKAGE</small><strong>Cynex portfolio source</strong><em>ZIP · editable files included</em></span>
+            <span class="source-download-arrow" aria-hidden="true">↘</span>
+          </a>
+        </div>
       </div>
     </section>
 
     <section class="contact" id="contact" aria-labelledby="contact-title">
       <div class="contact-grid" aria-hidden="true"></div>
       <div class="contact-copy reveal">
-        <div class="section-kicker"><span>07</span><span>CONTACT</span></div>
+        <div class="section-kicker"><span>08</span><span>CONTACT</span></div>
         <h2 id="contact-title">Need a Roblox system built, improved, or repaired?</h2>
         <p>Send the feature brief, current project state, expected behavior, and deadline. I can review the scope and discuss the cleanest implementation path.</p>
       </div>

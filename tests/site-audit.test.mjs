@@ -12,7 +12,7 @@ const execFileAsync = promisify(execFile);
 
 function localReferences(source) {
   const html = [...source.matchAll(/\b(?:src|href|poster)\s*=\s*["']([^"']+)["']/g)].map(match => match[1]);
-  const data = [...source.matchAll(/\b(?:video|poster|fallback)\s*:\s*["']([^"']+)["']/g)].map(match => match[1]);
+  const data = [...source.matchAll(/\b(?:video|poster|fallback|cachedImage)\s*:\s*["']([^"']+)["']/g)].map(match => match[1]);
   return [...html, ...data].filter(value => !/^(?:https?:|mailto:|#|data:|javascript:)/.test(value));
 }
 
@@ -26,6 +26,8 @@ test("metadata, removed sections, and secure external links", async () => {
   assert.match(html, /assets\/js\/site\.bundle\.js/);
   assert.doesNotMatch(html, /type=["\']module["\']/i);
   assert.match(html, /class=["\']contact-icon["\']/i);
+  assert.match(html, /downloads\/cynex-portfolio-source\.zip/);
+  assert.match(html, /data-source-download/);
   const external = [...html.matchAll(/<a\b[^>]*target=["']_blank["'][^>]*>/gi)].map(match => match[0]);
   assert.ok(external.length > 0);
   external.forEach(anchor => assert.match(anchor, /rel=["'][^"']*noopener[^"']*noreferrer[^"']*["']/i));
@@ -56,6 +58,8 @@ test("compact project collage and typed testimonial carousel are present", async
   assert.match(css, /grid-auto-flow:\s*dense/);
   assert.match(css, /type-caret/);
   assert.match(data, /platform:\s*"Fiverr"/);
+  assert.equal((data.match(/role:\s*"Programmer"/g) || []).length, 3);
+  assert.match(data, /cachedImage:\s*"assets\/cached-media\/grow-your-pet\.webp"/);
 });
 
 test("frontend source contains no obvious secrets", async () => {

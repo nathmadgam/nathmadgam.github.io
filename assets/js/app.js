@@ -18,6 +18,7 @@ function icon(name, className = "ui-icon") {
     roblox: '<path d="m8 4 12 4-4 12-12-4Z"/><path d="m10.5 9.5 4 1.3-1.3 4-4-1.3Z"/>',
     discord: '<path d="M7.4 6.2A16 16 0 0 1 12 5.5a16 16 0 0 1 4.6.7c1.6 2.2 2.2 4.5 2 6.8-1.4 1-2.8 1.6-4.2 1.9l-1-1.3c.7-.2 1.3-.5 1.9-.9-1.8.8-4.8.8-6.6 0 .6.4 1.2.7 1.9.9l-1 1.3A11.5 11.5 0 0 1 5.4 13c-.2-2.3.4-4.6 2-6.8Z"/><path d="M9 11.7h.01M15 11.7h.01"/>',
     code: '<path d="m9 7-5 5 5 5M15 7l5 5-5 5M13.5 5 10.5 19"/>',
+    download: '<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/>',
   };
   return `<svg class="${className}" viewBox="0 0 24 24" aria-hidden="true">${paths[name] ?? paths.code}</svg>`;
 }
@@ -53,20 +54,27 @@ function renderGames() {
     grid.innerHTML = '<p class="network-empty">No Roblox experiences are configured yet.</p>';
     return;
   }
-  grid.innerHTML = games.map((game, index) => `
-    <a class="game-card reveal" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer" data-game-id="${game.id}" data-tilt style="--reveal-delay:${Math.min(index * 70, 210)}ms">
+  grid.innerHTML = games.map((game, index) => {
+    const initialImage = game.cachedImage || game.fallback;
+    return `
+    <a class="game-card reveal" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer" data-game-id="${game.id}" data-tilt style="--reveal-delay:${Math.min(index * 90, 270)}ms;--card-index:${index}">
       <div class="media-shell" data-state="fallback">
         <div class="media-skeleton" aria-hidden="true"></div>
-        <img class="media-image" src="${escapeHtml(game.fallback)}" alt="Roblox thumbnail for ${escapeHtml(game.name)}" width="512" height="512" loading="lazy" decoding="async">
+        <img class="media-image" src="${escapeHtml(initialImage)}" alt="Roblox experience artwork for ${escapeHtml(game.name)}" width="512" height="512" loading="lazy" decoding="async">
         <span class="media-type-badge">${icon("roblox")} Roblox</span>
-        <span class="media-state-label">Local preview</span>
+        <span class="media-state-label">Saved Roblox thumbnail</span>
       </div>
       <div class="game-card-body">
         <div class="game-card-head"><h3>${escapeHtml(game.name)}</h3><span class="game-card-arrow" aria-hidden="true">${icon("external")}</span></div>
         <p>${escapeHtml(game.description)}</p>
+        <dl class="game-credits">
+          <div><dt>Creator</dt><dd>${escapeHtml(game.creator)}</dd></div>
+          <div><dt>My role</dt><dd>${escapeHtml(game.role)}</dd></div>
+        </dl>
         <span class="game-id">${game.idType.toUpperCase()} ID / ${escapeHtml(game.id)}</span>
       </div>
-    </a>`).join("");
+    </a>`;
+  }).join("");
 }
 
 function renderSkills() {
@@ -90,7 +98,7 @@ function networkCard(item, type, index) {
     <a class="network-card reveal" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" data-network-type="${type}" data-network-id="${escapeHtml(id)}" data-tilt style="--reveal-delay:${Math.min(index * 55, 220)}ms">
       <div class="network-icon-shell" data-state="fallback">
         <div class="media-skeleton" aria-hidden="true"></div>
-        <img class="network-icon" src="${escapeHtml(item.fallback)}" alt="${escapeHtml(item.name)} icon" width="150" height="150" loading="lazy" decoding="async">
+        <img class="network-icon" src="${escapeHtml(item.cachedImage || item.fallback)}" alt="${escapeHtml(item.name)} icon" width="150" height="150" loading="lazy" decoding="async">
         <span class="network-platform" aria-hidden="true">${icon(typeIcon)}</span>
       </div>
       <div><h4>${escapeHtml(item.name)}</h4><p>${escapeHtml(item.description)}</p><span class="network-role">${escapeHtml(item.role)}</span></div>
@@ -289,10 +297,11 @@ async function hydrateGameMedia() {
     const img = qs(".media-image", card);
     const label = qs(".media-state-label", card);
     const media = results.get(game.id);
-    const loaded = await loadImageSafely(img, media?.imageUrl, game.fallback, shell);
+    const localImage = game.cachedImage || game.fallback;
+    const loaded = await loadImageSafely(img, media?.imageUrl, localImage, shell);
     label.textContent = loaded === "loaded"
-      ? "Official Roblox media"
-      : media?.reason === "blocked" ? "Roblox media moderated" : "Local preview";
+      ? "Live Roblox thumbnail"
+      : media?.reason === "blocked" ? "Thumbnail unavailable" : "Saved Roblox thumbnail";
   }));
 }
 
@@ -301,7 +310,7 @@ async function hydrateRobloxGroups() {
   await Promise.all(robloxGroups.map(async group => {
     const card = qs(`[data-network-type="roblox"][data-network-id="${group.groupId}"]`);
     if (!card) return;
-    await loadImageSafely(qs(".network-icon", card), results.get(group.groupId)?.imageUrl, group.fallback, qs(".network-icon-shell", card));
+    await loadImageSafely(qs(".network-icon", card), results.get(group.groupId)?.imageUrl, group.cachedImage || group.fallback, qs(".network-icon-shell", card));
   }));
 }
 
@@ -511,6 +520,102 @@ function setupCounters() {
   counters.forEach(counter => observer.observe(counter));
 }
 
+function setupLiveClock() {
+  const clocks = qsa("[data-live-clock]");
+  if (!clocks.length) return;
+  const formatter = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Manila",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+  const update = () => clocks.forEach(clock => { clock.textContent = `${formatter.format(new Date())} PHT`; });
+  update();
+  setInterval(update, 1000);
+}
+
+function setupLiveMetrics() {
+  const metrics = qsa("[data-live-count]");
+  if (!metrics.length || reducedMotion) return;
+  metrics.forEach((metric, index) => {
+    const target = Number(metric.dataset.liveCount);
+    let cycle = 0;
+    const animate = () => {
+      const start = performance.now();
+      const from = Math.max(0, target - Math.max(3, Math.round(target * .35)));
+      const duration = 1250 + index * 180;
+      const tick = now => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 4);
+        metric.textContent = String(Math.round(from + (target - from) * eased));
+        if (progress < 1) requestAnimationFrame(tick);
+        else metric.closest(".live-metric")?.classList.add("is-counted");
+      };
+      requestAnimationFrame(tick);
+      cycle += 1;
+      if (cycle < 3) setTimeout(animate, 8500 + index * 700);
+    };
+    setTimeout(animate, 380 + index * 180);
+  });
+}
+
+function setupTextScramble() {
+  if (reducedMotion || !finePointer) return;
+  const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/+-";
+  qsa(".section-kicker span:last-child, [data-scramble]").forEach(element => {
+    const original = element.textContent;
+    let running = false;
+    element.addEventListener("pointerenter", () => {
+      if (running) return;
+      running = true;
+      const start = performance.now();
+      const duration = 520;
+      const tick = now => {
+        const progress = Math.min((now - start) / duration, 1);
+        const revealed = Math.floor(original.length * progress);
+        element.textContent = [...original].map((character, index) => {
+          if (character === " ") return " ";
+          return index < revealed ? character : glyphs[Math.floor(Math.random() * glyphs.length)];
+        }).join("");
+        if (progress < 1) requestAnimationFrame(tick);
+        else {
+          element.textContent = original;
+          running = false;
+        }
+      };
+      requestAnimationFrame(tick);
+    });
+  });
+}
+
+function setupHeroParallax() {
+  if (reducedMotion || !finePointer) return;
+  const hero = qs(".hero");
+  if (!hero) return;
+  hero.addEventListener("pointermove", event => {
+    const rect = hero.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - .5;
+    const y = (event.clientY - rect.top) / rect.height - .5;
+    hero.style.setProperty("--hero-x", x.toFixed(3));
+    hero.style.setProperty("--hero-y", y.toFixed(3));
+  });
+  hero.addEventListener("pointerleave", () => {
+    hero.style.setProperty("--hero-x", "0");
+    hero.style.setProperty("--hero-y", "0");
+  });
+}
+
+function setupDownloadPulse() {
+  qsa("[data-source-download]").forEach(link => {
+    link.addEventListener("click", () => {
+      link.classList.remove("is-downloading");
+      requestAnimationFrame(() => link.classList.add("is-downloading"));
+      setTimeout(() => link.classList.remove("is-downloading"), 1300);
+    });
+  });
+}
+
 function validateExternalLinks() {
   const invalid = qsa('a[target="_blank"]').filter(link => !/^https:\/\//.test(link.href));
   if (invalid.length) console.warn("Invalid external links detected", invalid);
@@ -530,6 +635,11 @@ function init() {
   setupScrollEffects();
   setupPointerInteractions();
   setupCounters();
+  setupLiveClock();
+  setupLiveMetrics();
+  setupTextScramble();
+  setupHeroParallax();
+  setupDownloadPulse();
   validateExternalLinks();
 
   Promise.allSettled([hydrateGameMedia(), hydrateRobloxGroups(), hydrateDiscordServers()]).then(results => {
