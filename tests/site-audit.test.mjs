@@ -1,11 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile, access, readdir } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const read = file => readFile(path.join(root, file), "utf8");
+const execFileAsync = promisify(execFile);
 
 function localReferences(source) {
   const html = [...source.matchAll(/\b(?:src|href|poster)\s*=\s*["']([^"']+)["']/g)].map(match => match[1]);
@@ -19,6 +22,9 @@ test("metadata, removed sections, and secure external links", async () => {
   assert.doesNotMatch(html, /extra services/i);
   assert.doesNotMatch(html, /id=["']extras["']/i);
   assert.doesNotMatch(html, /tr\.rbxcdn\.com/i);
+  assert.match(html, /assets\/js\/site\.bundle\.js/);
+  assert.doesNotMatch(html, /type=["\']module["\']/i);
+  assert.match(html, /class=["\']contact-icon["\']/i);
   const external = [...html.matchAll(/<a\b[^>]*target=["']_blank["'][^>]*>/gi)].map(match => match[0]);
   assert.ok(external.length > 0);
   external.forEach(anchor => assert.match(anchor, /rel=["'][^"']*noopener[^"']*noreferrer[^"']*["']/i));
@@ -44,4 +50,16 @@ test("frontend source contains no obvious secrets", async () => {
   const source = (await Promise.all(files.map(read))).join("\n");
   assert.doesNotMatch(source, /Bot\s+[A-Za-z0-9._-]{20,}/);
   assert.doesNotMatch(source, /(?:token|secret|api[_-]?key)\s*[:=]\s*["'][^"']{12,}["']/i);
+});
+
+
+test("every project video includes an audible audio stream", async () => {
+  const videos = (await readdir(path.join(root, "videos"))).filter(name => name.endsWith(".mp4"));
+  for (const name of videos) {
+    const { stdout } = await execFileAsync("ffprobe", [
+      "-v", "error", "-select_streams", "a:0", "-show_entries", "stream=codec_name,channels",
+      "-of", "csv=p=0", path.join(root, "videos", name),
+    ]);
+    assert.match(stdout.trim(), /aac,2|aac\s*,?\s*2/i, `${name} must contain stereo AAC audio`);
+  }
 });

@@ -256,32 +256,45 @@ export async function getDiscordServer(server) {
 }
 
 export async function loadImageSafely(img, preferredUrl, fallbackUrl, shell) {
-  const tryLoad = url => new Promise((resolve, reject) => {
+  const load = url => new Promise((resolve, reject) => {
     if (!url) return reject(new Error("Missing URL"));
     const candidate = new Image();
     candidate.decoding = "async";
     candidate.onload = () => resolve(url);
-    candidate.onerror = () => reject(new Error(`Image failed: ${new URL(url, location.href).hostname}`));
+    candidate.onerror = () => reject(new Error("Image request failed"));
     candidate.src = url;
   });
 
-  shell.dataset.state = "loading";
-  try {
-    const url = await tryLoad(preferredUrl);
-    img.src = url;
-    shell.dataset.state = "loaded";
-    return "loaded";
-  } catch (preferredError) {
-    log("Preferred image failed; using local fallback", preferredError);
-    try {
-      const url = await tryLoad(fallbackUrl);
-      img.src = url;
+  const useFallback = async () => {
+    if (!fallbackUrl) {
       shell.dataset.state = "error";
-      return "fallback";
-    } catch (fallbackError) {
-      shell.dataset.state = "error";
-      log("Local fallback image failed", fallbackError);
       return "error";
     }
+    try {
+      if (!img.getAttribute("src")) img.src = fallbackUrl;
+      if (!img.complete || !img.naturalWidth) await load(fallbackUrl);
+      img.src = fallbackUrl;
+      shell.dataset.state = "fallback";
+      return "fallback";
+    } catch (error) {
+      shell.dataset.state = "error";
+      log("Local fallback image failed", error);
+      return "error";
+    }
+  };
+
+  if (!img.getAttribute("src") && fallbackUrl) img.src = fallbackUrl;
+  shell.dataset.state = fallbackUrl ? "fallback" : "loading";
+
+  if (!preferredUrl) return useFallback();
+
+  try {
+    const resolvedUrl = await load(preferredUrl);
+    img.src = resolvedUrl;
+    shell.dataset.state = "loaded";
+    return "loaded";
+  } catch (error) {
+    log("Preferred image failed; keeping local fallback", error);
+    return useFallback();
   }
 }

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import mimetypes
+import subprocess
+import time
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 from playwright.sync_api import sync_playwright, Route
@@ -28,6 +30,10 @@ def route_request(route: Route) -> None:
     request = route.request
     parsed = urlparse(request.url)
     host, path, query = parsed.hostname, parsed.path, parse_qs(parsed.query)
+
+    if host in ('127.0.0.1', 'localhost'):
+        route.continue_()
+        return
 
     if host == 'cynex.test':
         if path.startswith('/mock/'):
@@ -98,22 +104,16 @@ def audit_page(browser, viewport: dict, screenshot_name: str, mobile: bool = Fal
     html = (ROOT / 'index.html').read_text(encoding='utf-8')
     css = (ROOT / 'assets/css/styles.css').read_text(encoding='utf-8')
     runtime = (ROOT / 'assets/js/runtime-config.js').read_text(encoding='utf-8')
-    config = (ROOT / 'assets/js/config.js').read_text(encoding='utf-8').replace('export const ', 'const ')
-    data = (ROOT / 'assets/js/data.js').read_text(encoding='utf-8').replace('export const ', 'const ')
-    media = (ROOT / 'assets/js/media-service.js').read_text(encoding='utf-8')
-    media = media.replace('import { API_PROXY_BASE, MEDIA_CACHE_TTL } from "./config.js";\n', '').replace('export async function ', 'async function ').replace('export function ', 'function ')
-    app = (ROOT / 'assets/js/app.js').read_text(encoding='utf-8')
-    app = app.replace('import { projects, games, skills, process, robloxGroups, discordServers, reviews } from "./data.js";\n', '')
-    app = app.replace('import { getRobloxGameImages, getRobloxGroupImages, getDiscordServer, loadImageSafely } from "./media-service.js";\n', '')
+    bundle = (ROOT / 'assets/js/site.bundle.js').read_text(encoding='utf-8')
     html = html.replace('<link rel="stylesheet" href="assets/css/styles.css">', f'<base href="https://cynex.test/"><style>{css}</style>')
     html = html.replace('  <script src="assets/js/runtime-config.js"></script>\n', '')
-    html = html.replace('  <script type="module" src="assets/js/app.js"></script>\n', '')
-    html = html.replace('</body>', f'<script type="module">{runtime}\n{config}\n{data}\n{media}\n{app}</script></body>')
+    html = html.replace('  <script src="assets/js/site.bundle.js" defer></script>\n', '')
+    html = html.replace('</body>', f'<script>{runtime}\n{bundle}</script></body>')
     page.set_content(html, wait_until='domcontentloaded', timeout=20_000)
     page.wait_for_selector('[data-project-grid] .project-card')
     print('rendered data', flush=True)
 
-    for selector in ['.project-card', '.game-card', '.network-card', '.review-card', '.process-card']:
+    for selector in ['.reveal', '.project-card', '.game-card', '.network-card', '.review-card', '.process-card']:
         for locator in page.locator(selector).all():
             locator.scroll_into_view_if_needed()
     page.wait_for_function("[...document.querySelectorAll('.media-shell,.network-icon-shell')].every(el => el.dataset.state !== 'loading')", timeout=15_000)
@@ -142,6 +142,8 @@ def audit_page(browser, viewport: dict, screenshot_name: str, mobile: bool = Fal
     print('testing dialog', flush=True)
     page.locator('.project-play').first.click(timeout=5000)
     assert page.locator('[data-media-dialog]').evaluate('dialog => dialog.open')
+    page.wait_for_function("document.querySelector('[data-dialog-video]').readyState >= 1", timeout=10_000)
+    assert page.locator('[data-dialog-video]').evaluate('video => video.muted === false && video.volume > 0')
     page.locator('[data-dialog-close]').click()
     assert not page.locator('[data-media-dialog]').evaluate('dialog => dialog.open')
 
