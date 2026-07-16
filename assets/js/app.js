@@ -322,11 +322,11 @@ async function hydrateDiscordServers() {
     const img = qs(".network-icon", card);
     try {
       const info = await getDiscordServer(server);
-      await loadImageSafely(img, info.iconUrl, server.fallback, shell);
+      await loadImageSafely(img, info.iconUrl, server.cachedImage || server.fallback, shell);
       const description = qs("p", card);
       if (info.memberCount) description.textContent = `${Number(info.memberCount).toLocaleString()} members · ${server.description}`;
     } catch {
-      await loadImageSafely(img, null, server.fallback, shell);
+      await loadImageSafely(img, null, server.cachedImage || server.fallback, shell);
     }
   }));
 }

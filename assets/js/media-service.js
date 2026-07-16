@@ -140,7 +140,7 @@ async function requestPlaceIcons(entries, results) {
       placeIds: ids,
       returnPolicy: "PlaceHolder",
       size: "512x512",
-      format: "Webp",
+      format: "WebP",
       isCircular: "false",
     });
     const direct = `https://thumbnails.roblox.com/v1/places/gameicons?${params}`;
@@ -173,7 +173,7 @@ async function requestUniverseIcons(entries, results) {
       universeIds: ids,
       returnPolicy: "PlaceHolder",
       size: "512x512",
-      format: "Webp",
+      format: "WebP",
       isCircular: "false",
     });
     const direct = `https://thumbnails.roblox.com/v1/games/icons?${params}`;
@@ -245,7 +245,7 @@ export async function getRobloxGroupImages(groups) {
 
   for (const batch of batchesOf(pending)) {
     const ids = batch.map(item => item.group.groupId).join(",");
-    const params = new URLSearchParams({ groupIds: ids, size: "150x150", format: "Webp", isCircular: "false" });
+    const params = new URLSearchParams({ groupIds: ids, size: "150x150", format: "WebP", isCircular: "false" });
     const direct = `https://thumbnails.roblox.com/v1/groups/icons?${params}`;
 
     try {
@@ -266,8 +266,7 @@ export async function getRobloxGroupImages(groups) {
 
 export function buildDiscordIconUrl(guildId, iconHash) {
   if (!guildId || !iconHash) return null;
-  const extension = iconHash.startsWith("a_") ? "gif" : "webp";
-  return `https://cdn.discordapp.com/icons/${guildId}/${iconHash}.${extension}?size=256`;
+  return `https://cdn.discordapp.com/icons/${guildId}/${iconHash}.webp?size=256`;
 }
 
 export async function getDiscordServer(server) {

@@ -13,7 +13,7 @@ const media = await import("../assets/js/media-service.js");
 
 test("Discord icon URLs distinguish static and animated icon hashes", () => {
   assert.equal(media.buildDiscordIconUrl("123456789", "abc123"), "https://cdn.discordapp.com/icons/123456789/abc123.webp?size=256");
-  assert.equal(media.buildDiscordIconUrl("123456789", "a_abc123"), "https://cdn.discordapp.com/icons/123456789/a_abc123.gif?size=256");
+  assert.equal(media.buildDiscordIconUrl("123456789", "a_abc123"), "https://cdn.discordapp.com/icons/123456789/a_abc123.webp?size=256");
   assert.equal(media.buildDiscordIconUrl("", "abc123"), null);
   assert.equal(media.buildDiscordIconUrl("123456789", null), null);
 });

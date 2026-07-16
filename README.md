@@ -1,10 +1,10 @@
 # Cynex | Roblox Scripter Portfolio
 
-A static, editable portfolio built with semantic HTML, CSS, and vanilla JavaScript. It can be hosted on GitHub Pages, Cloudflare Pages, Netlify, Vercel static hosting, or any standard web server.
+A static, editable Roblox developer portfolio built with semantic HTML, CSS, and vanilla JavaScript. It is ready for GitHub Pages, Cloudflare Pages, Netlify, Vercel static hosting, or a standard web server.
 
 ## Preview locally
 
-Opening `index.html` directly works and displays all saved project media. For live Roblox and Discord media refreshes, run a local web server so browser security rules do not treat the page as a `file://` document:
+Opening `index.html` directly displays the complete site with saved local media. For development, serve the folder over HTTP:
 
 ```bash
 python -m http.server 8080
@@ -12,32 +12,42 @@ python -m http.server 8080
 
 Then open `http://localhost:8080`.
 
-## Edit content
+## Edit the portfolio
 
-- Portfolio text and sections: `index.html`
-- Projects, games, groups, servers, and testimonials: `assets/js/data.js`
-- Layout and animation system: `assets/css/styles.css`
-- Interactions and rendering: `assets/js/app.js`
-- Roblox/Discord media requests: `assets/js/media-service.js`
-- Public proxy URL: `assets/js/runtime-config.js`
+- Page copy and section structure: `index.html`
+- Projects, live games, skills, groups, servers, and testimonials: `assets/js/data.js`
+- Layout, typography, responsive rules, and animation system: `assets/css/styles.css`
+- Rendering and interactions: `assets/js/app.js`
+- Roblox and Discord media requests: `assets/js/media-service.js`
+- Public proxy configuration: `assets/js/runtime-config.js`
 
-After changing JavaScript source files, rebuild the local-file-safe bundle:
+After changing JavaScript source files, rebuild the browser bundle:
 
 ```bash
 npm run build
 ```
 
-## Media behavior
+## Client agreement
 
-Saved thumbnails are included under `assets/cached-media/` so cards never appear empty. When the site is hosted, the media service refreshes Roblox place icons, universe icons, group icons, and public Discord guild metadata. An optional Worker proxy is available under `worker/` for deployments where browser CORS rules block direct requests.
+The website previews and links to:
 
-## Download button
+- `downloads/Cynex-Services-Agreement-Fillable.pdf`
+- `downloads/Cynex-Services-Agreement-Original.pdf`
 
-The website links to `downloads/cynex-portfolio-source.zip`. Recreate that package after making changes so visitors always download the latest source.
+The fillable version includes editable project, payment, contact, milestone, and signature fields. The developer email is prefilled as `nathanielmadridgaminde@proton.me`.
 
-## Tests
+## Roblox and Discord media
+
+Saved images under `assets/cached-media/` render immediately, so cards never depend on a successful third-party request to remain usable.
+
+For deployed sites, `npm run cache-media` refreshes game thumbnails, Roblox group icons, and public Discord server icons from the official services. The GitHub Pages workflow in `.github/workflows/deploy-pages.yml` runs this refresh during deployment and once each week. Existing local images remain in place when a service is unavailable or an invite no longer resolves.
+
+An optional Worker proxy is included under `worker/` for environments where direct browser requests are blocked by CORS.
+
+## Build and verify
 
 ```bash
+npm run build
 npm test
 python tests/browser-audit.py
 ```

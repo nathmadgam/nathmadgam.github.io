@@ -17,7 +17,7 @@ PLACE_TO_UNIVERSE = {
 }
 DISCORD = {
     'UXsEATcmaa': {'id': '111111111111111111', 'name': 'Summit Developers', 'icon': 'a_summit'},
-    'Pnjjkc6FHY': {'id': '222222222222222222', 'name': 'Cynex Services', 'icon': 'cynex'},
+    'sAQtQyyS': {'id': '222222222222222222', 'name': 'Cynex Services', 'icon': 'cynex'},
 }
 SVG = b'''<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><rect width="512" height="512" fill="#080808"/><path d="M0 420L420 0h92v92L92 512H0z" fill="#260b10"/><rect x="58" y="58" width="396" height="396" fill="none" stroke="#ff2638" stroke-width="18"/><text x="256" y="290" text-anchor="middle" font-family="Arial" font-weight="900" font-size="96" fill="#f4f1eb">CYNEX</text></svg>'''
 
@@ -134,16 +134,27 @@ def audit_page(browser, viewport: dict, screenshot_name: str, mobile: bool = Fal
     assert page.locator('[data-game-grid] .game-card').count() == 3
     assert page.locator('.game-credits').count() == 3
     assert page.locator('.game-credits dd', has_text='Programmer').count() == 3
-    assert page.locator('[data-source-download]').count() >= 2
+    assert page.locator('a[href="downloads/Cynex-Services-Agreement-Fillable.pdf"]').count() >= 3
+    assert page.locator('a[href="mailto:nathanielmadridgaminde@proton.me"]').count() == 1
     assert page.locator('[data-roblox-groups] .network-card').count() == 4
     assert page.locator('[data-discord-servers] .network-card').count() == 2
     assert page.locator('.media-shell[data-state="loaded"]').count() == 3
     assert page.locator('.network-icon-shell[data-state="loaded"]').count() == 6
     assert page.locator('img').evaluate_all("imgs => imgs.every(img => img.complete && img.naturalWidth > 0)")
     assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
+    assert page.evaluate("""() => {
+      const photo = document.querySelector('.hero-portrait').getBoundingClientRect();
+      const console = document.querySelector('.hero-console').getBoundingClientRect();
+      return console.top >= photo.bottom - 1;
+    }""")
+    assert page.evaluate("""() => {
+      const stage = document.querySelector('.review-stage').getBoundingClientRect();
+      const quote = document.querySelector('.review-card blockquote').getBoundingClientRect();
+      return quote.left >= stage.left && quote.right <= stage.right && quote.bottom <= stage.bottom;
+    }""")
 
     print('asserting links', flush=True)
-    external = page.locator('a[target="_blank"]')
+    external = page.locator('a[target="_blank"][href^="http"]')
     for index in range(external.count()):
         link = external.nth(index)
         assert link.get_attribute('href', timeout=1000).startswith('https://')

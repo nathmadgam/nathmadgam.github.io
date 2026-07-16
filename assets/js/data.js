@@ -1,7 +1,7 @@
 /** @typedef {{title:string, category:string, year:string, description:string, tags:string[], video:string, poster:string}} Project */
 /** @typedef {{name:string, id:string, idType:'place'|'universe', universeId?:string, creator:string, role:string, url:string, description:string, fallback:string, cachedImage?:string}} RobloxGame */
-/** @typedef {{name:string, groupId:string, role:string, description:string, url:string, fallback:string, cachedImage?:string}} RobloxGroup */
-/** @typedef {{name:string, role:string, description:string, inviteCode:string, url:string, fallback:string, cachedImage?:string, guildId?:string, iconHash?:string}} DiscordServer */
+/** @typedef {{name:string, groupId:string, role:string, description:string, url:string, fallback:string, cachedImage?:string, cacheName?:string}} RobloxGroup */
+/** @typedef {{name:string, role:string, description:string, inviteCode:string, url:string, fallback:string, cachedImage?:string, cacheName?:string, guildId?:string, iconHash?:string}} DiscordServer */
 
 /** @type {Project[]} */
 export const projects = [
@@ -83,7 +83,7 @@ export const games = [
     role: "Programmer",
     url: "https://www.roblox.com/games/95624995252294/Soft-Pink-Tower",
     description: "A polished tower experience with gameplay and production scripting contributions.",
-    cachedImage: "assets/cached-media/soft-pink-tower.jpg",
+    cachedImage: "assets/cached-media/soft-pink-tower.webp",
     fallback: "assets/fallbacks/soft-pink-tower.svg",
   },
   {
@@ -95,20 +95,20 @@ export const games = [
     role: "Programmer",
     url: "https://www.roblox.com/games/101848404389998/Soft-Pink-Wallhop-Tower",
     description: "A wallhop-focused tower experience with gameplay and systems programming contributions.",
-    cachedImage: "assets/cached-media/soft-pink-wallhop.jpg",
+    cachedImage: "assets/cached-media/soft-pink-wallhop.webp",
     fallback: "assets/fallbacks/soft-pink-wallhop.svg",
   },
 ];
 
 export const skills = [
-  { title: "Software architecture", description: "Clear module boundaries, typed Luau, reusable services, explicit state, and code that remains practical for a team to extend." },
-  { title: "Gameplay programming", description: "Player mechanics, round flow, interactions, combat rules, cooldowns, remotes, and responsive client feedback." },
-  { title: "Backend systems", description: "Server-authoritative logic, validation, permissions, session ownership, failure handling, and secure system boundaries." },
-  { title: "Data + persistence", description: "DataStore design, profiles, autosave, migrations, cross-server state, recovery paths, and consistent progression data." },
-  { title: "Interface development", description: "Responsive UI, state-driven menus, camera transitions, voting, shops, onboarding, and readable player feedback." },
-  { title: "API + platform integration", description: "Roblox services, external web endpoints, moderation workflows, caching, request limits, and safe fallback states." },
-  { title: "Performance + quality", description: "Profiling, event cleanup, network efficiency, edge-case testing, debugging, and production-focused optimization." },
-  { title: "Team delivery", description: "Version-control habits, documentation, configurable systems, scope communication, and clean handoff for continued development." },
+  { title: "Programming + problem solving", description: "Turning product requirements into dependable features with clear logic, practical trade-offs, and readable implementation." },
+  { title: "Software architecture", description: "Modular services, typed Luau, explicit state, reusable components, configuration, and maintainable code ownership." },
+  { title: "Backend development", description: "Server-authoritative systems, validation, permissions, remote communication, session ownership, and secure boundaries." },
+  { title: "Data systems", description: "Persistence, profiles, autosave, migrations, recovery paths, cross-server state, and consistent progression data." },
+  { title: "User interface development", description: "Responsive interfaces, state-driven menus, interaction feedback, camera flows, onboarding, shops, and voting." },
+  { title: "Testing + debugging", description: "Reproducing defects, checking edge cases, logging useful context, validating failure states, and preventing regressions." },
+  { title: "Performance optimization", description: "Profiling, event cleanup, network efficiency, cache design, request deduplication, and runtime-focused improvements." },
+  { title: "Collaboration + delivery", description: "Scope communication, version-control habits, documentation, configurable handoff, and clean support for continued development." },
 ];
 
 export const process = [
@@ -120,16 +120,16 @@ export const process = [
 
 /** @type {RobloxGroup[]} */
 export const robloxGroups = [
-  { name: "Tenasa Games", groupId: "34265738", role: "Founder", description: "Roblox development group for original projects and collaborative production work.", url: "https://www.roblox.com/communities/34265738/Tenasa-Games", fallback: "assets/fallbacks/group-tenasa.svg" },
-  { name: "SOL Co.", groupId: "153339776", role: "Main developer", description: "Creative Roblox community with development and systems contributions.", url: "https://www.roblox.com/communities/153339776/SOL-Co", cachedImage: "assets/cached-media/group-sol.webp", fallback: "assets/fallbacks/group-sol.svg" },
-  { name: "Skydda Concord Studio", groupId: "81081641", role: "Developer", description: "Independent Roblox studio behind collaborative experience development.", url: "https://www.roblox.com/communities/81081641/Skydda-Concord-Studio", cachedImage: "assets/cached-media/group-skydda.webp", fallback: "assets/fallbacks/group-skydda.svg" },
-  { name: "Corebound Games", groupId: "312003009", role: "Admin", description: "Roblox game studio focused on building and organizing new projects.", url: "https://www.roblox.com/communities/312003009/Corebound-Games", fallback: "assets/fallbacks/group-corebound.svg" },
+  { name: "Tenasa Games", groupId: "34265738", role: "Founder", description: "Roblox development group for original projects and collaborative production work.", url: "https://www.roblox.com/communities/34265738/Tenasa-Games", cachedImage: "assets/cached-media/group-tenasa.webp", fallback: "assets/fallbacks/group-tenasa.svg", cacheName: "group-tenasa.webp" },
+  { name: "SOL Co.", groupId: "153339776", role: "Main developer", description: "Creative Roblox community with development and systems contributions.", url: "https://www.roblox.com/communities/153339776/SOL-Co", cachedImage: "assets/cached-media/group-sol.webp", fallback: "assets/fallbacks/group-sol.svg", cacheName: "group-sol.webp" },
+  { name: "Skydda Concord Studio", groupId: "81081641", role: "Developer", description: "Independent Roblox studio behind collaborative experience development.", url: "https://www.roblox.com/communities/81081641/Skydda-Concord-Studio", cachedImage: "assets/cached-media/group-skydda.webp", fallback: "assets/fallbacks/group-skydda.svg", cacheName: "group-skydda.webp" },
+  { name: "Corebound Games", groupId: "312003009", role: "Admin", description: "Roblox game studio focused on building and organizing new projects.", url: "https://www.roblox.com/communities/312003009/Corebound-Games", cachedImage: "assets/cached-media/group-corebound.webp", fallback: "assets/fallbacks/group-corebound.svg", cacheName: "group-corebound.webp" },
 ];
 
 /** @type {DiscordServer[]} */
 export const discordServers = [
-  { name: "Summit Developers", role: "Pioneer", description: "A Roblox developer community for collaboration, feedback, and technical discussion.", inviteCode: "UXsEATcmaa", url: "https://discord.gg/UXsEATcmaa", fallback: "assets/fallbacks/discord-summit.svg" },
-  { name: "Cynex Services", role: "Founder", description: "The primary server for project inquiries, development updates, and direct contact.", inviteCode: "Pnjjkc6FHY", url: "https://discord.gg/Pnjjkc6FHY", fallback: "assets/fallbacks/discord-cynex.svg" },
+  { name: "Summit Developers", role: "Pioneer", description: "A Roblox developer community for collaboration, feedback, and technical discussion.", inviteCode: "UXsEATcmaa", url: "https://discord.gg/UXsEATcmaa", fallback: "assets/fallbacks/discord-summit.svg", cachedImage: "assets/cached-media/discord-summit.webp", cacheName: "discord-summit.webp" },
+  { name: "Cynex Services", role: "Founder", description: "The primary server for project inquiries, development updates, and direct contact.", inviteCode: "sAQtQyyS", url: "https://discord.gg/sAQtQyyS", fallback: "assets/fallbacks/discord-cynex.svg", cachedImage: "assets/cached-media/discord-cynex.webp", cacheName: "discord-cynex.webp" },
 ];
 
 export const reviews = [

@@ -5,6 +5,8 @@
   "scripts": {
     "build": "node scripts/build-bundle.mjs",
     "test": "node --test tests/*.test.mjs",
-    "audit": "node --test tests/site-audit.test.mjs"
+    "audit": "node --test tests/site-audit.test.mjs",
+    "cache-media": "node scripts/cache-media.mjs",
+    "prepare-deploy": "npm run cache-media && npm run build && npm test"
   }
 }
