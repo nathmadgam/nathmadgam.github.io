@@ -12,4 +12,5 @@ export const MEDIA_CACHE_TTL = {
   robloxThumbnail: 60 * 60 * 1000,
   robloxGroup: 6 * 60 * 60 * 1000,
   discord: 30 * 60 * 1000,
+  gameDetails: 6 * 60 * 60 * 1000,
 };

@@ -17,6 +17,7 @@ const MEDIA_CACHE_TTL = {
   robloxThumbnail: 60 * 60 * 1000,
   robloxGroup: 6 * 60 * 60 * 1000,
   discord: 30 * 60 * 1000,
+  gameDetails: 6 * 60 * 60 * 1000,
 };
 
 
@@ -39,7 +40,7 @@ const projects = [
   },
   {
     title: "Map Voting",
-    category: "UI + systems",
+    category: "Interface systems",
     year: "2024",
     description: "A complete voting flow that connects presentation, server-owned vote state, map selection, and clean handoff into the game loop.",
     tags: ["UI state", "Remote events", "Game loop"],
@@ -93,19 +94,19 @@ const games = [
     creator: "Skydda Concord Studio",
     role: "Programmer",
     url: "https://www.roblox.com/games/110811521450324/GROW-YOUR-PET",
-    description: "A pet-growth experience featuring progression, player-facing systems, and production gameplay scripting.",
+    description: "Raise a pet through a progression-focused Roblox experience, expand its growth, and continue building toward larger milestones over time.",
     cachedImage: "assets/cached-media/grow-your-pet.webp",
     fallback: "assets/fallbacks/grow-your-pet.svg",
   },
   {
-    name: "Soft Pink Tower",
+    name: "[CARRY] Soft Pink Tower",
     id: "95624995252294",
     idType: "place",
     universeId: "9333955742",
     creator: "Lazy Tower Studio",
     role: "Programmer",
     url: "https://www.roblox.com/games/95624995252294/Soft-Pink-Tower",
-    description: "A polished tower experience with gameplay and production scripting contributions.",
+    description: "Climb a soft pink obstacle tower built around timing, movement, and repeat runs through progressively demanding stages.",
     cachedImage: "assets/cached-media/soft-pink-tower.webp",
     fallback: "assets/fallbacks/soft-pink-tower.svg",
   },
@@ -117,21 +118,21 @@ const games = [
     creator: "Lazy Tower Studio",
     role: "Programmer",
     url: "https://www.roblox.com/games/101848404389998/Soft-Pink-Wallhop-Tower",
-    description: "A wallhop-focused tower experience with gameplay and systems programming contributions.",
+    description: "Climb a soft pink tower built around wallhop movement, precision platforming, and increasingly demanding obstacle sections.",
     cachedImage: "assets/cached-media/soft-pink-wallhop.webp",
     fallback: "assets/fallbacks/soft-pink-wallhop.svg",
   },
 ];
 
 const skills = [
-  { title: "Programming + problem solving", description: "Turning product requirements into dependable features with clear logic, practical trade-offs, and readable implementation." },
-  { title: "Software architecture", description: "Modular services, typed Luau, explicit state, reusable components, configuration, and maintainable code ownership." },
-  { title: "Backend development", description: "Server-authoritative systems, validation, permissions, remote communication, session ownership, and secure boundaries." },
-  { title: "Data systems", description: "Persistence, profiles, autosave, migrations, recovery paths, cross-server state, and consistent progression data." },
-  { title: "User interface development", description: "Responsive interfaces, state-driven menus, interaction feedback, camera flows, onboarding, shops, and voting." },
-  { title: "Testing + debugging", description: "Reproducing defects, checking edge cases, logging useful context, validating failure states, and preventing regressions." },
-  { title: "Performance optimization", description: "Profiling, event cleanup, network efficiency, cache design, request deduplication, and runtime-focused improvements." },
-  { title: "Collaboration + delivery", description: "Scope communication, version-control habits, documentation, configurable handoff, and clean support for continued development." },
+  { title: "Programming Fundamentals", percentage: 95, description: "Writing clear Luau, structuring control flow, selecting suitable data structures, solving defects, and turning requirements into dependable game features." },
+  { title: "Software Architecture", percentage: 91, description: "Organizing larger projects into reusable modules and services with explicit responsibilities, predictable state, and code that another developer can extend." },
+  { title: "Gameplay Development", percentage: 94, description: "Building player mechanics, rounds, interactions, combat rules, cooldowns, NPC behaviour, and responsive feedback across client and server." },
+  { title: "Backend Development", percentage: 90, description: "Creating server-authoritative logic, validating requests, managing permissions and sessions, and keeping important game rules secure from the client." },
+  { title: "Database Management", percentage: 92, description: "Designing DataStore profiles, autosave, migrations, recovery paths, cross-server state, and reliable progression that survives disconnects and failures." },
+  { title: "User Interface Development", percentage: 87, description: "Developing responsive Roblox interfaces, menus, onboarding, shops, voting flows, camera states, and feedback that clearly communicates game state." },
+  { title: "Testing and Optimization", percentage: 89, description: "Reproducing edge cases, profiling runtime behaviour, reducing unnecessary network work, cleaning events, and verifying features across devices." },
+  { title: "Team Collaboration", percentage: 93, description: "Communicating scope, documenting systems, using version-control habits, preparing configurable handoffs, and supporting continued development after delivery." },
 ];
 
 const process = [
@@ -156,9 +157,15 @@ const discordServers = [
 ];
 
 const reviews = [
-  { name: "lotteryshot", location: "United States", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Went beyond and helped with extra work, excellent and fair." },
-  { name: "skyebsu", location: "United Kingdom · repeat client", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Pays keen attention to detail, extremely good at scripting, very quick to respond!" },
-  { name: "loaf_bread", location: "Philippines", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "He was able to fulfill all of my requests and even provided some valuable ideas. Any minor issues were promptly resolved." },
+  { name: "eventpunks", location: "Austria", repeatClient: true, rating: 5, age: "1 year ago", price: "$600-$800", duration: "2 months", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Everything as usual really great." },
+  { name: "misterclubs", location: "United States", repeatClient: false, rating: 5, age: "1 year ago", price: "$50-$100", duration: "3 months", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Awesome results, turned out great!" },
+  { name: "eventpunks", location: "Austria", repeatClient: true, rating: 5, age: "1 year ago", price: "$200-$400", duration: "2 weeks", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Everything fine." },
+  { name: "lotteryshot", location: "United States", repeatClient: false, rating: 5, age: "1 year ago", price: "$100-$200", duration: "10 days", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Went beyond and helped with extra work, excellent and fair." },
+  { name: "hafizrenal", location: "Indonesia", repeatClient: false, rating: 5, age: "1 year ago", price: "Up to $50", duration: "1 day", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Great working with Nath. They were professional, responsive, and delivered outstanding results. Highly recommend!" },
+  { name: "skyebsu", location: "United Kingdom", repeatClient: true, rating: 5, age: "2 years ago", price: "$50-$100", duration: "3 weeks", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Pays keen attention to detail, extremely good at scripting, very quick to respond!" },
+  { name: "eventpunks", location: "Austria", repeatClient: true, rating: 5, age: "2 years ago", price: "Up to $50", duration: "2 days", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Everything fine and everything done as discussed and given to him as the order. I really appreciate his willingness to do quality work." },
+  { name: "togodumnus", location: "United Kingdom", repeatClient: true, rating: 5, age: "2 years ago", price: "Up to $50", duration: "1 day", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "I am very pleased Nathaniel was able to solve a problem for me that I had for a while. I am very pleased with the service provided." },
+  { name: "loaf_bread", location: "Philippines", repeatClient: false, rating: 5, age: "2 years ago", price: "Up to $50", duration: "6 days", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Thank you so much, sir! It has been a pleasure working with you. He was able to fulfill all of my requests and even provided valuable ideas. Any minor issues were promptly resolved. I highly recommend his services." },
 ];
 
 
@@ -396,6 +403,50 @@ async function getRobloxGameImages(games) {
   return results;
 }
 
+
+async function getRobloxGameDetails(games) {
+  const results = new Map();
+  const pending = [];
+  await Promise.all(games.map(async game => {
+    const key = `game-details:${game.idType}:${game.id}`;
+    const cached = cacheRead(key);
+    if (cached) {
+      results.set(game.id, cached);
+      return;
+    }
+    try {
+      const universeId = await resolveUniverseId(game);
+      pending.push({ game, universeId, key });
+    } catch (error) {
+      log(`Game details universe lookup failed for ${game.name}`, error);
+    }
+  }));
+
+  for (const batch of batchesOf(pending)) {
+    const ids = [...new Set(batch.map(item => item.universeId))].join(",");
+    const direct = `https://games.roblox.com/v1/games?universeIds=${encodeURIComponent(ids)}`;
+    try {
+      const payload = await withProxyFallback(direct, "/api/roblox/game-details", { universeIds: ids });
+      const byId = new Map((payload?.data ?? []).map(item => [String(item.id), item]));
+      batch.forEach(({ game, universeId, key }) => {
+        const item = byId.get(universeId);
+        if (!item) return;
+        const value = {
+          universeId,
+          name: item.name || game.name,
+          description: String(item.description || "").trim(),
+          creator: item.creator?.name || game.creator,
+        };
+        results.set(game.id, value);
+        cacheWrite(key, value, MEDIA_CACHE_TTL.gameDetails ?? MEDIA_CACHE_TTL.universe);
+      });
+    } catch (error) {
+      log("Roblox game details request failed", error);
+    }
+  }
+  return results;
+}
+
 async function getRobloxGroupImages(groups) {
   const results = new Map();
   const pending = [];
@@ -430,7 +481,8 @@ async function getRobloxGroupImages(groups) {
 
 function buildDiscordIconUrl(guildId, iconHash) {
   if (!guildId || !iconHash) return null;
-  return `https://cdn.discordapp.com/icons/${guildId}/${iconHash}.webp?size=256`;
+  const format = String(iconHash).startsWith("a_") ? "gif" : "webp";
+  return `https://cdn.discordapp.com/icons/${guildId}/${iconHash}.${format}?size=256`;
 }
 
 async function getDiscordServer(server) {
@@ -584,21 +636,19 @@ function renderGames() {
   grid.innerHTML = games.map((game, index) => {
     const initialImage = game.cachedImage || game.fallback;
     return `
-    <a class="game-card reveal" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer" data-game-id="${game.id}" data-tilt style="--reveal-delay:${Math.min(index * 90, 270)}ms;--card-index:${index}">
+    <a class="game-card reveal" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer" data-game-id="${game.id}" data-tilt style="--reveal-delay:${Math.min(index * 100, 300)}ms;--card-index:${index}">
       <div class="media-shell" data-state="fallback">
         <div class="media-skeleton" aria-hidden="true"></div>
-        <img class="media-image" src="${escapeHtml(initialImage)}" alt="Roblox experience artwork for ${escapeHtml(game.name)}" width="512" height="512" loading="lazy" decoding="async">
-        <span class="media-type-badge">${icon("roblox")} Roblox</span>
-        <span class="media-state-label">Saved Roblox thumbnail</span>
+        <img class="media-image" src="${escapeHtml(initialImage)}" alt="Official Roblox artwork for ${escapeHtml(game.name)}" width="512" height="512" loading="lazy" decoding="async">
+        <span class="media-type-badge">${icon("roblox")} Roblox experience</span>
       </div>
       <div class="game-card-body">
-        <div class="game-card-head"><h3>${escapeHtml(game.name)}</h3><span class="game-card-arrow" aria-hidden="true">${icon("external")}</span></div>
-        <p>${escapeHtml(game.description)}</p>
+        <div class="game-card-head"><h3 data-game-name>${escapeHtml(game.name)}</h3><span class="game-card-arrow" aria-hidden="true">${icon("external")}</span></div>
+        <p data-game-description>${escapeHtml(game.description)}</p>
         <dl class="game-credits">
-          <div><dt>Creator</dt><dd>${escapeHtml(game.creator)}</dd></div>
+          <div><dt>Created by</dt><dd data-game-creator>${escapeHtml(game.creator)}</dd></div>
           <div><dt>My role</dt><dd>${escapeHtml(game.role)}</dd></div>
         </dl>
-        <span class="game-id">${game.idType.toUpperCase()} ID / ${escapeHtml(game.id)}</span>
       </div>
     </a>`;
   }).join("");
@@ -606,10 +656,9 @@ function renderGames() {
 
 function renderSkills() {
   qs("[data-skill-grid]").innerHTML = skills.map((skill, index) => `
-    <article class="skill-item reveal" style="--reveal-delay:${Math.min(index * 45, 250)}ms">
-      <span class="skill-code">S-${String(index + 1).padStart(2, "0")}</span>
-      <div><h3>${escapeHtml(skill.title)}</h3><p>${escapeHtml(skill.description)}</p></div>
-      <span class="skill-pulse" aria-hidden="true"></span>
+    <article class="skill-item reveal" style="--reveal-delay:${Math.min(index * 65, 390)}ms;--skill:${Number(skill.percentage) || 0}%">
+      <span class="skill-code">${String(index + 1).padStart(2, "0")}</span>
+      <div class="skill-copy"><div class="skill-title-row"><h3>${escapeHtml(skill.title)}</h3><strong><span data-skill-value="${Number(skill.percentage) || 0}">0</span>%</strong></div><p>${escapeHtml(skill.description)}</p><div class="skill-meter" aria-label="${escapeHtml(skill.title)} proficiency: ${Number(skill.percentage) || 0} percent"><span></span></div></div>
     </article>`).join("");
 }
 
@@ -661,10 +710,15 @@ function renderReviews() {
         </blockquote>
         <p class="sr-only" data-review-full aria-live="polite"></p>
         <div class="review-source" data-review-source>
-          <div>
+          <div class="review-person">
             <strong data-review-name></strong>
             <span data-review-location></span>
           </div>
+          <dl class="review-details">
+            <div><dt>Budget</dt><dd data-review-price></dd></div>
+            <div><dt>Delivery</dt><dd data-review-duration></dd></div>
+            <div><dt>Posted</dt><dd data-review-age></dd></div>
+          </dl>
           <a data-review-platform target="_blank" rel="noopener noreferrer"></a>
         </div>
         <div class="review-footer">
@@ -691,6 +745,9 @@ function setupReviewCarousel() {
   const name = qs("[data-review-name]", stage);
   const location = qs("[data-review-location]", stage);
   const platform = qs("[data-review-platform]", stage);
+  const price = qs("[data-review-price]", stage);
+  const duration = qs("[data-review-duration]", stage);
+  const age = qs("[data-review-age]", stage);
   const count = qs("[data-review-count]", stage);
   const progress = qs("[data-review-progress]", stage);
   const dots = qsa("[data-review-dot]", stage);
@@ -712,8 +769,11 @@ function setupReviewCarousel() {
 
   const updateStaticContent = review => {
     name.textContent = review.name;
-    location.textContent = review.location;
-    platform.textContent = `Posted on ${review.platform}`;
+    location.textContent = `${review.location}${review.repeatClient ? " · Repeat client" : ""}`;
+    price.textContent = review.price || "Not listed";
+    duration.textContent = review.duration || "Not listed";
+    age.textContent = review.age || "Client review";
+    platform.textContent = `View on ${review.platform}`;
     platform.href = review.platformUrl;
     count.textContent = `${String(current + 1).padStart(2, "0")} / ${String(reviews.length).padStart(2, "0")}`;
     full.textContent = `“${review.quote}” — ${review.name}, ${review.platform}`;
@@ -729,7 +789,7 @@ function setupReviewCarousel() {
     cancelAnimationFrame(progressFrame);
     progress.style.transform = "scaleX(0)";
     if (paused || reducedMotion) return;
-    const duration = 4600;
+    const duration = 5600;
     const start = performance.now();
     const tick = now => {
       const amount = Math.min((now - start) / duration, 1);
@@ -749,7 +809,7 @@ function setupReviewCarousel() {
   const typeQuote = text => {
     typed.textContent = "";
     complete = false;
-    const duration = Math.min(Math.max(text.length * 27, 900), 2500);
+    const duration = Math.min(Math.max(text.length * 31, 1050), 3200);
     const start = performance.now();
     const tick = now => {
       const amount = Math.min((now - start) / duration, 1);
@@ -778,7 +838,7 @@ function setupReviewCarousel() {
       else typeQuote(review.quote);
     };
 
-    transitionTimer = setTimeout(swap, instant ? 0 : 260);
+    transitionTimer = setTimeout(swap, instant ? 0 : 520);
   }
 
   qs("[data-review-prev]", stage).addEventListener("click", () => showSlide(current - 1));
@@ -816,19 +876,23 @@ function setupReviewCarousel() {
 }
 
 async function hydrateGameMedia() {
-  const results = await getRobloxGameImages(games);
+  const [images, details] = await Promise.all([
+    getRobloxGameImages(games).catch(() => new Map()),
+    getRobloxGameDetails(games).catch(() => new Map()),
+  ]);
   await Promise.all(games.map(async game => {
     const card = qs(`[data-game-id="${game.id}"]`);
     if (!card) return;
     const shell = qs(".media-shell", card);
     const img = qs(".media-image", card);
-    const label = qs(".media-state-label", card);
-    const media = results.get(game.id);
+    const media = images.get(game.id);
     const localImage = game.cachedImage || game.fallback;
-    const loaded = await loadImageSafely(img, media?.imageUrl, localImage, shell);
-    label.textContent = loaded === "loaded"
-      ? "Live Roblox thumbnail"
-      : media?.reason === "blocked" ? "Thumbnail unavailable" : "Saved Roblox thumbnail";
+    await loadImageSafely(img, media?.imageUrl, localImage, shell);
+
+    const official = details.get(game.id);
+    if (official?.name) qs("[data-game-name]", card).textContent = official.name;
+    if (official?.creator) qs("[data-game-creator]", card).textContent = official.creator;
+    if (official?.description) qs("[data-game-description]", card).textContent = official.description;
   }));
 }
 
@@ -977,51 +1041,61 @@ function setupScrollEffects() {
 function setupPointerInteractions() {
   if (reducedMotion || !finePointer) return;
   const halo = qs(".pointer-halo");
-  let targetX = innerWidth / 2;
-  let targetY = innerHeight / 2;
-  let currentX = targetX;
-  let currentY = targetY;
-  const animateHalo = () => {
-    currentX += (targetX - currentX) * .16;
-    currentY += (targetY - currentY) * .16;
-    halo.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-    requestAnimationFrame(animateHalo);
-  };
-  addEventListener("pointermove", event => { targetX = event.clientX; targetY = event.clientY; }, { passive: true });
-  animateHalo();
+  let pointerX = innerWidth / 2;
+  let pointerY = innerHeight / 2;
+  let haloX = pointerX;
+  let haloY = pointerY;
+  addEventListener("pointermove", event => { pointerX = event.clientX; pointerY = event.clientY; }, { passive: true });
 
-  qsa("[data-tilt], [data-tilt-soft]").forEach(element => {
-    const strength = element.hasAttribute("data-tilt-soft") ? 1.6 : 3.2;
-    element.addEventListener("pointermove", event => {
-      const rect = element.getBoundingClientRect();
+  const tiltItems = qsa("[data-tilt], [data-tilt-soft]").map(element => ({
+    element,
+    strength: element.hasAttribute("data-tilt-soft") ? 1.5 : 3,
+    tx: 0, ty: 0, cx: 0, cy: 0, sx: 50, sy: 50,
+  }));
+  tiltItems.forEach(item => {
+    item.element.addEventListener("pointermove", event => {
+      const rect = item.element.getBoundingClientRect();
       const px = (event.clientX - rect.left) / rect.width - .5;
       const py = (event.clientY - rect.top) / rect.height - .5;
-      element.style.setProperty("--tilt-x", `${(-py * strength).toFixed(2)}deg`);
-      element.style.setProperty("--tilt-y", `${(px * strength).toFixed(2)}deg`);
-      element.style.setProperty("--spot-x", `${((px + .5) * 100).toFixed(1)}%`);
-      element.style.setProperty("--spot-y", `${((py + .5) * 100).toFixed(1)}%`);
+      item.tx = -py * item.strength;
+      item.ty = px * item.strength;
+      item.sx = (px + .5) * 100;
+      item.sy = (py + .5) * 100;
     });
-    element.addEventListener("pointerleave", () => {
-      element.style.setProperty("--tilt-x", "0deg");
-      element.style.setProperty("--tilt-y", "0deg");
-      element.style.setProperty("--spot-x", "50%");
-      element.style.setProperty("--spot-y", "50%");
-    });
+    item.element.addEventListener("pointerleave", () => { item.tx = 0; item.ty = 0; item.sx = 50; item.sy = 50; });
   });
 
-  qsa("[data-magnetic]").forEach(element => {
-    element.addEventListener("pointermove", event => {
-      const rect = element.getBoundingClientRect();
-      const x = (event.clientX - (rect.left + rect.width / 2)) * .035;
-      const y = (event.clientY - (rect.top + rect.height / 2)) * .06;
-      element.style.setProperty("--mag-x", `${x.toFixed(2)}px`);
-      element.style.setProperty("--mag-y", `${y.toFixed(2)}px`);
+  const magneticItems = qsa("[data-magnetic]").map(element => ({ element, tx: 0, ty: 0, cx: 0, cy: 0 }));
+  magneticItems.forEach(item => {
+    item.element.addEventListener("pointermove", event => {
+      const rect = item.element.getBoundingClientRect();
+      item.tx = (event.clientX - (rect.left + rect.width / 2)) * .035;
+      item.ty = (event.clientY - (rect.top + rect.height / 2)) * .05;
     });
-    element.addEventListener("pointerleave", () => {
-      element.style.setProperty("--mag-x", "0px");
-      element.style.setProperty("--mag-y", "0px");
-    });
+    item.element.addEventListener("pointerleave", () => { item.tx = 0; item.ty = 0; });
   });
+
+  const tick = () => {
+    haloX += (pointerX - haloX) * .075;
+    haloY += (pointerY - haloY) * .075;
+    halo.style.transform = `translate3d(${haloX}px, ${haloY}px, 0)`;
+    tiltItems.forEach(item => {
+      item.cx += (item.tx - item.cx) * .085;
+      item.cy += (item.ty - item.cy) * .085;
+      item.element.style.setProperty("--tilt-x", `${item.cx.toFixed(3)}deg`);
+      item.element.style.setProperty("--tilt-y", `${item.cy.toFixed(3)}deg`);
+      item.element.style.setProperty("--spot-x", `${item.sx.toFixed(1)}%`);
+      item.element.style.setProperty("--spot-y", `${item.sy.toFixed(1)}%`);
+    });
+    magneticItems.forEach(item => {
+      item.cx += (item.tx - item.cx) * .075;
+      item.cy += (item.ty - item.cy) * .075;
+      item.element.style.setProperty("--mag-x", `${item.cx.toFixed(2)}px`);
+      item.element.style.setProperty("--mag-y", `${item.cy.toFixed(2)}px`);
+    });
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 
 function setupCounters() {
@@ -1120,17 +1194,21 @@ function setupHeroParallax() {
   if (reducedMotion || !finePointer) return;
   const hero = qs(".hero");
   if (!hero) return;
+  let tx = 0, ty = 0, cx = 0, cy = 0;
   hero.addEventListener("pointermove", event => {
     const rect = hero.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - .5;
-    const y = (event.clientY - rect.top) / rect.height - .5;
-    hero.style.setProperty("--hero-x", x.toFixed(3));
-    hero.style.setProperty("--hero-y", y.toFixed(3));
+    tx = (event.clientX - rect.left) / rect.width - .5;
+    ty = (event.clientY - rect.top) / rect.height - .5;
   });
-  hero.addEventListener("pointerleave", () => {
-    hero.style.setProperty("--hero-x", "0");
-    hero.style.setProperty("--hero-y", "0");
-  });
+  hero.addEventListener("pointerleave", () => { tx = 0; ty = 0; });
+  const tick = () => {
+    cx += (tx - cx) * .055;
+    cy += (ty - cy) * .055;
+    hero.style.setProperty("--hero-x", cx.toFixed(4));
+    hero.style.setProperty("--hero-y", cy.toFixed(4));
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 
 function setupDownloadPulse() {
@@ -1141,6 +1219,137 @@ function setupDownloadPulse() {
       setTimeout(() => link.classList.remove("is-downloading"), 1300);
     });
   });
+}
+
+function setupSkillMeters() {
+  const items = qsa(".skill-item");
+  if (!items.length) return;
+  const run = item => {
+    const element = qs("[data-skill-value]", item);
+    if (!element || item.dataset.meterStarted === "true") return;
+    item.dataset.meterStarted = "true";
+    const target = Number(element.dataset.skillValue || 0);
+    item.classList.add("is-meter-active");
+    if (reducedMotion) { element.textContent = String(target); return; }
+    const start = performance.now();
+    const duration = 1650;
+    const tick = now => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      element.textContent = progress >= 1 ? String(target) : String(Math.round(target * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    run(entry.target);
+    observer.unobserve(entry.target);
+  }), { threshold: .12, rootMargin: "0px 0px -8% 0px" });
+  items.forEach(item => observer.observe(item));
+}
+
+function setupAmbientCanvas() {
+  const canvas = qs("[data-ambient-canvas]");
+  if (!canvas || reducedMotion) return;
+  const ctx = canvas.getContext("2d", { alpha: true });
+  let width = 0, height = 0, dpr = 1;
+  let pointer = { x: -9999, y: -9999 };
+  let particles = [];
+  const resize = () => {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    width = innerWidth;
+    height = innerHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.max(22, Math.min(64, Math.round(width / 28)));
+    particles = Array.from({ length: count }, (_, index) => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - .5) * (.16 + (index % 4) * .025),
+      vy: (Math.random() - .5) * (.16 + (index % 3) * .025),
+      r: .6 + Math.random() * 1.25,
+      phase: Math.random() * Math.PI * 2,
+    }));
+  };
+  addEventListener("resize", resize, { passive: true });
+  addEventListener("pointermove", event => { pointer.x = event.clientX; pointer.y = event.clientY; }, { passive: true });
+  addEventListener("pointerleave", () => { pointer.x = -9999; pointer.y = -9999; });
+  resize();
+  const tick = time => {
+    ctx.clearRect(0, 0, width, height);
+    for (let i = 0; i < particles.length; i += 1) {
+      const p = particles[i];
+      const dx = pointer.x - p.x;
+      const dy = pointer.y - p.y;
+      const distance = Math.hypot(dx, dy);
+      if (distance < 180) {
+        const force = (180 - distance) / 1800;
+        p.vx -= dx * force * .0018;
+        p.vy -= dy * force * .0018;
+      }
+      p.vx *= .997;
+      p.vy *= .997;
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -20) p.x = width + 20;
+      if (p.x > width + 20) p.x = -20;
+      if (p.y < -20) p.y = height + 20;
+      if (p.y > height + 20) p.y = -20;
+      const pulse = .55 + Math.sin(time * .0012 + p.phase) * .3;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(255,38,56,${.15 + pulse * .22})`;
+      ctx.arc(p.x, p.y, p.r + pulse * .35, 0, Math.PI * 2);
+      ctx.fill();
+      for (let j = i + 1; j < particles.length; j += 1) {
+        const q = particles[j];
+        const d = Math.hypot(p.x - q.x, p.y - q.y);
+        if (d < 118) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(255,38,56,${(1 - d / 118) * .085})`;
+          ctx.lineWidth = .7;
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function setupContractViewer() {
+  const viewer = qs("[data-contract-viewer]");
+  if (!viewer) return;
+  const pages = qsa("[data-contract-page]", viewer);
+  const jumps = qsa("[data-contract-jump]", viewer);
+  const current = qs("[data-contract-current]", viewer);
+  const viewport = qs("[data-contract-viewport]", viewer);
+  const zoomIn = qs("[data-contract-zoom-in]", viewer);
+  const zoomOut = qs("[data-contract-zoom-out]", viewer);
+  let scale = 1;
+
+  const setCurrent = pageNumber => {
+    if (current) current.textContent = String(pageNumber);
+    jumps.forEach(button => button.classList.toggle("is-active", button.dataset.contractJump === String(pageNumber)));
+  };
+  const applyScale = () => viewer.style.setProperty("--contract-scale", scale.toFixed(2));
+  zoomIn?.addEventListener("click", () => { scale = Math.min(1.35, scale + .1); applyScale(); });
+  zoomOut?.addEventListener("click", () => { scale = Math.max(.75, scale - .1); applyScale(); });
+  jumps.forEach(button => button.addEventListener("click", () => {
+    const page = pages.find(item => item.dataset.contractPage === button.dataset.contractJump);
+    page?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+  }));
+
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (visible) setCurrent(visible.target.dataset.contractPage);
+  }, { root: viewport, threshold: [.25, .45, .65] });
+  pages.forEach(page => observer.observe(page));
 }
 
 function validateExternalLinks() {
@@ -1162,10 +1371,13 @@ function init() {
   setupScrollEffects();
   setupPointerInteractions();
   setupCounters();
+  setupSkillMeters();
   setupLiveClock();
   setupLiveMetrics();
   setupTextScramble();
   setupHeroParallax();
+  setupAmbientCanvas();
+  setupContractViewer();
   setupDownloadPulse();
   validateExternalLinks();
 

@@ -25,10 +25,13 @@ test("metadata, removed sections, and secure external links", async () => {
   assert.doesNotMatch(html, /tr\.rbxcdn\.com/i);
   assert.match(html, /assets\/js\/site\.bundle\.js/);
   assert.doesNotMatch(html, /type=["\']module["\']/i);
-  assert.match(html, /class=["\']contact-icon["\']/i);
+  assert.match(html, /class=["\'][^"\']*\bcontact-icon\b[^"\']*["\']/i);
   assert.match(html, /nathanielmadridgaminde@proton\.me/);
   assert.match(html, /downloads\/Cynex-Services-Agreement-Fillable\.pdf/);
   assert.match(html, /id=["']agreement["']/);
+  assert.match(html, /data-contract-jump="1"/);
+  assert.match(html, /Contract agreement form · 5 pages/);
+  assert.doesNotMatch(html, /Saved Roblox thumbnail/i);
   assert.doesNotMatch(html, /data-source-download|cynex-portfolio-source\.zip/);
   const external = [...html.matchAll(/<a\b[^>]*target=["']_blank["'][^>]*>/gi)].map(match => match[0]);
   assert.ok(external.length > 0);
@@ -64,6 +67,19 @@ test("compact project collage and typed testimonial carousel are present", async
   assert.match(data, /cachedImage:\s*"assets\/cached-media\/grow-your-pet\.webp"/);
   assert.match(css, /animation:\s*(?:[^;]*)(?:grid-drift|portrait-float|ticker|review-shape)/);
   assert.match(app, /data-live-count/);
+});
+
+test("professional proficiency, full Fiverr feedback, and contract pages are configured", async () => {
+  const data = await read("assets/js/data.js");
+  const app = await read("assets/js/app.js");
+  const html = await read("index.html");
+  assert.equal((data.match(/percentage:\s*\d+/g) || []).length, 8);
+  assert.equal((data.match(/platform:\s*"Fiverr"/g) || []).length, 9);
+  assert.doesNotMatch(data, /title:\s*"[^"\n]*\+[^"\n]*"/);
+  assert.match(app, /getRobloxGameDetails/);
+  assert.match(app, /data-contract-jump/);
+  assert.match(html, /nathanielmadridgaminde@proton\.me/g);
+  for (let page = 1; page <= 5; page += 1) await access(path.join(root, `assets/contract-pages/page-${page}.webp`));
 });
 
 test("frontend source contains no obvious secrets", async () => {

@@ -232,6 +232,50 @@ export async function getRobloxGameImages(games) {
   return results;
 }
 
+
+export async function getRobloxGameDetails(games) {
+  const results = new Map();
+  const pending = [];
+  await Promise.all(games.map(async game => {
+    const key = `game-details:${game.idType}:${game.id}`;
+    const cached = cacheRead(key);
+    if (cached) {
+      results.set(game.id, cached);
+      return;
+    }
+    try {
+      const universeId = await resolveUniverseId(game);
+      pending.push({ game, universeId, key });
+    } catch (error) {
+      log(`Game details universe lookup failed for ${game.name}`, error);
+    }
+  }));
+
+  for (const batch of batchesOf(pending)) {
+    const ids = [...new Set(batch.map(item => item.universeId))].join(",");
+    const direct = `https://games.roblox.com/v1/games?universeIds=${encodeURIComponent(ids)}`;
+    try {
+      const payload = await withProxyFallback(direct, "/api/roblox/game-details", { universeIds: ids });
+      const byId = new Map((payload?.data ?? []).map(item => [String(item.id), item]));
+      batch.forEach(({ game, universeId, key }) => {
+        const item = byId.get(universeId);
+        if (!item) return;
+        const value = {
+          universeId,
+          name: item.name || game.name,
+          description: String(item.description || "").trim(),
+          creator: item.creator?.name || game.creator,
+        };
+        results.set(game.id, value);
+        cacheWrite(key, value, MEDIA_CACHE_TTL.gameDetails ?? MEDIA_CACHE_TTL.universe);
+      });
+    } catch (error) {
+      log("Roblox game details request failed", error);
+    }
+  }
+  return results;
+}
+
 export async function getRobloxGroupImages(groups) {
   const results = new Map();
   const pending = [];
@@ -266,7 +310,8 @@ export async function getRobloxGroupImages(groups) {
 
 export function buildDiscordIconUrl(guildId, iconHash) {
   if (!guildId || !iconHash) return null;
-  return `https://cdn.discordapp.com/icons/${guildId}/${iconHash}.webp?size=256`;
+  const format = String(iconHash).startsWith("a_") ? "gif" : "webp";
+  return `https://cdn.discordapp.com/icons/${guildId}/${iconHash}.${format}?size=256`;
 }
 
 export async function getDiscordServer(server) {

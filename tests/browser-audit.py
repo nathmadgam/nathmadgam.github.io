@@ -76,6 +76,21 @@ def route_request(route: Route) -> None:
         ]})
         return
 
+    if host == 'games.roblox.com' and path == '/v1/games':
+        ids = query.get('universeIds', [''])[0].split(',')
+        names = {
+            '9100000001': ('Grow Your Pet', 'Skydda Concord Studio', 'Raise pets, unlock progression, and expand your collection through an evolving gameplay loop.'),
+            '9333955742': ('[CARRY] Soft Pink Tower', 'Lazy Tower Studio', 'Climb a soft pink obstacle tower built around timing, movement, and repeat runs.'),
+            '9397456825': ('Soft Pink Wallhop Tower', 'Lazy Tower Studio', 'Take on wallhop challenges and precision platforming as you climb the tower.'),
+        }
+        fulfill_json(route, {'data': [
+            {'id': int(uid), 'name': names.get(uid, ('Roblox Experience', 'Roblox Creator', 'Roblox experience.'))[0],
+             'description': names.get(uid, ('Roblox Experience', 'Roblox Creator', 'Roblox experience.'))[2],
+             'creator': {'name': names.get(uid, ('Roblox Experience', 'Roblox Creator', 'Roblox experience.'))[1]}}
+            for uid in ids if uid
+        ]})
+        return
+
     if host == 'thumbnails.roblox.com' and path.endswith('/groups/icons'):
         ids = query.get('groupIds', [''])[0].split(',')
         fulfill_json(route, {'data': [
@@ -121,7 +136,7 @@ def audit_page(browser, viewport: dict, screenshot_name: str, mobile: bool = Fal
     page.wait_for_selector('[data-project-grid] .project-card')
     print('rendered data', flush=True)
 
-    for selector in ['.reveal', '.project-card', '.game-card', '.network-card', '.review-card', '.process-card']:
+    for selector in ['.reveal', '.project-card', '.game-card', '.network-card', '.review-card', '.process-card', '.contract-page']:
         for locator in page.locator(selector).all():
             locator.scroll_into_view_if_needed()
     page.wait_for_function("[...document.querySelectorAll('.media-shell,.network-icon-shell')].every(el => el.dataset.state !== 'loading')", timeout=15_000)

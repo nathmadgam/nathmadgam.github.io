@@ -29,12 +29,16 @@ npm run build
 
 ## Client agreement
 
-The website previews and links to:
+The website includes a scrollable five-page document viewer with page thumbnails, zoom controls, an open-in-browser action, and a direct download for:
 
 - `downloads/Cynex-Services-Agreement-Fillable.pdf`
 - `downloads/Cynex-Services-Agreement-Original.pdf`
 
-The fillable version includes editable project, payment, contact, milestone, and signature fields. The developer email is prefilled as `nathanielmadridgaminde@proton.me`.
+The fillable version contains 32 editable project, payment, contact, milestone, and signature fields. The developer email is prefilled as `nathanielmadridgaminde@proton.me`. Rendered page previews are stored in `assets/contract-pages/` so the form remains readable inside the portfolio without depending on a browser PDF plug-in.
+
+## Content and interaction
+
+The portfolio data file includes six demonstrations, three published experiences, eight professional proficiency areas, four Roblox groups, two Discord communities, and nine Fiverr client reviews. Continuous decorative motion, pointer interpolation, counters, skill meters, a typed testimonial carousel, live time, and the document viewer are implemented without a frontend framework. Motion is disabled when `prefers-reduced-motion` is active.
 
 ## Roblox and Discord media
 

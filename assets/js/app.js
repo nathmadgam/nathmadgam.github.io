@@ -1,5 +1,5 @@
 import { projects, games, skills, process, robloxGroups, discordServers, reviews } from "./data.js";
-import { getRobloxGameImages, getRobloxGroupImages, getDiscordServer, loadImageSafely } from "./media-service.js";
+import { getRobloxGameImages, getRobloxGameDetails, getRobloxGroupImages, getDiscordServer, loadImageSafely } from "./media-service.js";
 
 const qs = (selector, root = document) => root.querySelector(selector);
 const qsa = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -57,21 +57,19 @@ function renderGames() {
   grid.innerHTML = games.map((game, index) => {
     const initialImage = game.cachedImage || game.fallback;
     return `
-    <a class="game-card reveal" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer" data-game-id="${game.id}" data-tilt style="--reveal-delay:${Math.min(index * 90, 270)}ms;--card-index:${index}">
+    <a class="game-card reveal" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer" data-game-id="${game.id}" data-tilt style="--reveal-delay:${Math.min(index * 100, 300)}ms;--card-index:${index}">
       <div class="media-shell" data-state="fallback">
         <div class="media-skeleton" aria-hidden="true"></div>
-        <img class="media-image" src="${escapeHtml(initialImage)}" alt="Roblox experience artwork for ${escapeHtml(game.name)}" width="512" height="512" loading="lazy" decoding="async">
-        <span class="media-type-badge">${icon("roblox")} Roblox</span>
-        <span class="media-state-label">Saved Roblox thumbnail</span>
+        <img class="media-image" src="${escapeHtml(initialImage)}" alt="Official Roblox artwork for ${escapeHtml(game.name)}" width="512" height="512" loading="lazy" decoding="async">
+        <span class="media-type-badge">${icon("roblox")} Roblox experience</span>
       </div>
       <div class="game-card-body">
-        <div class="game-card-head"><h3>${escapeHtml(game.name)}</h3><span class="game-card-arrow" aria-hidden="true">${icon("external")}</span></div>
-        <p>${escapeHtml(game.description)}</p>
+        <div class="game-card-head"><h3 data-game-name>${escapeHtml(game.name)}</h3><span class="game-card-arrow" aria-hidden="true">${icon("external")}</span></div>
+        <p data-game-description>${escapeHtml(game.description)}</p>
         <dl class="game-credits">
-          <div><dt>Creator</dt><dd>${escapeHtml(game.creator)}</dd></div>
+          <div><dt>Created by</dt><dd data-game-creator>${escapeHtml(game.creator)}</dd></div>
           <div><dt>My role</dt><dd>${escapeHtml(game.role)}</dd></div>
         </dl>
-        <span class="game-id">${game.idType.toUpperCase()} ID / ${escapeHtml(game.id)}</span>
       </div>
     </a>`;
   }).join("");
@@ -79,10 +77,9 @@ function renderGames() {
 
 function renderSkills() {
   qs("[data-skill-grid]").innerHTML = skills.map((skill, index) => `
-    <article class="skill-item reveal" style="--reveal-delay:${Math.min(index * 45, 250)}ms">
-      <span class="skill-code">S-${String(index + 1).padStart(2, "0")}</span>
-      <div><h3>${escapeHtml(skill.title)}</h3><p>${escapeHtml(skill.description)}</p></div>
-      <span class="skill-pulse" aria-hidden="true"></span>
+    <article class="skill-item reveal" style="--reveal-delay:${Math.min(index * 65, 390)}ms;--skill:${Number(skill.percentage) || 0}%">
+      <span class="skill-code">${String(index + 1).padStart(2, "0")}</span>
+      <div class="skill-copy"><div class="skill-title-row"><h3>${escapeHtml(skill.title)}</h3><strong><span data-skill-value="${Number(skill.percentage) || 0}">0</span>%</strong></div><p>${escapeHtml(skill.description)}</p><div class="skill-meter" aria-label="${escapeHtml(skill.title)} proficiency: ${Number(skill.percentage) || 0} percent"><span></span></div></div>
     </article>`).join("");
 }
 
@@ -134,10 +131,15 @@ function renderReviews() {
         </blockquote>
         <p class="sr-only" data-review-full aria-live="polite"></p>
         <div class="review-source" data-review-source>
-          <div>
+          <div class="review-person">
             <strong data-review-name></strong>
             <span data-review-location></span>
           </div>
+          <dl class="review-details">
+            <div><dt>Budget</dt><dd data-review-price></dd></div>
+            <div><dt>Delivery</dt><dd data-review-duration></dd></div>
+            <div><dt>Posted</dt><dd data-review-age></dd></div>
+          </dl>
           <a data-review-platform target="_blank" rel="noopener noreferrer"></a>
         </div>
         <div class="review-footer">
@@ -164,6 +166,9 @@ function setupReviewCarousel() {
   const name = qs("[data-review-name]", stage);
   const location = qs("[data-review-location]", stage);
   const platform = qs("[data-review-platform]", stage);
+  const price = qs("[data-review-price]", stage);
+  const duration = qs("[data-review-duration]", stage);
+  const age = qs("[data-review-age]", stage);
   const count = qs("[data-review-count]", stage);
   const progress = qs("[data-review-progress]", stage);
   const dots = qsa("[data-review-dot]", stage);
@@ -185,8 +190,11 @@ function setupReviewCarousel() {
 
   const updateStaticContent = review => {
     name.textContent = review.name;
-    location.textContent = review.location;
-    platform.textContent = `Posted on ${review.platform}`;
+    location.textContent = `${review.location}${review.repeatClient ? " · Repeat client" : ""}`;
+    price.textContent = review.price || "Not listed";
+    duration.textContent = review.duration || "Not listed";
+    age.textContent = review.age || "Client review";
+    platform.textContent = `View on ${review.platform}`;
     platform.href = review.platformUrl;
     count.textContent = `${String(current + 1).padStart(2, "0")} / ${String(reviews.length).padStart(2, "0")}`;
     full.textContent = `“${review.quote}” — ${review.name}, ${review.platform}`;
@@ -202,7 +210,7 @@ function setupReviewCarousel() {
     cancelAnimationFrame(progressFrame);
     progress.style.transform = "scaleX(0)";
     if (paused || reducedMotion) return;
-    const duration = 4600;
+    const duration = 5600;
     const start = performance.now();
     const tick = now => {
       const amount = Math.min((now - start) / duration, 1);
@@ -222,7 +230,7 @@ function setupReviewCarousel() {
   const typeQuote = text => {
     typed.textContent = "";
     complete = false;
-    const duration = Math.min(Math.max(text.length * 27, 900), 2500);
+    const duration = Math.min(Math.max(text.length * 31, 1050), 3200);
     const start = performance.now();
     const tick = now => {
       const amount = Math.min((now - start) / duration, 1);
@@ -251,7 +259,7 @@ function setupReviewCarousel() {
       else typeQuote(review.quote);
     };
 
-    transitionTimer = setTimeout(swap, instant ? 0 : 260);
+    transitionTimer = setTimeout(swap, instant ? 0 : 520);
   }
 
   qs("[data-review-prev]", stage).addEventListener("click", () => showSlide(current - 1));
@@ -289,19 +297,23 @@ function setupReviewCarousel() {
 }
 
 async function hydrateGameMedia() {
-  const results = await getRobloxGameImages(games);
+  const [images, details] = await Promise.all([
+    getRobloxGameImages(games).catch(() => new Map()),
+    getRobloxGameDetails(games).catch(() => new Map()),
+  ]);
   await Promise.all(games.map(async game => {
     const card = qs(`[data-game-id="${game.id}"]`);
     if (!card) return;
     const shell = qs(".media-shell", card);
     const img = qs(".media-image", card);
-    const label = qs(".media-state-label", card);
-    const media = results.get(game.id);
+    const media = images.get(game.id);
     const localImage = game.cachedImage || game.fallback;
-    const loaded = await loadImageSafely(img, media?.imageUrl, localImage, shell);
-    label.textContent = loaded === "loaded"
-      ? "Live Roblox thumbnail"
-      : media?.reason === "blocked" ? "Thumbnail unavailable" : "Saved Roblox thumbnail";
+    await loadImageSafely(img, media?.imageUrl, localImage, shell);
+
+    const official = details.get(game.id);
+    if (official?.name) qs("[data-game-name]", card).textContent = official.name;
+    if (official?.creator) qs("[data-game-creator]", card).textContent = official.creator;
+    if (official?.description) qs("[data-game-description]", card).textContent = official.description;
   }));
 }
 
@@ -450,51 +462,61 @@ function setupScrollEffects() {
 function setupPointerInteractions() {
   if (reducedMotion || !finePointer) return;
   const halo = qs(".pointer-halo");
-  let targetX = innerWidth / 2;
-  let targetY = innerHeight / 2;
-  let currentX = targetX;
-  let currentY = targetY;
-  const animateHalo = () => {
-    currentX += (targetX - currentX) * .16;
-    currentY += (targetY - currentY) * .16;
-    halo.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-    requestAnimationFrame(animateHalo);
-  };
-  addEventListener("pointermove", event => { targetX = event.clientX; targetY = event.clientY; }, { passive: true });
-  animateHalo();
+  let pointerX = innerWidth / 2;
+  let pointerY = innerHeight / 2;
+  let haloX = pointerX;
+  let haloY = pointerY;
+  addEventListener("pointermove", event => { pointerX = event.clientX; pointerY = event.clientY; }, { passive: true });
 
-  qsa("[data-tilt], [data-tilt-soft]").forEach(element => {
-    const strength = element.hasAttribute("data-tilt-soft") ? 1.6 : 3.2;
-    element.addEventListener("pointermove", event => {
-      const rect = element.getBoundingClientRect();
+  const tiltItems = qsa("[data-tilt], [data-tilt-soft]").map(element => ({
+    element,
+    strength: element.hasAttribute("data-tilt-soft") ? 1.5 : 3,
+    tx: 0, ty: 0, cx: 0, cy: 0, sx: 50, sy: 50,
+  }));
+  tiltItems.forEach(item => {
+    item.element.addEventListener("pointermove", event => {
+      const rect = item.element.getBoundingClientRect();
       const px = (event.clientX - rect.left) / rect.width - .5;
       const py = (event.clientY - rect.top) / rect.height - .5;
-      element.style.setProperty("--tilt-x", `${(-py * strength).toFixed(2)}deg`);
-      element.style.setProperty("--tilt-y", `${(px * strength).toFixed(2)}deg`);
-      element.style.setProperty("--spot-x", `${((px + .5) * 100).toFixed(1)}%`);
-      element.style.setProperty("--spot-y", `${((py + .5) * 100).toFixed(1)}%`);
+      item.tx = -py * item.strength;
+      item.ty = px * item.strength;
+      item.sx = (px + .5) * 100;
+      item.sy = (py + .5) * 100;
     });
-    element.addEventListener("pointerleave", () => {
-      element.style.setProperty("--tilt-x", "0deg");
-      element.style.setProperty("--tilt-y", "0deg");
-      element.style.setProperty("--spot-x", "50%");
-      element.style.setProperty("--spot-y", "50%");
-    });
+    item.element.addEventListener("pointerleave", () => { item.tx = 0; item.ty = 0; item.sx = 50; item.sy = 50; });
   });
 
-  qsa("[data-magnetic]").forEach(element => {
-    element.addEventListener("pointermove", event => {
-      const rect = element.getBoundingClientRect();
-      const x = (event.clientX - (rect.left + rect.width / 2)) * .035;
-      const y = (event.clientY - (rect.top + rect.height / 2)) * .06;
-      element.style.setProperty("--mag-x", `${x.toFixed(2)}px`);
-      element.style.setProperty("--mag-y", `${y.toFixed(2)}px`);
+  const magneticItems = qsa("[data-magnetic]").map(element => ({ element, tx: 0, ty: 0, cx: 0, cy: 0 }));
+  magneticItems.forEach(item => {
+    item.element.addEventListener("pointermove", event => {
+      const rect = item.element.getBoundingClientRect();
+      item.tx = (event.clientX - (rect.left + rect.width / 2)) * .035;
+      item.ty = (event.clientY - (rect.top + rect.height / 2)) * .05;
     });
-    element.addEventListener("pointerleave", () => {
-      element.style.setProperty("--mag-x", "0px");
-      element.style.setProperty("--mag-y", "0px");
-    });
+    item.element.addEventListener("pointerleave", () => { item.tx = 0; item.ty = 0; });
   });
+
+  const tick = () => {
+    haloX += (pointerX - haloX) * .075;
+    haloY += (pointerY - haloY) * .075;
+    halo.style.transform = `translate3d(${haloX}px, ${haloY}px, 0)`;
+    tiltItems.forEach(item => {
+      item.cx += (item.tx - item.cx) * .085;
+      item.cy += (item.ty - item.cy) * .085;
+      item.element.style.setProperty("--tilt-x", `${item.cx.toFixed(3)}deg`);
+      item.element.style.setProperty("--tilt-y", `${item.cy.toFixed(3)}deg`);
+      item.element.style.setProperty("--spot-x", `${item.sx.toFixed(1)}%`);
+      item.element.style.setProperty("--spot-y", `${item.sy.toFixed(1)}%`);
+    });
+    magneticItems.forEach(item => {
+      item.cx += (item.tx - item.cx) * .075;
+      item.cy += (item.ty - item.cy) * .075;
+      item.element.style.setProperty("--mag-x", `${item.cx.toFixed(2)}px`);
+      item.element.style.setProperty("--mag-y", `${item.cy.toFixed(2)}px`);
+    });
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 
 function setupCounters() {
@@ -593,17 +615,21 @@ function setupHeroParallax() {
   if (reducedMotion || !finePointer) return;
   const hero = qs(".hero");
   if (!hero) return;
+  let tx = 0, ty = 0, cx = 0, cy = 0;
   hero.addEventListener("pointermove", event => {
     const rect = hero.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - .5;
-    const y = (event.clientY - rect.top) / rect.height - .5;
-    hero.style.setProperty("--hero-x", x.toFixed(3));
-    hero.style.setProperty("--hero-y", y.toFixed(3));
+    tx = (event.clientX - rect.left) / rect.width - .5;
+    ty = (event.clientY - rect.top) / rect.height - .5;
   });
-  hero.addEventListener("pointerleave", () => {
-    hero.style.setProperty("--hero-x", "0");
-    hero.style.setProperty("--hero-y", "0");
-  });
+  hero.addEventListener("pointerleave", () => { tx = 0; ty = 0; });
+  const tick = () => {
+    cx += (tx - cx) * .055;
+    cy += (ty - cy) * .055;
+    hero.style.setProperty("--hero-x", cx.toFixed(4));
+    hero.style.setProperty("--hero-y", cy.toFixed(4));
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }
 
 function setupDownloadPulse() {
@@ -614,6 +640,137 @@ function setupDownloadPulse() {
       setTimeout(() => link.classList.remove("is-downloading"), 1300);
     });
   });
+}
+
+function setupSkillMeters() {
+  const items = qsa(".skill-item");
+  if (!items.length) return;
+  const run = item => {
+    const element = qs("[data-skill-value]", item);
+    if (!element || item.dataset.meterStarted === "true") return;
+    item.dataset.meterStarted = "true";
+    const target = Number(element.dataset.skillValue || 0);
+    item.classList.add("is-meter-active");
+    if (reducedMotion) { element.textContent = String(target); return; }
+    const start = performance.now();
+    const duration = 1650;
+    const tick = now => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      element.textContent = progress >= 1 ? String(target) : String(Math.round(target * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+  const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    run(entry.target);
+    observer.unobserve(entry.target);
+  }), { threshold: .12, rootMargin: "0px 0px -8% 0px" });
+  items.forEach(item => observer.observe(item));
+}
+
+function setupAmbientCanvas() {
+  const canvas = qs("[data-ambient-canvas]");
+  if (!canvas || reducedMotion) return;
+  const ctx = canvas.getContext("2d", { alpha: true });
+  let width = 0, height = 0, dpr = 1;
+  let pointer = { x: -9999, y: -9999 };
+  let particles = [];
+  const resize = () => {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    width = innerWidth;
+    height = innerHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const count = Math.max(22, Math.min(64, Math.round(width / 28)));
+    particles = Array.from({ length: count }, (_, index) => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - .5) * (.16 + (index % 4) * .025),
+      vy: (Math.random() - .5) * (.16 + (index % 3) * .025),
+      r: .6 + Math.random() * 1.25,
+      phase: Math.random() * Math.PI * 2,
+    }));
+  };
+  addEventListener("resize", resize, { passive: true });
+  addEventListener("pointermove", event => { pointer.x = event.clientX; pointer.y = event.clientY; }, { passive: true });
+  addEventListener("pointerleave", () => { pointer.x = -9999; pointer.y = -9999; });
+  resize();
+  const tick = time => {
+    ctx.clearRect(0, 0, width, height);
+    for (let i = 0; i < particles.length; i += 1) {
+      const p = particles[i];
+      const dx = pointer.x - p.x;
+      const dy = pointer.y - p.y;
+      const distance = Math.hypot(dx, dy);
+      if (distance < 180) {
+        const force = (180 - distance) / 1800;
+        p.vx -= dx * force * .0018;
+        p.vy -= dy * force * .0018;
+      }
+      p.vx *= .997;
+      p.vy *= .997;
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -20) p.x = width + 20;
+      if (p.x > width + 20) p.x = -20;
+      if (p.y < -20) p.y = height + 20;
+      if (p.y > height + 20) p.y = -20;
+      const pulse = .55 + Math.sin(time * .0012 + p.phase) * .3;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(255,38,56,${.15 + pulse * .22})`;
+      ctx.arc(p.x, p.y, p.r + pulse * .35, 0, Math.PI * 2);
+      ctx.fill();
+      for (let j = i + 1; j < particles.length; j += 1) {
+        const q = particles[j];
+        const d = Math.hypot(p.x - q.x, p.y - q.y);
+        if (d < 118) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(255,38,56,${(1 - d / 118) * .085})`;
+          ctx.lineWidth = .7;
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+function setupContractViewer() {
+  const viewer = qs("[data-contract-viewer]");
+  if (!viewer) return;
+  const pages = qsa("[data-contract-page]", viewer);
+  const jumps = qsa("[data-contract-jump]", viewer);
+  const current = qs("[data-contract-current]", viewer);
+  const viewport = qs("[data-contract-viewport]", viewer);
+  const zoomIn = qs("[data-contract-zoom-in]", viewer);
+  const zoomOut = qs("[data-contract-zoom-out]", viewer);
+  let scale = 1;
+
+  const setCurrent = pageNumber => {
+    if (current) current.textContent = String(pageNumber);
+    jumps.forEach(button => button.classList.toggle("is-active", button.dataset.contractJump === String(pageNumber)));
+  };
+  const applyScale = () => viewer.style.setProperty("--contract-scale", scale.toFixed(2));
+  zoomIn?.addEventListener("click", () => { scale = Math.min(1.35, scale + .1); applyScale(); });
+  zoomOut?.addEventListener("click", () => { scale = Math.max(.75, scale - .1); applyScale(); });
+  jumps.forEach(button => button.addEventListener("click", () => {
+    const page = pages.find(item => item.dataset.contractPage === button.dataset.contractJump);
+    page?.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+  }));
+
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries.filter(entry => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (visible) setCurrent(visible.target.dataset.contractPage);
+  }, { root: viewport, threshold: [.25, .45, .65] });
+  pages.forEach(page => observer.observe(page));
 }
 
 function validateExternalLinks() {
@@ -635,10 +792,13 @@ function init() {
   setupScrollEffects();
   setupPointerInteractions();
   setupCounters();
+  setupSkillMeters();
   setupLiveClock();
   setupLiveMetrics();
   setupTextScramble();
   setupHeroParallax();
+  setupAmbientCanvas();
+  setupContractViewer();
   setupDownloadPulse();
   validateExternalLinks();
 

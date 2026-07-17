@@ -16,7 +16,7 @@ export const projects = [
   },
   {
     title: "Map Voting",
-    category: "UI + systems",
+    category: "Interface systems",
     year: "2024",
     description: "A complete voting flow that connects presentation, server-owned vote state, map selection, and clean handoff into the game loop.",
     tags: ["UI state", "Remote events", "Game loop"],
@@ -70,19 +70,19 @@ export const games = [
     creator: "Skydda Concord Studio",
     role: "Programmer",
     url: "https://www.roblox.com/games/110811521450324/GROW-YOUR-PET",
-    description: "A pet-growth experience featuring progression, player-facing systems, and production gameplay scripting.",
+    description: "Raise a pet through a progression-focused Roblox experience, expand its growth, and continue building toward larger milestones over time.",
     cachedImage: "assets/cached-media/grow-your-pet.webp",
     fallback: "assets/fallbacks/grow-your-pet.svg",
   },
   {
-    name: "Soft Pink Tower",
+    name: "[CARRY] Soft Pink Tower",
     id: "95624995252294",
     idType: "place",
     universeId: "9333955742",
     creator: "Lazy Tower Studio",
     role: "Programmer",
     url: "https://www.roblox.com/games/95624995252294/Soft-Pink-Tower",
-    description: "A polished tower experience with gameplay and production scripting contributions.",
+    description: "Climb a soft pink obstacle tower built around timing, movement, and repeat runs through progressively demanding stages.",
     cachedImage: "assets/cached-media/soft-pink-tower.webp",
     fallback: "assets/fallbacks/soft-pink-tower.svg",
   },
@@ -94,21 +94,21 @@ export const games = [
     creator: "Lazy Tower Studio",
     role: "Programmer",
     url: "https://www.roblox.com/games/101848404389998/Soft-Pink-Wallhop-Tower",
-    description: "A wallhop-focused tower experience with gameplay and systems programming contributions.",
+    description: "Climb a soft pink tower built around wallhop movement, precision platforming, and increasingly demanding obstacle sections.",
     cachedImage: "assets/cached-media/soft-pink-wallhop.webp",
     fallback: "assets/fallbacks/soft-pink-wallhop.svg",
   },
 ];
 
 export const skills = [
-  { title: "Programming + problem solving", description: "Turning product requirements into dependable features with clear logic, practical trade-offs, and readable implementation." },
-  { title: "Software architecture", description: "Modular services, typed Luau, explicit state, reusable components, configuration, and maintainable code ownership." },
-  { title: "Backend development", description: "Server-authoritative systems, validation, permissions, remote communication, session ownership, and secure boundaries." },
-  { title: "Data systems", description: "Persistence, profiles, autosave, migrations, recovery paths, cross-server state, and consistent progression data." },
-  { title: "User interface development", description: "Responsive interfaces, state-driven menus, interaction feedback, camera flows, onboarding, shops, and voting." },
-  { title: "Testing + debugging", description: "Reproducing defects, checking edge cases, logging useful context, validating failure states, and preventing regressions." },
-  { title: "Performance optimization", description: "Profiling, event cleanup, network efficiency, cache design, request deduplication, and runtime-focused improvements." },
-  { title: "Collaboration + delivery", description: "Scope communication, version-control habits, documentation, configurable handoff, and clean support for continued development." },
+  { title: "Programming Fundamentals", percentage: 95, description: "Writing clear Luau, structuring control flow, selecting suitable data structures, solving defects, and turning requirements into dependable game features." },
+  { title: "Software Architecture", percentage: 91, description: "Organizing larger projects into reusable modules and services with explicit responsibilities, predictable state, and code that another developer can extend." },
+  { title: "Gameplay Development", percentage: 94, description: "Building player mechanics, rounds, interactions, combat rules, cooldowns, NPC behaviour, and responsive feedback across client and server." },
+  { title: "Backend Development", percentage: 90, description: "Creating server-authoritative logic, validating requests, managing permissions and sessions, and keeping important game rules secure from the client." },
+  { title: "Database Management", percentage: 92, description: "Designing DataStore profiles, autosave, migrations, recovery paths, cross-server state, and reliable progression that survives disconnects and failures." },
+  { title: "User Interface Development", percentage: 87, description: "Developing responsive Roblox interfaces, menus, onboarding, shops, voting flows, camera states, and feedback that clearly communicates game state." },
+  { title: "Testing and Optimization", percentage: 89, description: "Reproducing edge cases, profiling runtime behaviour, reducing unnecessary network work, cleaning events, and verifying features across devices." },
+  { title: "Team Collaboration", percentage: 93, description: "Communicating scope, documenting systems, using version-control habits, preparing configurable handoffs, and supporting continued development after delivery." },
 ];
 
 export const process = [
@@ -133,7 +133,13 @@ export const discordServers = [
 ];
 
 export const reviews = [
-  { name: "lotteryshot", location: "United States", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Went beyond and helped with extra work, excellent and fair." },
-  { name: "skyebsu", location: "United Kingdom · repeat client", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Pays keen attention to detail, extremely good at scripting, very quick to respond!" },
-  { name: "loaf_bread", location: "Philippines", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "He was able to fulfill all of my requests and even provided some valuable ideas. Any minor issues were promptly resolved." },
+  { name: "eventpunks", location: "Austria", repeatClient: true, rating: 5, age: "1 year ago", price: "$600-$800", duration: "2 months", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Everything as usual really great." },
+  { name: "misterclubs", location: "United States", repeatClient: false, rating: 5, age: "1 year ago", price: "$50-$100", duration: "3 months", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Awesome results, turned out great!" },
+  { name: "eventpunks", location: "Austria", repeatClient: true, rating: 5, age: "1 year ago", price: "$200-$400", duration: "2 weeks", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Everything fine." },
+  { name: "lotteryshot", location: "United States", repeatClient: false, rating: 5, age: "1 year ago", price: "$100-$200", duration: "10 days", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Went beyond and helped with extra work, excellent and fair." },
+  { name: "hafizrenal", location: "Indonesia", repeatClient: false, rating: 5, age: "1 year ago", price: "Up to $50", duration: "1 day", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Great working with Nath. They were professional, responsive, and delivered outstanding results. Highly recommend!" },
+  { name: "skyebsu", location: "United Kingdom", repeatClient: true, rating: 5, age: "2 years ago", price: "$50-$100", duration: "3 weeks", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Pays keen attention to detail, extremely good at scripting, very quick to respond!" },
+  { name: "eventpunks", location: "Austria", repeatClient: true, rating: 5, age: "2 years ago", price: "Up to $50", duration: "2 days", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Everything fine and everything done as discussed and given to him as the order. I really appreciate his willingness to do quality work." },
+  { name: "togodumnus", location: "United Kingdom", repeatClient: true, rating: 5, age: "2 years ago", price: "Up to $50", duration: "1 day", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "I am very pleased Nathaniel was able to solve a problem for me that I had for a while. I am very pleased with the service provided." },
+  { name: "loaf_bread", location: "Philippines", repeatClient: false, rating: 5, age: "2 years ago", price: "Up to $50", duration: "6 days", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Thank you so much, sir! It has been a pleasure working with you. He was able to fulfill all of my requests and even provided valuable ideas. Any minor issues were promptly resolved. I highly recommend his services." },
 ];

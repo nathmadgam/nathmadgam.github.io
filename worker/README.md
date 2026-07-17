@@ -8,6 +8,7 @@ The portfolio first tries Roblox's public thumbnail/universe endpoints and Disco
 - `GET /api/roblox/place-icons?placeIds=...`
 - `GET /api/roblox/thumbnails?universeIds=...`
 - `GET /api/roblox/groups?groupIds=...`
+- `GET /api/roblox/game-details?universeIds=...`
 - `GET /api/discord/invite?code=...&guildId=...`
 
 Responses are sanitized and edge-cached. The Discord route uses public invite metadata first. It uses the public widget only when a guild ID is supplied and that server has enabled its widget. An optional bot token is used server-side only as a final authenticated guild-metadata fallback.
