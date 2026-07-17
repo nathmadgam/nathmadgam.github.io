@@ -664,7 +664,10 @@ function renderSkills() {
 
 function renderProcess() {
   qs("[data-process-grid]").innerHTML = process.map((item, index) => `
-    <li class="process-card reveal" style="--reveal-delay:${index * 80}ms"><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p></li>`).join("");
+    <li class="process-card reveal process-card-${index + 1}" data-tilt style="--reveal-delay:${index * 80}ms">
+      <span class="process-visual" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
+      <h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p>
+    </li>`).join("");
 }
 
 function networkCard(item, type, index) {
@@ -963,6 +966,10 @@ function setupDialog() {
     });
   });
 
+  video.setAttribute("controlsList", "nodownload noplaybackrate");
+  video.disablePictureInPicture = true;
+  video.addEventListener("contextmenu", event => event.preventDefault());
+  video.addEventListener("dragstart", event => event.preventDefault());
   video.addEventListener("canplay", () => { shell.dataset.loading = "false"; });
   video.addEventListener("playing", () => { shell.dataset.loading = "false"; });
   video.addEventListener("volumechange", updateAudioStatus);
@@ -1138,29 +1145,30 @@ function setupLiveClock() {
 
 function setupLiveMetrics() {
   const metrics = qsa("[data-live-count]");
-  if (!metrics.length || reducedMotion) return;
-  metrics.forEach((metric, index) => {
-    const target = Number(metric.dataset.liveCount);
-    let cycle = 0;
-    const animate = () => {
-      const start = performance.now();
-      const from = Math.max(0, target - Math.max(3, Math.round(target * .35)));
-      const duration = 1250 + index * 180;
-      const tick = now => {
-        const progress = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 4);
-        metric.textContent = String(Math.round(from + (target - from) * eased));
-        if (progress < 1) requestAnimationFrame(tick);
-        else metric.closest(".live-metric")?.classList.add("is-counted");
-      };
-      requestAnimationFrame(tick);
-      cycle += 1;
-      if (cycle < 3) setTimeout(animate, 8500 + index * 700);
+  const rail = qs(".live-metrics");
+  if (!metrics.length || !rail) return;
+  if (reducedMotion) { metrics.forEach(metric => { metric.textContent = metric.dataset.liveCount || "0"; }); return; }
+  let played = false;
+  const observer = new IntersectionObserver(entries => {
+    if (played || !entries.some(entry => entry.isIntersecting)) return;
+    played = true;
+    const startTime = performance.now();
+    const duration = 1500;
+    const tick = now => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      metrics.forEach(metric => {
+        const target = Number(metric.dataset.liveCount) || 0;
+        metric.textContent = String(Math.round(target * eased));
+        if (progress === 1) metric.closest(".live-metric")?.classList.add("is-counted");
+      });
+      if (progress < 1) requestAnimationFrame(tick);
     };
-    setTimeout(animate, 380 + index * 180);
-  });
+    requestAnimationFrame(tick);
+    observer.disconnect();
+  }, { threshold: .35 });
+  observer.observe(rail);
 }
-
 function setupTextScramble() {
   if (reducedMotion || !finePointer) return;
   const glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/+-";
