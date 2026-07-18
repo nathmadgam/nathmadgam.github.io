@@ -348,16 +348,51 @@ async function hydrateDiscordServers() {
 
 function setupDialog() {
   const dialog = qs("[data-media-dialog]");
+  if (!dialog) return;
   const video = qs("[data-dialog-video]", dialog);
   const shell = qs(".dialog-video-shell", dialog);
   const title = qs("[data-dialog-title]", dialog);
   const status = qs("[data-dialog-status]", dialog);
+  const toggle = qs("[data-video-toggle]", dialog);
+  const playIcon = qs("[data-video-play-icon]", dialog);
+  const progress = qs("[data-video-progress]", dialog);
+  const time = qs("[data-video-time]", dialog);
+  const mute = qs("[data-video-mute]", dialog);
+  const volumeIcon = qs("[data-video-volume-icon]", dialog);
+  const volume = qs("[data-video-volume]", dialog);
+  const fullscreen = qs("[data-video-fullscreen]", dialog);
+
+  const formatTime = seconds => {
+    if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
+    const minutes = Math.floor(seconds / 60);
+    const remainder = Math.floor(seconds % 60);
+    return `${String(minutes).padStart(2, "0")}:${String(remainder).padStart(2, "0")}`;
+  };
+
+  const updatePlayState = () => {
+    const playing = !video.paused && !video.ended;
+    playIcon.textContent = playing ? "❚❚" : "▶";
+    toggle.setAttribute("aria-label", playing ? "Pause video" : "Play video");
+    shell.classList.toggle("is-playing", playing);
+  };
+
+  const updateTimeline = () => {
+    const duration = Number.isFinite(video.duration) ? video.duration : 0;
+    const ratio = duration > 0 ? video.currentTime / duration : 0;
+    progress.value = String(Math.round(ratio * 1000));
+    progress.style.setProperty("--progress", `${Math.max(0, Math.min(100, ratio * 100))}%`);
+    time.textContent = `${formatTime(video.currentTime)} / ${formatTime(duration)}`;
+  };
 
   const updateAudioStatus = () => {
-    status.classList.toggle("is-muted", video.muted || video.volume === 0);
-    status.lastChild.textContent = video.muted || video.volume === 0
-      ? " Audio muted — enable sound in the player controls."
-      : " Audio enabled — use the player controls to adjust volume.";
+    const muted = video.muted || video.volume === 0;
+    status.classList.toggle("is-muted", muted);
+    status.lastChild.textContent = muted
+      ? " Audio muted — use the custom volume control to enable sound."
+      : " Audio enabled — use the custom controls below.";
+    volumeIcon.textContent = muted ? "🔇" : video.volume < .45 ? "🔉" : "🔊";
+    mute.setAttribute("aria-label", muted ? "Unmute video" : "Mute video");
+    if (!video.muted) volume.value = String(video.volume);
   };
 
   const close = () => {
@@ -377,27 +412,68 @@ function setupDialog() {
     video.poster = trigger.dataset.poster || "";
     video.src = trigger.dataset.video;
     video.muted = false;
-    video.volume = 0.9;
+    video.volume = .9;
+    volume.value = ".9";
     shell.dataset.loading = "true";
     document.body.classList.add("dialog-open");
     dialog.showModal();
     updateAudioStatus();
+    updatePlayState();
+    updateTimeline();
     video.play().catch(() => {
       status.lastChild.textContent = " Press play to start this demo with audio.";
+      updatePlayState();
     });
   });
 
-  video.setAttribute("controlsList", "nodownload noplaybackrate");
+  video.removeAttribute("controls");
+  video.setAttribute("controlsList", "nodownload noplaybackrate noremoteplayback");
   video.disablePictureInPicture = true;
+  video.setAttribute("disablePictureInPicture", "");
+  video.setAttribute("disableRemotePlayback", "");
   video.addEventListener("contextmenu", event => event.preventDefault());
   video.addEventListener("dragstart", event => event.preventDefault());
-  video.addEventListener("canplay", () => { shell.dataset.loading = "false"; });
-  video.addEventListener("playing", () => { shell.dataset.loading = "false"; });
+  video.addEventListener("canplay", () => { shell.dataset.loading = "false"; updateTimeline(); });
+  video.addEventListener("loadedmetadata", updateTimeline);
+  video.addEventListener("timeupdate", updateTimeline);
+  video.addEventListener("durationchange", updateTimeline);
+  video.addEventListener("playing", () => { shell.dataset.loading = "false"; updatePlayState(); });
+  video.addEventListener("pause", updatePlayState);
+  video.addEventListener("ended", updatePlayState);
   video.addEventListener("volumechange", updateAudioStatus);
+  video.addEventListener("click", () => video.paused ? video.play() : video.pause());
   video.addEventListener("error", () => {
     shell.dataset.loading = "false";
-    status.lastChild.textContent = " This video could not be loaded. Try opening the portfolio through a local web server.";
+    status.lastChild.textContent = " This video could not be loaded. Try opening the portfolio through a web server.";
   });
+
+  toggle.addEventListener("click", () => video.paused ? video.play() : video.pause());
+  progress.addEventListener("input", () => {
+    if (!Number.isFinite(video.duration) || video.duration <= 0) return;
+    video.currentTime = (Number(progress.value) / 1000) * video.duration;
+    updateTimeline();
+  });
+  mute.addEventListener("click", () => {
+    video.muted = !video.muted;
+    if (!video.muted && video.volume === 0) video.volume = .7;
+  });
+  volume.addEventListener("input", () => {
+    video.volume = Number(volume.value);
+    video.muted = video.volume === 0;
+  });
+  fullscreen.addEventListener("click", async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await shell.requestFullscreen();
+    } catch (error) {
+      console.warn("Fullscreen unavailable", error);
+    }
+  });
+  document.addEventListener("fullscreenchange", () => {
+    fullscreen.textContent = document.fullscreenElement ? "↙" : "⛶";
+    fullscreen.setAttribute("aria-label", document.fullscreenElement ? "Exit fullscreen" : "Enter fullscreen");
+  });
+
   qs("[data-dialog-close]", dialog).addEventListener("click", close);
   dialog.addEventListener("click", event => { if (event.target === dialog) close(); });
   dialog.addEventListener("cancel", event => { event.preventDefault(); close(); });
@@ -751,6 +827,65 @@ function setupAmbientCanvas() {
   requestAnimationFrame(tick);
 }
 
+function setupInquiryForm() {
+  const form = qs("[data-inquiry-form]");
+  if (!form) return;
+  const submit = qs("[data-inquiry-submit]", form);
+  const success = qs("[data-inquiry-success]", form);
+  const fields = qsa("input, select, textarea", form);
+
+  const resetSuccess = () => {
+    success.hidden = true;
+    success.classList.remove("is-visible");
+    form.classList.remove("is-success");
+  };
+  fields.forEach(field => field.addEventListener("input", resetSuccess));
+
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    resetSuccess();
+    if (!form.reportValidity()) {
+      form.classList.remove("is-invalid");
+      requestAnimationFrame(() => form.classList.add("is-invalid"));
+      return;
+    }
+    form.classList.remove("is-invalid");
+    const data = new FormData(form);
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const type = String(data.get("projectType") || "").trim();
+    const timeline = String(data.get("timeline") || "Not specified").trim() || "Not specified";
+    const brief = String(data.get("brief") || "").trim();
+    const subject = `Roblox project inquiry — ${type}`;
+    const body = [
+      `Hi Nathaniel,`,
+      ``,
+      `My name is ${name}. I would like to discuss a Roblox project.`,
+      ``,
+      `Project type: ${type}`,
+      `Target timeline: ${timeline}`,
+      `Reply email: ${email}`,
+      ``,
+      `Project brief:`,
+      brief,
+      ``,
+      `I reviewed the Contract Agreement Form and would like to discuss the scope.`,
+    ].join("\n");
+
+    submit.disabled = true;
+    submit.classList.add("is-sending");
+    setTimeout(() => {
+      submit.disabled = false;
+      submit.classList.remove("is-sending");
+      form.classList.add("is-success");
+      success.hidden = false;
+      requestAnimationFrame(() => success.classList.add("is-visible"));
+      const mailto = `mailto:nathanielmadridgaminde@proton.me?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      setTimeout(() => { window.location.href = mailto; }, 650);
+    }, reducedMotion ? 0 : 650);
+  });
+}
+
 function setupContractViewer() {
   const viewer = qs("[data-contract-viewer]");
   if (!viewer) return;
@@ -782,7 +917,10 @@ function setupContractViewer() {
 }
 
 function validateExternalLinks() {
-  const invalid = qsa('a[target="_blank"]').filter(link => !/^https:\/\//.test(link.href));
+  const invalid = qsa('a[target="_blank"]').filter(link => {
+    const href = link.getAttribute("href") || "";
+    return /^https?:\/\//i.test(href) && !/^https:\/\//i.test(href);
+  });
   if (invalid.length) console.warn("Invalid external links detected", invalid);
 }
 
@@ -807,6 +945,7 @@ function init() {
   setupHeroParallax();
   setupAmbientCanvas();
   setupContractViewer();
+  setupInquiryForm();
   setupDownloadPulse();
   validateExternalLinks();
 

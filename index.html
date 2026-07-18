@@ -13,7 +13,7 @@
   <link rel="icon" href="assets/fallbacks/cynex-mark.svg" type="image/svg+xml">
   <link rel="preload" href="images/avatar.webp" as="image" type="image/webp">
   <link rel="stylesheet" href="assets/css/styles.css">
-  <script src="assets/js/runtime-config.js"></script>
+  <script src="assets/js/runtime-config.js" defer></script>
   <script src="assets/js/site.bundle.js" defer></script>
 </head>
 <body>
@@ -105,8 +105,10 @@
         <div class="live-metric"><strong data-live-count="3">3</strong><span>live experiences</span></div>
       </div>
       <div class="work-ticker" aria-label="Development specialties">
-        <div><span>GAMEPLAY PROGRAMMING</span><i>•</i><span>BACKEND LOGIC</span><i>•</i><span>DATA SYSTEMS</span><i>•</i><span>UI DEVELOPMENT</span><i>•</i><span>TESTING</span><i>•</i><span>ROBLOX LUAU</span><i>•</i></div>
-        <div aria-hidden="true"><span>GAMEPLAY PROGRAMMING</span><i>•</i><span>BACKEND LOGIC</span><i>•</i><span>DATA SYSTEMS</span><i>•</i><span>UI DEVELOPMENT</span><i>•</i><span>TESTING</span><i>•</i><span>ROBLOX LUAU</span><i>•</i></div>
+        <div class="work-ticker-track">
+          <div class="work-ticker-group"><span>GAMEPLAY PROGRAMMING</span><i>•</i><span>BACKEND LOGIC</span><i>•</i><span>DATA SYSTEMS</span><i>•</i><span>UI DEVELOPMENT</span><i>•</i><span>TESTING</span><i>•</i><span>ROBLOX LUAU</span><i>•</i></div>
+          <div class="work-ticker-group" aria-hidden="true"><span>GAMEPLAY PROGRAMMING</span><i>•</i><span>BACKEND LOGIC</span><i>•</i><span>DATA SYSTEMS</span><i>•</i><span>UI DEVELOPMENT</span><i>•</i><span>TESTING</span><i>•</i><span>ROBLOX LUAU</span><i>•</i></div>
+        </div>
       </div>
     </aside>
 
@@ -207,13 +209,13 @@
             <button type="button" data-contract-jump="4" aria-label="Go to agreement page 4"><img src="assets/contract-pages/page-4.webp" alt="" width="127" height="195" loading="lazy"><span>04</span></button>
             <button type="button" data-contract-jump="5" aria-label="Go to agreement page 5"><img src="assets/contract-pages/page-5.webp" alt="" width="127" height="195" loading="lazy"><span>05</span></button>
           </nav>
-          <div class="contract-viewport" data-contract-viewport tabindex="0" aria-label="Scrollable preview of the five-page Contract Agreement Form form">
+          <div class="contract-viewport" data-contract-viewport tabindex="0" aria-label="Scrollable preview of the five-page Contract Agreement Form">
             <div class="contract-pages">
-              <figure class="contract-page" data-contract-page="1"><img src="assets/contract-pages/page-1.webp" alt="Contract Agreement Form form, page 1 of 5: party information, project details, and services" width="1275" height="1950" decoding="async"><figcaption>Page 1 of 5</figcaption></figure>
-              <figure class="contract-page" data-contract-page="2"><img src="assets/contract-pages/page-2.webp" alt="Contract Agreement Form form, page 2 of 5: payment, milestones, review, revisions, and ownership" width="1275" height="1950" loading="lazy" decoding="async"><figcaption>Page 2 of 5</figcaption></figure>
-              <figure class="contract-page" data-contract-page="3"><img src="assets/contract-pages/page-3.webp" alt="Contract Agreement Form form, page 3 of 5: permitted use, Roblox platform rules, confidentiality, and cancellation" width="1275" height="1950" loading="lazy" decoding="async"><figcaption>Page 3 of 5</figcaption></figure>
-              <figure class="contract-page" data-contract-page="4"><img src="assets/contract-pages/page-4.webp" alt="Contract Agreement Form form, page 4 of 5: warranties, responsibility, dispute resolution, and electronic agreement" width="1275" height="1950" loading="lazy" decoding="async"><figcaption>Page 4 of 5</figcaption></figure>
-              <figure class="contract-page" data-contract-page="5"><img src="assets/contract-pages/page-5.webp" alt="Contract Agreement Form form, page 5 of 5: general terms and signatures" width="1275" height="1950" loading="lazy" decoding="async"><figcaption>Page 5 of 5</figcaption></figure>
+              <figure class="contract-page" data-contract-page="1"><img src="assets/contract-pages/page-1.webp" alt="Contract Agreement Form, page 1 of 5: party information, project details, and services" width="1275" height="1950" decoding="async"><figcaption>Page 1 of 5</figcaption></figure>
+              <figure class="contract-page" data-contract-page="2"><img src="assets/contract-pages/page-2.webp" alt="Contract Agreement Form, page 2 of 5: payment, milestones, review, revisions, and ownership" width="1275" height="1950" loading="lazy" decoding="async"><figcaption>Page 2 of 5</figcaption></figure>
+              <figure class="contract-page" data-contract-page="3"><img src="assets/contract-pages/page-3.webp" alt="Contract Agreement Form, page 3 of 5: permitted use, Roblox platform rules, confidentiality, and cancellation" width="1275" height="1950" loading="lazy" decoding="async"><figcaption>Page 3 of 5</figcaption></figure>
+              <figure class="contract-page" data-contract-page="4"><img src="assets/contract-pages/page-4.webp" alt="Contract Agreement Form, page 4 of 5: warranties, responsibility, dispute resolution, and electronic agreement" width="1275" height="1950" loading="lazy" decoding="async"><figcaption>Page 4 of 5</figcaption></figure>
+              <figure class="contract-page" data-contract-page="5"><img src="assets/contract-pages/page-5.webp" alt="Contract Agreement Form, page 5 of 5: general terms and signatures" width="1275" height="1950" loading="lazy" decoding="async"><figcaption>Page 5 of 5</figcaption></figure>
             </div>
           </div>
         </div>
@@ -227,33 +229,52 @@
         <h2 id="contact-title">Need a Roblox system built, improved, or repaired?</h2>
         <p>Send the feature brief, current project state, expected behavior, and deadline. I can review the scope and discuss the cleanest implementation path.</p>
       </div>
-      <div class="contact-actions reveal">
-        <a class="contact-card contact-card-main" href="mailto:nathanielmadridgaminde@proton.me" data-magnetic>
-          <span class="contact-icon contact-icon-proton" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.351s-1.096-.108-1.955-.705c-.86-.596-6.58-4.688-6.58-4.688v8.098S3.513 24 4.55 24h14.9c1.036 0 1.085-.942 1.085-.942v-8.1s-5.723 4.092-6.58 4.69c-.86.595-1.955.704-1.955.704zm0-20.35S4.925-.23 3.465 7.623v5.35s.06.572 1.67 1.735c1.607 1.162 5.773 4.436 6.867 4.436 1.088 0 5.254-3.273 6.865-4.437 1.607-1.164 1.668-1.737 1.668-1.737V7.62C19.075-.229 12 .003 12 .003zm4.846 10.536h-9.69V7.623C8.14 3.723 12 3.67 12 3.67s3.863.054 4.846 3.954z"/></svg></span>
-          <span class="contact-meta"><small>Email</small><strong>nathanielmadridgaminde@proton.me</strong><em>Best for project briefs and contracts</em></span>
-          <span class="contact-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-        </a>
-        <a class="contact-card" href="https://discord.gg/sAQtQyyS" target="_blank" rel="noopener noreferrer" data-magnetic>
-          <span class="contact-icon contact-icon-discord" aria-hidden="true"><svg viewBox="0 0 640 512"><path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485.065 485.065 0 0 0 404.081 32.03a1.816 1.816 0 0 0-1.923.91 337.461 337.461 0 0 0-14.9 30.6 447.848 447.848 0 0 0-134.426 0 309.541 309.541 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91A483.689 483.689 0 0 0 116.085 69.137a1.712 1.712 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.016 2.016 0 0 0 .765 1.375A487.666 487.666 0 0 0 176.02 479.918a1.9 1.9 0 0 0 2.063-.676A348.2 348.2 0 0 0 208.12 430.4a1.86 1.86 0 0 0-1.019-2.588 321.173 321.173 0 0 1-45.868-21.853 1.885 1.885 0 0 1-.185-3.126c3.082-2.309 6.166-4.711 9.109-7.137a1.819 1.819 0 0 1 1.9-.256c96.229 43.917 200.41 43.917 295.5 0a1.812 1.812 0 0 1 1.924.233c2.944 2.426 6.027 4.851 9.132 7.16a1.884 1.884 0 0 1-.162 3.126 301.407 301.407 0 0 1-45.89 21.83 1.875 1.875 0 0 0-1 2.611 391.055 391.055 0 0 0 30.014 48.815 1.864 1.864 0 0 0 2.063.7A486.048 486.048 0 0 0 610.7 405.729a1.882 1.882 0 0 0 .765-1.352C623.729 277.594 590.933 167.465 524.531 69.836ZM222.491 337.58c-28.972 0-52.844-26.587-52.844-59.239S193.056 219.1 222.491 219.1c29.665 0 53.306 26.82 52.843 59.239 0 32.652-23.41 59.239-52.843 59.239Zm195.38 0c-28.971 0-52.843-26.587-52.843-59.239s23.409-59.241 52.843-59.241c29.667 0 53.307 26.82 52.844 59.239 0 32.652-23.177 59.239-52.844 59.239Z"/></svg></span>
-          <span class="contact-meta"><small>Discord</small><strong>Join the Cynex server</strong><em>Fastest place for technical discussion</em></span>
-          <span class="contact-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-        </a>
-        <a class="contact-card" href="https://www.linkedin.com/in/nathaniel-madrid" target="_blank" rel="noopener noreferrer" data-magnetic>
-          <span class="contact-icon contact-icon-linkedin" aria-hidden="true"><svg viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3C448 46.5 433.6 32 416 32ZM135.4 416H69V202.2h66.5V416Zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5Zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416Z"/></svg></span>
-          <span class="contact-meta"><small>LinkedIn</small><strong>Nathaniel Madrid</strong><em>Professional profile and experience</em></span>
-          <span class="contact-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-        </a>
-        <a class="contact-card" href="https://x.com/cynexcodes" target="_blank" rel="noopener noreferrer" data-magnetic>
-          <span class="contact-icon contact-icon-x" aria-hidden="true"><svg viewBox="0 0 512 512"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48ZM364.4 421.8h39.1L151.1 88h-42L364.4 421.8Z"/></svg></span>
-          <span class="contact-meta"><small>X / Twitter</small><strong>@cynexcodes</strong><em>Updates, builds, and development notes</em></span>
-          <span class="contact-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
-        </a>
+      <div class="contact-interactive reveal">
+        <form class="inquiry-form" data-inquiry-form data-tilt-soft novalidate>
+          <div class="inquiry-form-head">
+            <span>PROJECT INQUIRY</span>
+            <strong>Tell me what needs to be built.</strong>
+          </div>
+          <div class="inquiry-fields">
+            <label><span>Your name</span><input type="text" name="name" autocomplete="name" required placeholder="Name or studio"></label>
+            <label><span>Your email</span><input type="email" name="email" autocomplete="email" required placeholder="you@example.com"></label>
+            <label><span>Project type</span><select name="projectType" required><option value="">Select one</option><option>Gameplay system</option><option>Backend or data system</option><option>User interface</option><option>Bug fixing or optimization</option><option>Full Roblox project</option><option>Other</option></select></label>
+            <label><span>Target timeline</span><input type="text" name="timeline" placeholder="Example: 2–4 weeks"></label>
+            <label class="inquiry-wide"><span>Project brief</span><textarea name="brief" required rows="5" placeholder="Describe the current project, the feature, expected behavior, and any deadline."></textarea></label>
+          </div>
+          <button class="inquiry-submit" type="submit" data-inquiry-submit><span>Prepare project email</span><span aria-hidden="true">↗</span></button>
+          <p class="inquiry-note">This static form opens a prepared email to <strong>nathanielmadridgaminde@proton.me</strong>. No information is stored on the website.</p>
+          <div class="inquiry-success" data-inquiry-success aria-live="polite" hidden><span aria-hidden="true">✓</span><strong>Project email prepared.</strong><small>Your email app should open in a moment.</small></div>
+        </form>
+
+        <div class="contact-actions">
+          <a class="contact-card contact-card-main" href="mailto:nathanielmadridgaminde@proton.me" data-magnetic>
+            <span class="contact-icon contact-icon-proton" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20.351s-1.096-.108-1.955-.705c-.86-.596-6.58-4.688-6.58-4.688v8.098S3.513 24 4.55 24h14.9c1.036 0 1.085-.942 1.085-.942v-8.1s-5.723 4.092-6.58 4.69c-.86.595-1.955.704-1.955.704zm0-20.35S4.925-.23 3.465 7.623v5.35s.06.572 1.67 1.735c1.607 1.162 5.773 4.436 6.867 4.436 1.088 0 5.254-3.273 6.865-4.437 1.607-1.164 1.668-1.737 1.668-1.737V7.62C19.075-.229 12 .003 12 .003zm4.846 10.536h-9.69V7.623C8.14 3.723 12 3.67 12 3.67s3.863.054 4.846 3.954z"/></svg></span>
+            <span class="contact-meta"><small>Proton Mail</small><strong>nathanielmadridgaminde@proton.me</strong><em>Project briefs and contracts</em></span>
+            <span class="contact-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+          </a>
+          <a class="contact-card" href="https://discord.gg/sAQtQyyS" target="_blank" rel="noopener noreferrer" data-magnetic>
+            <span class="contact-icon contact-icon-discord" aria-hidden="true"><svg viewBox="0 0 640 512"><path d="M524.531 69.836a1.5 1.5 0 0 0-.764-.7A485.065 485.065 0 0 0 404.081 32.03a1.816 1.816 0 0 0-1.923.91 337.461 337.461 0 0 0-14.9 30.6 447.848 447.848 0 0 0-134.426 0 309.541 309.541 0 0 0-15.135-30.6 1.89 1.89 0 0 0-1.924-.91A483.689 483.689 0 0 0 116.085 69.137a1.712 1.712 0 0 0-.788.676C39.068 183.651 18.186 294.69 28.43 404.354a2.016 2.016 0 0 0 .765 1.375A487.666 487.666 0 0 0 176.02 479.918a1.9 1.9 0 0 0 2.063-.676A348.2 348.2 0 0 0 208.12 430.4a1.86 1.86 0 0 0-1.019-2.588 321.173 321.173 0 0 1-45.868-21.853 1.885 1.885 0 0 1-.185-3.126c3.082-2.309 6.166-4.711 9.109-7.137a1.819 1.819 0 0 1 1.9-.256c96.229 43.917 200.41 43.917 295.5 0a1.812 1.812 0 0 1 1.924.233c2.944 2.426 6.027 4.851 9.132 7.16a1.884 1.884 0 0 1-.162 3.126 301.407 301.407 0 0 1-45.89 21.83 1.875 1.875 0 0 0-1 2.611 391.055 391.055 0 0 0 30.014 48.815 1.864 1.864 0 0 0 2.063.7A486.048 486.048 0 0 0 610.7 405.729a1.882 1.882 0 0 0 .765-1.352C623.729 277.594 590.933 167.465 524.531 69.836ZM222.491 337.58c-28.972 0-52.844-26.587-52.844-59.239S193.056 219.1 222.491 219.1c29.665 0 53.306 26.82 52.843 59.239 0 32.652-23.41 59.239-52.843 59.239Zm195.38 0c-28.971 0-52.843-26.587-52.843-59.239s23.409-59.241 52.843-59.241c29.667 0 53.307 26.82 52.844 59.239 0 32.652-23.177 59.239-52.844 59.239Z"/></svg></span>
+            <span class="contact-meta"><small>Discord</small><strong>Join the Cynex server</strong><em>Direct technical discussion</em></span>
+            <span class="contact-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+          </a>
+          <a class="contact-card" href="https://www.linkedin.com/in/nathaniel-madrid" target="_blank" rel="noopener noreferrer" data-magnetic>
+            <span class="contact-icon contact-icon-linkedin" aria-hidden="true"><svg viewBox="0 0 448 512"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3C448 46.5 433.6 32 416 32ZM135.4 416H69V202.2h66.5V416Zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5Zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416Z"/></svg></span>
+            <span class="contact-meta"><small>LinkedIn</small><strong>Nathaniel Madrid</strong><em>Professional profile</em></span>
+            <span class="contact-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+          </a>
+          <a class="contact-card" href="https://x.com/cynexcodes" target="_blank" rel="noopener noreferrer" data-magnetic>
+            <span class="contact-icon contact-icon-x" aria-hidden="true"><svg viewBox="0 0 512 512"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48ZM364.4 421.8h39.1L151.1 88h-42L364.4 421.8Z"/></svg></span>
+            <span class="contact-meta"><small>X</small><strong>@cynexcodes</strong><em>Builds and updates</em></span>
+            <span class="contact-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+          </a>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <span>© 2026 CYNEX</span>
+    <span>© 2026 CYNEX SERVICES</span>
     <span>ROBLOX PROGRAMMER / SYSTEMS DEVELOPER</span>
     <a href="#top">BACK TO TOP ↑</a>
   </footer>
@@ -263,8 +284,19 @@
       <div><span class="dialog-kicker">PROJECT DEMO</span><h2 id="media-dialog-title" data-dialog-title></h2></div>
       <button type="button" class="dialog-close" data-dialog-close aria-label="Close video">Close ×</button>
     </div>
-    <div class="dialog-audio-status" data-dialog-status><span aria-hidden="true"></span>Audio enabled — use the player controls to adjust volume.</div>
-    <div class="dialog-video-shell"><div class="dialog-loader" aria-hidden="true"></div><video data-dialog-video controls controlslist="nodownload noplaybackrate" disablepictureinpicture disableremoteplayback playsinline preload="metadata"></video></div>
+    <div class="dialog-audio-status" data-dialog-status><span aria-hidden="true"></span>Audio enabled — use the custom controls below.</div>
+    <div class="dialog-video-shell" data-video-player>
+      <div class="dialog-loader" aria-hidden="true"></div>
+      <video data-dialog-video controlslist="nodownload noplaybackrate noremoteplayback" disablepictureinpicture disableremoteplayback playsinline preload="metadata" tabindex="-1"></video>
+      <div class="video-controls" data-video-controls>
+        <button type="button" class="video-control video-toggle" data-video-toggle aria-label="Play video"><span data-video-play-icon>▶</span></button>
+        <span class="video-time" data-video-time>00:00 / 00:00</span>
+        <input class="video-progress" data-video-progress type="range" min="0" max="1000" value="0" aria-label="Video progress">
+        <button type="button" class="video-control" data-video-mute aria-label="Mute video"><span data-video-volume-icon>🔊</span></button>
+        <input class="video-volume" data-video-volume type="range" min="0" max="1" step="0.05" value="0.9" aria-label="Video volume">
+        <button type="button" class="video-control" data-video-fullscreen aria-label="Enter fullscreen">⛶</button>
+      </div>
+    </div>
   </dialog>
 
   <noscript><div class="noscript">JavaScript is required to load the project cards. Contact: nathanielmadridgaminde@proton.me</div></noscript>
