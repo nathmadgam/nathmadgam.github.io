@@ -597,6 +597,10 @@ function icon(name, className = "ui-icon") {
     roblox: '<path d="m8 4 12 4-4 12-12-4Z"/><path d="m10.5 9.5 4 1.3-1.3 4-4-1.3Z"/>',
     discord: '<path d="M7.4 6.2A16 16 0 0 1 12 5.5a16 16 0 0 1 4.6.7c1.6 2.2 2.2 4.5 2 6.8-1.4 1-2.8 1.6-4.2 1.9l-1-1.3c.7-.2 1.3-.5 1.9-.9-1.8.8-4.8.8-6.6 0 .6.4 1.2.7 1.9.9l-1 1.3A11.5 11.5 0 0 1 5.4 13c-.2-2.3.4-4.6 2-6.8Z"/><path d="M9 11.7h.01M15 11.7h.01"/>',
     code: '<path d="m9 7-5 5 5 5M15 7l5 5-5 5M13.5 5 10.5 19"/>',
+    clipboardList: '<rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
+    code2: '<path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16"/>',
+    bug: '<path d="m8 2 1.88 1.88M14.12 3.88 16 2M9 7.13V6a3 3 0 1 1 6 0v1.13M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6M12 20v-9M6.5 9C4.6 8.8 3 7.1 3 5M6 13H2M3 21c0-2.1 1.7-3.9 3.8-4M17.5 9C19.4 8.8 21 7.1 21 5M18 13h4M21 21c0-2.1-1.7-3.9-3.8-4"/>',
+    packageCheck: '<path d="M16 16l2 2 4-4M21 10.5V6a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 6v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14M7.5 4.27l9 5.15M3.29 5 12 10l8.71-5M12 22V10"/>',
     download: '<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14"/>',
   };
   return `<svg class="${className}" viewBox="0 0 24 24" aria-hidden="true">${paths[name] ?? paths.code}</svg>`;
@@ -663,9 +667,11 @@ function renderSkills() {
 }
 
 function renderProcess() {
+  const processIcons = ["clipboardList", "code2", "bug", "packageCheck"];
   qs("[data-process-grid]").innerHTML = process.map((item, index) => `
-    <li class="process-card reveal process-card-${index + 1}" data-tilt style="--reveal-delay:${index * 80}ms">
-      <span class="process-visual" aria-hidden="true"><i></i><i></i><i></i><b></b></span>
+    <li class="process-card reveal process-card-${index + 1}" data-tilt style="--reveal-delay:${index * 80}ms;--process-index:${index}">
+      <span class="process-icon" aria-hidden="true">${icon(processIcons[index] || "code")}</span>
+      <span class="process-orbit" aria-hidden="true"></span>
       <h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p>
     </li>`).join("");
 }
@@ -792,7 +798,7 @@ function setupReviewCarousel() {
     cancelAnimationFrame(progressFrame);
     progress.style.transform = "scaleX(0)";
     if (paused || reducedMotion) return;
-    const duration = 5600;
+    const duration = 6200;
     const start = performance.now();
     const tick = now => {
       const amount = Math.min((now - start) / duration, 1);
@@ -805,6 +811,7 @@ function setupReviewCarousel() {
 
   const finishTyping = () => {
     complete = true;
+    card.classList.remove("is-typing");
     card.classList.add("is-complete");
     scheduleAdvance();
   };
@@ -812,8 +819,9 @@ function setupReviewCarousel() {
   const typeQuote = text => {
     typed.textContent = "";
     complete = false;
-    const duration = Math.min(Math.max(text.length * 31, 1050), 3200);
+    const duration = Math.min(Math.max(text.length * 38, 1400), 4700);
     const start = performance.now();
+    card.classList.add("is-typing");
     const tick = now => {
       const amount = Math.min((now - start) / duration, 1);
       const characters = Math.max(1, Math.floor(text.length * amount));
@@ -828,7 +836,7 @@ function setupReviewCarousel() {
     clearMotion();
     current = (nextIndex + reviews.length) % reviews.length;
     complete = false;
-    card.classList.remove("is-complete");
+    card.classList.remove("is-complete", "is-typing");
     card.classList.add("is-changing");
     progress.style.transform = "scaleX(0)";
 
@@ -1132,8 +1140,9 @@ function setupPointerInteractions() {
 
   const tiltItems = qsa("[data-tilt], [data-tilt-soft]").map(element => ({
     element,
-    strength: element.hasAttribute("data-tilt-soft") ? 1.5 : 3,
-    tx: 0, ty: 0, cx: 0, cy: 0, sx: 50, sy: 50,
+    strength: element.hasAttribute("data-tilt-soft") ? 2.2 : 4.4,
+    depth: element.hasAttribute("data-tilt-soft") ? 6 : 11,
+    tx: 0, ty: 0, cx: 0, cy: 0, px: 0, py: 0, cpx: 0, cpy: 0, sx: 50, sy: 50,
   }));
   tiltItems.forEach(item => {
     item.element.addEventListener("pointermove", event => {
@@ -1142,10 +1151,12 @@ function setupPointerInteractions() {
       const py = (event.clientY - rect.top) / rect.height - .5;
       item.tx = -py * item.strength;
       item.ty = px * item.strength;
+      item.px = px * item.depth;
+      item.py = py * item.depth;
       item.sx = (px + .5) * 100;
       item.sy = (py + .5) * 100;
     });
-    item.element.addEventListener("pointerleave", () => { item.tx = 0; item.ty = 0; item.sx = 50; item.sy = 50; });
+    item.element.addEventListener("pointerleave", () => { item.tx = 0; item.ty = 0; item.px = 0; item.py = 0; item.sx = 50; item.sy = 50; });
   });
 
   const magneticItems = qsa("[data-magnetic]").map(element => ({ element, tx: 0, ty: 0, cx: 0, cy: 0 }));
@@ -1162,11 +1173,16 @@ function setupPointerInteractions() {
     haloX += (pointerX - haloX) * .075;
     haloY += (pointerY - haloY) * .075;
     halo.style.transform = `translate3d(${haloX}px, ${haloY}px, 0)`;
+    const quadFollow = 1 - Math.pow(1 - .09, 2);
     tiltItems.forEach(item => {
-      item.cx += (item.tx - item.cx) * .085;
-      item.cy += (item.ty - item.cy) * .085;
+      item.cx += (item.tx - item.cx) * quadFollow;
+      item.cy += (item.ty - item.cy) * quadFollow;
+      item.cpx += (item.px - item.cpx) * quadFollow;
+      item.cpy += (item.py - item.cpy) * quadFollow;
       item.element.style.setProperty("--tilt-x", `${item.cx.toFixed(3)}deg`);
       item.element.style.setProperty("--tilt-y", `${item.cy.toFixed(3)}deg`);
+      item.element.style.setProperty("--parallax-x", `${item.cpx.toFixed(2)}px`);
+      item.element.style.setProperty("--parallax-y", `${item.cpy.toFixed(2)}px`);
       item.element.style.setProperty("--spot-x", `${item.sx.toFixed(1)}%`);
       item.element.style.setProperty("--spot-y", `${item.sy.toFixed(1)}%`);
     });
