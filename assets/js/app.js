@@ -1,10 +1,14 @@
 /**
  * Cynex Services portfolio site behaviour.
  * Renders list content from data.js and wires up navigation, the demo player,
- * the contract viewer, and the inquiry form. No external dependencies.
+ * the contract viewer, the inquiry form, and the interactive layer (scroll
+ * progress, pointer glow, hero roles, project filter, counters). No external
+ * dependencies; every animation respects prefers-reduced-motion.
  */
 import {
   featured,
+  ventures,
+  heroRoles,
   projects,
   games,
   freelanceProjects,
@@ -47,7 +51,7 @@ function renderFeatured() {
   if (!root) return;
   const game = featured;
   root.innerHTML = `
-    <article class="feature reveal">
+    <article class="feature reveal" data-glow>
       <a class="feature-media" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer"
          aria-label="Play ${escapeHtml(game.name)} on Roblox (opens in a new tab)">
         <img src="${escapeHtml(game.image)}" data-fallback="${escapeHtml(game.fallback)}"
@@ -90,12 +94,41 @@ function renderFeatured() {
   attachImageFallbacks(root);
 }
 
+function renderVentures() {
+  const list = qs("[data-venture-list]");
+  if (!list) return;
+  list.innerHTML = ventures.map(venture => {
+    const external = /^https?:/.test(venture.url);
+    const target = external ? ' target="_blank" rel="noopener noreferrer"' : "";
+    return `
+    <article class="venture reveal${venture.lead ? " venture-lead" : ""}" data-glow>
+      <div class="venture-head">
+        <div class="venture-logo" data-tone="${escapeHtml(venture.logoTone)}">
+          <img src="${escapeHtml(venture.logo)}" alt="${escapeHtml(venture.name)} logo"
+               width="256" height="256" loading="lazy" decoding="async">
+        </div>
+        <div>
+          <h3 class="venture-name">${escapeHtml(venture.name)}</h3>
+          <p class="venture-role">${escapeHtml(venture.role)}</p>
+        </div>
+      </div>
+      <p class="venture-copy">${escapeHtml(venture.description)}</p>
+      <ul class="chip-list" aria-label="Focus areas">
+        ${venture.tags.map(tag => `<li class="chip">${escapeHtml(tag)}</li>`).join("")}
+      </ul>
+      <a class="text-link venture-link" href="${escapeHtml(venture.url)}"${target}>
+        ${escapeHtml(venture.linkLabel)}${icon(external ? "external" : "arrow-right")}
+      </a>
+    </article>`;
+  }).join("");
+}
+
 function renderProjects() {
   const list = qs("[data-project-list]");
   if (!list) return;
   list.innerHTML = projects.map(project => `
-    <article class="project reveal">
-      <button class="project-media" type="button"
+    <article class="project reveal" data-category="${escapeHtml(project.category)}">
+      <button class="project-media" type="button" data-glow
               data-video="${escapeHtml(project.video)}"
               data-title="${escapeHtml(project.title)}"
               aria-label="Play the ${escapeHtml(project.title)} demo">
@@ -114,6 +147,30 @@ function renderProjects() {
         <p class="project-tags">${project.tags.map(escapeHtml).join(" &middot; ")}</p>
       </div>
     </article>`).join("");
+}
+
+function renderProjectFilter() {
+  const bar = qs("[data-project-filter]");
+  const list = qs("[data-project-list]");
+  if (!bar || !list) return;
+  const categories = ["All", ...new Set(projects.map(project => project.category))];
+  bar.innerHTML = categories.map((category, index) => `
+    <button class="filter-chip" type="button" data-filter="${escapeHtml(category)}"
+            aria-pressed="${index === 0}">${escapeHtml(category)}</button>`).join("");
+
+  bar.addEventListener("click", event => {
+    const button = event.target.closest("[data-filter]");
+    if (!button) return;
+    const selected = button.dataset.filter;
+    qsa("[data-filter]", bar).forEach(chip =>
+      chip.setAttribute("aria-pressed", String(chip === button)));
+    qsa(".project", list).forEach(project => {
+      const match = selected === "All" || project.dataset.category === selected;
+      project.hidden = !match;
+      // Filtered-in cards may not have crossed the reveal threshold yet.
+      if (match) project.classList.add("is-visible");
+    });
+  });
 }
 
 function renderExperiences() {
@@ -146,7 +203,7 @@ function renderFreelance() {
       <article class="freelance-card reveal">
         <a href="${escapeHtml(project.url)}" target="_blank" rel="noopener noreferrer"
            aria-label="Open ${escapeHtml(project.name)} community page (opens in a new tab)">
-          <div class="freelance-logo">
+          <div class="freelance-logo" data-glow>
             <img src="${escapeHtml(project.cachedImage)}" alt="Official ${escapeHtml(project.name)} community logo"
                  width="150" height="150" loading="lazy" decoding="async">
           </div>
@@ -490,10 +547,136 @@ function setupInquiryForm() {
   });
 }
 
+/** Thin gradient bar in the header tracking page scroll. */
+function setupScrollProgress() {
+  const bar = qs("[data-scroll-progress]");
+  if (!bar) return;
+  let queued = false;
+  const update = () => {
+    queued = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    bar.style.setProperty("--progress", max > 0 ? String(Math.min(scrollY / max, 1)) : "0");
+  };
+  addEventListener("scroll", () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(update);
+  }, { passive: true });
+  addEventListener("resize", update, { passive: true });
+  update();
+}
+
+/**
+ * Pointer-follow highlight. One delegated listener writes the pointer position
+ * into --mx/--my on the hero and on whichever [data-glow] card is hovered; CSS
+ * does the drawing. Skipped for touch and reduced motion.
+ */
+function setupPointerGlow() {
+  if (prefersReducedMotion.matches || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  const hero = qs("[data-hero]");
+  let frame = 0;
+  let last = null;
+
+  const paint = () => {
+    frame = 0;
+    if (!last) return;
+    const { x, y, target } = last;
+    const card = target instanceof Element ? target.closest("[data-glow]") : null;
+    for (const element of [card, hero]) {
+      if (!element) continue;
+      const rect = element.getBoundingClientRect();
+      if (y < rect.top || y > rect.bottom) continue;
+      element.style.setProperty("--mx", `${x - rect.left}px`);
+      element.style.setProperty("--my", `${y - rect.top}px`);
+    }
+  };
+
+  addEventListener("pointermove", event => {
+    last = { x: event.clientX, y: event.clientY, target: event.target };
+    if (!frame) frame = requestAnimationFrame(paint);
+  }, { passive: true });
+}
+
+/** Cycles the hero role line. Screen readers get the full list from static text. */
+function setupHeroRoles() {
+  const track = qs("[data-hero-roles]");
+  if (!track || !heroRoles.length) return;
+  track.textContent = heroRoles[0];
+  if (prefersReducedMotion.matches || heroRoles.length < 2) return;
+
+  let index = 0;
+  setInterval(() => {
+    if (document.hidden) return;
+    track.classList.add("is-leaving");
+    setTimeout(() => {
+      index = (index + 1) % heroRoles.length;
+      track.textContent = heroRoles[index];
+      track.classList.remove("is-leaving");
+    }, 260);
+  }, 2800);
+}
+
+/** Counts the About facts up from zero the first time they scroll into view. */
+function setupCounters() {
+  const values = qsa(".facts dd").filter(dd => /^\d+$/.test(dd.textContent.trim()));
+  if (!values.length || prefersReducedMotion.matches || !("IntersectionObserver" in window)) return;
+
+  const run = dd => {
+    const target = Number(dd.dataset.count);
+    const start = performance.now();
+    const duration = 900;
+    const step = now => {
+      const t = Math.min((now - start) / duration, 1);
+      dd.textContent = String(Math.round(target * (1 - (1 - t) ** 3)));
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      observer.unobserve(entry.target);
+      run(entry.target);
+    });
+  }, { threshold: 0.6 });
+
+  values.forEach(dd => {
+    dd.dataset.count = dd.textContent.trim();
+    dd.textContent = "0";
+    observer.observe(dd);
+  });
+}
+
+function setupCopyEmail() {
+  const button = qs("[data-copy-email]");
+  const label = qs("[data-copy-label]", button ?? document);
+  if (!button || !label) return;
+  const original = label.textContent;
+  let timer = 0;
+
+  button.addEventListener("click", async () => {
+    let copied = false;
+    try {
+      await navigator.clipboard.writeText(CONTACT_EMAIL);
+      copied = true;
+    } catch (error) { /* clipboard unavailable (insecure context or denied) */ }
+    label.textContent = copied ? "Email address copied" : CONTACT_EMAIL;
+    button.dataset.state = copied ? "ok" : "fallback";
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      label.textContent = original;
+      delete button.dataset.state;
+    }, 2400);
+  });
+}
+
 /* --------------------------------------------------------------------- init */
 
 renderFeatured();
+renderVentures();
 renderProjects();
+renderProjectFilter();
 renderExperiences();
 renderFreelance();
 renderCapabilities();
@@ -502,6 +685,11 @@ renderNetwork();
 renderReviews();
 
 setupHeader();
+setupScrollProgress();
+setupPointerGlow();
+setupHeroRoles();
+setupCounters();
+setupCopyEmail();
 setupThemeToggle();
 setupMobileNav();
 setupScrollSpy();

@@ -6,6 +6,52 @@
 /** @typedef {{name:string, role:string, description:string, inviteCode:string, url:string, fallback:string, cachedImage?:string, cacheName?:string, guildId?:string, iconHash?:string}} DiscordServer */
 /** @typedef {{name:string, studio:string, studioUrl:string, role:string, genre:string, status:string, url:string, summary:string, image:string, icon:string, fallback:string, highlights:{title:string, description:string}[]}} FeaturedGame */
 
+/** @typedef {{name:string, role:string, description:string, tags:string[], url:string, linkLabel:string, logo:string, logoTone:'dark'|'light', lead?:boolean}} Venture */
+
+/** @type {Venture[]} */
+export const ventures = [
+  {
+    name: "DATAL Projects",
+    role: "Co-founder & business owner",
+    description: "A software and digital development company based in the Philippines. DATAL Projects designs and builds websites, custom software, APIs, backend systems, and games for businesses and teams, with scope agreed in writing, milestone delivery, and documented handover.",
+    tags: ["Web development", "Custom software", "Backend & APIs", "Game development"],
+    url: "https://datalprojects.com/",
+    linkLabel: "Visit datalprojects.com",
+    logo: "assets/cached-media/datal-projects.webp",
+    logoTone: "dark",
+    lead: true,
+  },
+  {
+    name: "Cynex Services",
+    role: "Founder · Freelance practice",
+    description: "My independent Roblox programming practice, delivering gameplay, backend, data, and interface systems to studios and creators under contract.",
+    tags: ["Roblox", "Luau", "Contract work"],
+    url: "#contact",
+    linkLabel: "Start a project",
+    logo: "images/cynex-services.png",
+    logoTone: "light",
+  },
+  {
+    name: "Tenasa Games",
+    role: "Founder",
+    description: "A Roblox development group for original projects and collaborative production work.",
+    tags: ["Roblox", "Original games"],
+    url: "https://www.roblox.com/communities/34265738/Tenasa-Games",
+    linkLabel: "View community",
+    logo: "assets/cached-media/group-tenasa.webp",
+    logoTone: "light",
+  },
+];
+
+/** @type {string[]} Rotating hero line; the first entry is what non-animated contexts show. */
+export const heroRoles = [
+  "Co-founder, DATAL Projects",
+  "Lead developer, Burgeran!",
+  "Roblox systems programmer",
+  "Business owner",
+  "Computer science student",
+];
+
 /** @type {FeaturedGame} */
 export const featured = {
   name: "Burgeran!",
@@ -209,7 +255,7 @@ export const robloxGroups = [
 
 /** @type {DiscordServer[]} */
 export const discordServers = [
-  { name: "Summit Developers", role: "Pioneer", description: "A Roblox developer community for collaboration, feedback, and technical discussion.", inviteCode: "UXsEATcmaa", url: "https://discord.gg/UXsEATcmaa", fallback: "assets/fallbacks/discord-summit.svg", cachedImage: "assets/cached-media/discord-summit.webp", cacheName: "discord-summit.webp" },
+  { name: "Summit Developers", role: "Pioneer", description: "A Roblox developer community for collaboration, feedback, and technical discussion.", inviteCode: "UXsEATcmaa", url: "https://discord.gg/UXsEATcmaa", guildId: "1442736803843932223", iconHash: "51d3509cc16f090db3234db14dd33cf8", fallback: "assets/fallbacks/discord-summit.svg", cachedImage: "assets/cached-media/discord-summit.webp", cacheName: "discord-summit.webp" },
   { name: "Cynex Services", role: "Founder", description: "The primary server for project inquiries, development updates, and direct contact.", inviteCode: "sAQtQyyS", url: "https://discord.gg/sAQtQyyS", fallback: "assets/fallbacks/discord-cynex.svg", cachedImage: "assets/cached-media/discord-cynex.webp", cacheName: "discord-cynex.webp" },
 ];
 
