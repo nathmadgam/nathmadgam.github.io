@@ -4,6 +4,28 @@
 /** @typedef {{name:string, description:string, url:string, cachedImage:string}} FreelanceProject */
 /** @typedef {{name:string, description:string, url:string, favicon:string}} PublicWork */
 /** @typedef {{name:string, role:string, description:string, inviteCode:string, url:string, fallback:string, cachedImage?:string, cacheName?:string, guildId?:string, iconHash?:string}} DiscordServer */
+/** @typedef {{name:string, studio:string, studioUrl:string, role:string, genre:string, status:string, url:string, summary:string, image:string, icon:string, fallback:string, highlights:{title:string, description:string}[]}} FeaturedGame */
+
+/** @type {FeaturedGame} */
+export const featured = {
+  name: "Burgeran!",
+  studio: "Cly Games",
+  studioUrl: "https://www.roblox.com/communities/578746552/Cly-Games#!/about",
+  role: "Lead developer & programmer",
+  genre: "Restaurant simulation",
+  status: "Live on Roblox",
+  url: "https://www.roblox.com/games/78409188692335/Burgeran",
+  summary: "A Filipino burger-stall restaurant sim where players run a street-side stand, take orders from NPC customers, and serve them as fast as they can. I led development and wrote the game's programming, from the core service loop through to live, versioned updates.",
+  image: "assets/cached-media/burgeran.webp",
+  icon: "assets/cached-media/burgeran-icon.webp",
+  fallback: "assets/fallbacks/burgeran.svg",
+  highlights: [
+    { title: "NPC customer loop", description: "Customer arrival, ordering, and service flow that drives the core restaurant gameplay." },
+    { title: "Leaderboards", description: "Player rankings that keep the competitive side of the loop visible." },
+    { title: "Donation system", description: "A player donation flow structured so products can be attached without reworking the feature." },
+    { title: "Live operations", description: "Versioned releases reviewed with the studio and shipped to players with public changelogs." },
+  ],
+};
 
 /** @type {Project[]} */
 export const projects = [
@@ -65,6 +87,18 @@ export const projects = [
 
 /** @type {RobloxGame[]} */
 export const games = [
+  {
+    name: "Burgeran!",
+    id: "78409188692335",
+    idType: "place",
+    universeId: "10765172167",
+    creator: "Cly Games",
+    role: "Lead developer & programmer",
+    url: "https://www.roblox.com/games/78409188692335/Burgeran",
+    description: "Run a Filipino burger stall, take orders from NPC customers, and serve them fast enough to climb the leaderboards.",
+    cachedImage: "assets/cached-media/burgeran.webp",
+    fallback: "assets/fallbacks/burgeran.svg",
+  },
   {
     name: "Grow Your Pet",
     id: "110811521450324",

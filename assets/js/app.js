@@ -4,6 +4,7 @@
  * the contract viewer, and the inquiry form. No external dependencies.
  */
 import {
+  featured,
   projects,
   games,
   freelanceProjects,
@@ -40,6 +41,54 @@ function attachImageFallbacks(root) {
 }
 
 /* ------------------------------------------------------------------ render */
+
+function renderFeatured() {
+  const root = qs("[data-featured]");
+  if (!root) return;
+  const game = featured;
+  root.innerHTML = `
+    <article class="feature reveal">
+      <a class="feature-media" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer"
+         aria-label="Play ${escapeHtml(game.name)} on Roblox (opens in a new tab)">
+        <img src="${escapeHtml(game.image)}" data-fallback="${escapeHtml(game.fallback)}"
+             alt="Key art for ${escapeHtml(game.name)}: a player orders at a red burger stall while customers eat nearby"
+             width="768" height="432" loading="lazy" decoding="async">
+        <span class="feature-status">${escapeHtml(game.status)}</span>
+      </a>
+      <div class="feature-body">
+        <div class="feature-identity">
+          <img src="${escapeHtml(game.icon)}" data-fallback="${escapeHtml(game.fallback)}"
+               alt="" width="256" height="256" loading="lazy" decoding="async">
+          <div>
+            <h3 class="feature-name">${escapeHtml(game.name)}</h3>
+            <p class="feature-role">${escapeHtml(game.role)}</p>
+          </div>
+        </div>
+        <p class="feature-summary">${escapeHtml(game.summary)}</p>
+        <dl class="feature-facts">
+          <div><dt>Studio</dt><dd><a class="text-link" href="${escapeHtml(game.studioUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(game.studio)}${icon("external")}</a></dd></div>
+          <div><dt>Genre</dt><dd>${escapeHtml(game.genre)}</dd></div>
+        </dl>
+        <div class="feature-actions">
+          <a class="btn btn-primary" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">
+            ${icon("play")}Play on Roblox
+          </a>
+          <a class="btn btn-secondary" href="#contact">Build something similar</a>
+        </div>
+      </div>
+      <div class="feature-systems">
+        <h4 class="column-label">What I built</h4>
+        <ul>
+          ${game.highlights.map(item => `
+          <li>
+            ${icon("check")}
+            <span><strong>${escapeHtml(item.title)}</strong>${escapeHtml(item.description)}</span>
+          </li>`).join("")}
+        </ul>
+      </div>
+    </article>`;
+  attachImageFallbacks(root);
+}
 
 function renderProjects() {
   const list = qs("[data-project-list]");
@@ -443,6 +492,7 @@ function setupInquiryForm() {
 
 /* --------------------------------------------------------------------- init */
 
+renderFeatured();
 renderProjects();
 renderExperiences();
 renderFreelance();
