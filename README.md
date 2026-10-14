@@ -29,7 +29,7 @@ defaults (gradients, glass, card grids, the same fade on everything).
 **Brief.** The reader is a Roblox studio lead or game owner deciding whether to
 hire a programmer. They came to see proof of shipped work, then get in touch.
 They see the statement and Burgeran! first; "Start a project" is the easiest
-action on the page.
+action on the page and goes straight to <https://datalprojects.com/contact>.
 
 **Colour.** Every colour comes from the Cynex mark (`images/cynex-services.png`):
 violet `#9356f5`, ember `#fc9053`, and the white glyph, plus tints and shades of
@@ -46,8 +46,8 @@ spacing and 1px rules. Radii stay at 4px.
 **Numbers.** Only the process steps are numbered, because their order matters.
 
 **Motion.** Each content type has its own reveal (see the Motion block in
-`styles.css`), on a long, soft ease with no overshoot. The one flourish is the
-ember bar drawn under the headline. The process line follows scroll position.
+`styles.css`), on a long, soft ease with no overshoot. The process line follows
+scroll position.
 No motion hides text while it is being read, and with `prefers-reduced-motion`
 everything renders in its final state.
 
@@ -95,7 +95,9 @@ Interface icons are [Lucide](https://lucide.dev) (ISC) and brand icons are
 [Simple Icons](https://simpleicons.org) (CC0), inlined as a single `<symbol>`
 sprite in `index.html` so there is no icon dependency or extra request.
 
-## Contact form
+## Contact
 
-The inquiry form is static. It composes a `mailto:` message to
-`nathanielmadridgaminde@proton.me` and stores nothing.
+Every "Contact" and "Start a project" link points to the DATAL Projects contact
+page, <https://datalprojects.com/contact>, and opens in a new tab. The Contact
+section links there too and lists the direct channels (email, Discord,
+LinkedIn, X). The site itself stores nothing.

@@ -26,7 +26,7 @@ export const ventures = [
     role: "Founder · Freelance practice",
     description: "My independent Roblox programming practice, delivering gameplay, backend, data, and interface systems to studios and creators under contract.",
     tags: ["Roblox", "Luau", "Contract work"],
-    url: "#contact",
+    url: "https://datalprojects.com/contact",
     linkLabel: "Start a project",
     logo: "images/cynex-services.png",
     logoTone: "light",

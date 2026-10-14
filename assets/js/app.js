@@ -1,7 +1,7 @@
 /**
  * Cynex Services portfolio site behaviour.
  * Renders list content from data.js and wires up navigation, the demo player,
- * the contract viewer, the inquiry form, the project filter, and the motion
+ * the contract viewer, the email copy button, the project filter, and the motion
  * layer (scroll reveals and the process line). No external dependencies;
  * every animation respects prefers-reduced-motion.
  */
@@ -17,9 +17,10 @@ import {
   robloxGroups,
   discordServers,
   reviews,
-} from "./data.js?v=2026-10-14";
+} from "./data.js?v=2026-10-14b";
 
 const CONTACT_EMAIL = "nathanielmadridgaminde@proton.me";
+const CONTACT_URL = "https://datalprojects.com/contact";
 
 const qs = (selector, root = document) => root.querySelector(selector);
 const qsa = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -76,7 +77,7 @@ function renderFeatured() {
           <a class="btn btn-primary" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">
             ${icon("play")}Play on Roblox
           </a>
-          <a class="btn btn-secondary" href="#contact">Build something similar</a>
+          <a class="btn btn-secondary" href="${CONTACT_URL}" target="_blank" rel="noopener noreferrer">Build something similar</a>
         </div>
       </div>
       <div class="feature-systems">
@@ -575,53 +576,6 @@ function setupContract() {
   sync();
 }
 
-function setupInquiryForm() {
-  const form = qs("[data-inquiry-form]");
-  if (!form) return;
-  const status = qs("[data-inquiry-status]", form);
-  const statusText = qs("span", status);
-  const statusIcon = qs("use", status);
-
-  const announce = (message, state) => {
-    status.hidden = false;
-    status.dataset.state = state;
-    statusText.textContent = message;
-    statusIcon.setAttribute("href", state === "error" ? "#i-x" : "#i-check");
-  };
-
-  form.addEventListener("submit", event => {
-    event.preventDefault();
-
-    const fields = qsa("input, select, textarea", form);
-    fields.forEach(field => field.removeAttribute("aria-invalid"));
-
-    const invalid = fields.find(field => !field.checkValidity());
-    if (invalid) {
-      invalid.setAttribute("aria-invalid", "true");
-      invalid.focus();
-      announce("Please complete the highlighted field.", "error");
-      return;
-    }
-
-    const data = new FormData(form);
-    const get = key => String(data.get(key) ?? "").trim();
-    const subject = `Roblox project inquiry: ${get("projectType")}`;
-    const body = [
-      `Name: ${get("name")}`,
-      `Email: ${get("email")}`,
-      `Project type: ${get("projectType")}`,
-      `Target timeline: ${get("timeline") || "Not specified"}`,
-      "",
-      "Brief:",
-      get("brief"),
-    ].join("\n");
-
-    announce("Email prepared. Your mail app should open shortly.", "ok");
-    location.href =
-      `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  });
-}
-
 function setupCopyEmail() {
   const button = qs("[data-copy-email]");
   const label = qs("[data-copy-label]", button ?? document);
@@ -665,6 +619,5 @@ setupMobileNav();
 setupScrollSpy();
 setupPlayer();
 setupContract();
-setupInquiryForm();
 setupProcess();
 setupMotion();

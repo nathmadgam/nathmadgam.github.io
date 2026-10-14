@@ -45,9 +45,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400..800;1,400..800&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=2026-10-14">
+  <link rel="stylesheet" href="assets/css/styles.css?v=2026-10-14b">
   <link rel="preload" href="images/avatar.webp" as="image" type="image/webp">
-  <script src="assets/js/app.js?v=2026-10-14" type="module"></script>
+  <script src="assets/js/app.js?v=2026-10-14b" type="module"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -124,11 +124,11 @@
           <li><a href="#work">Work</a></li>
           <li><a href="#experiences">Experiences</a></li>
           <li><a href="#freelance">Freelance</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="https://datalprojects.com/contact" target="_blank" rel="noopener noreferrer">Contact</a></li>
         </ul>
       </nav>
 
-      <a class="header-cta" href="#contact">Start a project</a>
+      <a class="header-cta" href="https://datalprojects.com/contact" target="_blank" rel="noopener noreferrer">Start a project</a>
 
       <button class="theme-toggle" type="button" aria-label="Switch colour theme" data-theme-toggle>
         <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"></use></svg>
@@ -154,22 +154,23 @@
       <li><a href="#network">Network</a></li>
       <li><a href="#feedback">Feedback</a></li>
       <li><a href="#agreement">Agreement</a></li>
-      <li><a href="#contact">Contact</a></li>
+      <li><a href="https://datalprojects.com/contact" target="_blank" rel="noopener noreferrer">Contact</a></li>
     </ul>
   </nav>
 
   <main id="main">
     <section class="hero" id="top">
       <div class="shell">
-        <p class="hero-kicker" data-motion="fade"><strong>Nathaniel Madrid</strong>, Roblox programmer and systems developer</p>
-        <h1 class="hero-title" data-motion="rise">Software and Roblox systems, built to <em>be maintained.</em></h1>
-
         <div class="hero-grid">
-          <div class="hero-copy" data-motion="rise">
-            <p class="lede">I co-founded DATAL Projects, run Cynex Services, and develop gameplay, backend services, persistent data, and interfaces in Luau, structured so a team can extend the work after launch.</p>
-            <div class="hero-actions">
-              <a class="btn btn-primary" href="#contact">Start a project<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a>
-              <a class="btn btn-secondary" href="#featured">See Burgeran!</a>
+          <div class="hero-copy">
+            <p class="hero-kicker" data-motion="fade"><strong>Nathaniel Madrid</strong>, Roblox programmer and systems developer</p>
+            <h1 class="hero-title" data-motion="rise">Software and Roblox systems, built to <em>be maintained.</em></h1>
+            <div data-motion="rise">
+              <p class="lede">I co-founded DATAL Projects, run Cynex Services, and develop gameplay, backend services, persistent data, and interfaces in Luau, structured so a team can extend the work after launch.</p>
+              <div class="hero-actions">
+                <a class="btn btn-primary" href="https://datalprojects.com/contact" target="_blank" rel="noopener noreferrer">Start a project<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a>
+                <a class="btn btn-secondary" href="#featured">See Burgeran!</a>
+              </div>
             </div>
           </div>
 
@@ -380,43 +381,13 @@
         </div>
 
         <div class="contact-grid">
-          <form class="inquiry" data-inquiry-form novalidate>
-            <div class="field">
-              <label for="f-name">Name or studio</label>
-              <input id="f-name" type="text" name="name" autocomplete="name" required>
-            </div>
-            <div class="field">
-              <label for="f-email">Email</label>
-              <input id="f-email" type="email" name="email" autocomplete="email" required>
-            </div>
-            <div class="field">
-              <label for="f-type">Project type</label>
-              <select id="f-type" name="projectType" required>
-                <option value="">Select one</option>
-                <option>Gameplay system</option>
-                <option>Backend or data system</option>
-                <option>User interface</option>
-                <option>Bug fixing or optimization</option>
-                <option>Full Roblox project</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="f-timeline">Target timeline <span class="optional">(optional)</span></label>
-              <input id="f-timeline" type="text" name="timeline" placeholder="e.g. 2-4 weeks">
-            </div>
-            <div class="field field-wide">
-              <label for="f-brief">Project brief</label>
-              <textarea id="f-brief" name="brief" rows="5" required placeholder="Current project state, the feature you need, expected behaviour, and any deadline."></textarea>
-            </div>
-            <div class="inquiry-foot">
-              <button class="btn btn-primary" type="submit">Prepare email<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></button>
-              <p class="form-note">Opens a pre-filled message to <strong>nathanielmadridgaminde@proton.me</strong>. Nothing is stored on this site.</p>
-            </div>
-            <p class="form-status" data-inquiry-status role="status" hidden>
-              <svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span></span>
-            </p>
-          </form>
+          <div class="contact-primary" data-motion="rise">
+            <a class="contact-link" href="https://datalprojects.com/contact" target="_blank" rel="noopener noreferrer">
+              <span class="contact-link-label">Start a project</span>
+              <span class="contact-link-url">datalprojects.com/contact<svg class="icon" aria-hidden="true"><use href="#i-external"></use></svg></span>
+            </a>
+            <p class="contact-note">Project inquiries go through DATAL Projects, the company I co-founded. Opens in a new tab.</p>
+          </div>
 
           <div class="channels">
             <h3 class="column-label">Direct channels</h3>
