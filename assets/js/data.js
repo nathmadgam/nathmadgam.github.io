@@ -4,7 +4,9 @@
 /** @typedef {{name:string, description:string, url:string, cachedImage:string}} FreelanceProject */
 /** @typedef {{name:string, description:string, url:string, favicon:string}} PublicWork */
 /** @typedef {{name:string, role:string, description:string, inviteCode:string, url:string, fallback:string, cachedImage?:string, cacheName?:string, guildId?:string, iconHash?:string}} DiscordServer */
-/** @typedef {{name:string, studio:string, studioUrl:string, role:string, genre:string, status:string, url:string, summary:string, image:string, icon:string, fallback:string, highlights:{title:string, description:string}[]}} FeaturedGame */
+/** @typedef {{label:string, start:number}} Chapter */
+/** @typedef {{id:string, title:string, video:string, poster:string, duration:string, chapters:Chapter[]}} Demo */
+/** @typedef {{name:string, studio:string, studioUrl:string, role:string, genre:string, status:string, url:string, summary:string, image:string, icon:string, fallback:string, demo:Demo, highlights:{title:string, description:string, start:number}[]}} FeaturedGame */
 
 /** @typedef {{name:string, role:string, description:string, tags:string[], url:string, linkLabel:string, logo:string, logoTone:'dark'|'light', lead?:boolean}} Venture */
 
@@ -12,7 +14,7 @@
 export const ventures = [
   {
     name: "DATAL Projects",
-    role: "Co-founder & business owner",
+    role: "Founder & business owner",
     description: "A software and digital development company based in the Philippines. DATAL Projects designs and builds websites, custom software, APIs, backend systems, and games for businesses and teams, with scope agreed in writing, milestone delivery, and documented handover.",
     tags: ["Web development", "Custom software", "Backend & APIs", "Game development"],
     url: "https://datalprojects.com/",
@@ -56,11 +58,36 @@ export const featured = {
   image: "assets/cached-media/burgeran.webp",
   icon: "assets/cached-media/burgeran-icon.webp",
   fallback: "assets/fallbacks/burgeran.svg",
+  demo: {
+    id: "burgeran",
+    title: "Burgeran! systems demo",
+    video: "videos/burgeran-demo.mp4",
+    poster: "assets/posters/burgeran-demo.webp",
+    duration: "1:36",
+    // Start times (seconds) match the chapter cards in the recording.
+    chapters: [
+      { label: "Intro", start: 0 },
+      { label: "Cooking", start: 6 },
+      { label: "Orders", start: 17 },
+      { label: "Customer NPCs", start: 25 },
+      { label: "Progression", start: 36 },
+      { label: "Inventory", start: 45 },
+      { label: "Economy", start: 53.5 },
+      { label: "Interface", start: 61.5 },
+      { label: "Live events", start: 69.5 },
+      { label: "Backend", start: 78.5 },
+    ],
+  },
   highlights: [
-    { title: "NPC customer loop", description: "Customer arrival, ordering, and service flow that drives the core restaurant gameplay." },
-    { title: "Leaderboards", description: "Player rankings that keep the competitive side of the loop visible." },
-    { title: "Donation system", description: "A player donation flow structured so products can be attached without reworking the feature." },
-    { title: "Live operations", description: "Versioned releases reviewed with the studio and shipped to players with public changelogs." },
+    { title: "Cooking architecture", start: 6, description: "A six-slot stove with independent item timers, and flip timing judged on the server clock." },
+    { title: "Order fulfilment", start: 17, description: "Server-validated interactions that carry each order from preparation to tray to completion." },
+    { title: "Customer NPCs", start: 25, description: "Customers that arrive at the stall, place orders, and drive the core service loop." },
+    { title: "Upgrades & progression", start: 36, description: "Configurable upgrades and dynamic world state, such as seating that unlocks with stall level." },
+    { title: "Inventory & stock", start: 45, description: "Data-driven world visualisation: shelves show stock as physical items, capped by shelf capacity." },
+    { title: "Economy & leaderboards", start: 53.5, description: "Persistent progression with global boards for cash, donations, and orders served." },
+    { title: "Interface engineering", start: 61.5, description: "State-driven interfaces, including code redemption and in-game menus." },
+    { title: "Live events & admin tools", start: 69.5, description: "Configurable server events such as Cash Rush (double order cash) and Lucky Hour (rarer customers)." },
+    { title: "Backend architecture", start: 78.5, description: "Modular Luau services with persistent, session-locked player profiles built on ProfileStore." },
   ],
 };
 

@@ -30,6 +30,17 @@ const escapeHtml = value =>
   String(value).replace(/[&<>"']/g, character =>
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
 
+/** "m:ss" for a time in seconds. */
+const formatTime = seconds =>
+  `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
+
+/** Attributes that make an element open the shared video player, optionally at a time. */
+const demoTrigger = (demo, start = 0) =>
+  `data-video="${escapeHtml(demo.video)}" data-title="${escapeHtml(demo.title)}" ` +
+  `data-poster="${escapeHtml(demo.poster)}" data-chapters="${escapeHtml(demo.id)}" data-start="${start}"`;
+
+const chapterSets = new Map([[featured.demo.id, featured.demo.chapters]]);
+
 const icon = (name, className = "icon") =>
   `<svg class="${className}" aria-hidden="true"><use href="#i-${name}"></use></svg>`;
 
@@ -52,13 +63,16 @@ function renderFeatured() {
   const game = featured;
   root.innerHTML = `
     <article class="feature">
-      <a class="feature-media" data-motion="wipe" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer"
-         aria-label="Play ${escapeHtml(game.name)} on Roblox (opens in a new tab)">
+      <button class="feature-media" type="button" data-motion="wipe" ${demoTrigger(game.demo)}
+              aria-label="Watch the ${escapeHtml(game.demo.title)} (${escapeHtml(game.demo.duration)})">
         <img src="${escapeHtml(game.image)}" data-fallback="${escapeHtml(game.fallback)}"
-             alt="Key art for ${escapeHtml(game.name)}: a player orders at a red burger stall while customers eat nearby"
-             width="768" height="432" loading="lazy" decoding="async">
+             alt="" width="768" height="432" loading="lazy" decoding="async">
         <span class="feature-status">${escapeHtml(game.status)}</span>
-      </a>
+        <span class="feature-play" aria-hidden="true">
+          <span class="feature-play-icon">${icon("play")}</span>
+          <span class="feature-play-copy"><strong>Watch the systems demo</strong><small>${escapeHtml(game.demo.duration)} &middot; ${game.demo.chapters.length - 1} chapters</small></span>
+        </span>
+      </button>
       <div class="feature-body" data-motion="rise">
         <div class="feature-identity">
           <img src="${escapeHtml(game.icon)}" data-fallback="${escapeHtml(game.fallback)}"
@@ -74,19 +88,25 @@ function renderFeatured() {
           <div><dt>Genre</dt><dd>${escapeHtml(game.genre)}</dd></div>
         </dl>
         <div class="feature-actions">
-          <a class="btn btn-primary" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">
-            ${icon("play")}Play on Roblox
+          <button class="btn btn-primary" type="button" ${demoTrigger(game.demo)}>
+            ${icon("play")}Watch demo
+          </button>
+          <a class="btn btn-secondary" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">
+            Play on Roblox${icon("external")}
           </a>
           <a class="btn btn-secondary" href="${CONTACT_URL}" target="_blank" rel="noopener noreferrer">Build something similar</a>
         </div>
       </div>
       <div class="feature-systems">
-        <h4 class="column-label">What I built</h4>
+        <h4 class="column-label">What I built <small>Select a system to watch it in the demo</small></h4>
         <ul>
           ${game.highlights.map(item => `
           <li data-motion="fade">
-            <strong>${escapeHtml(item.title)}</strong>
-            <span>${escapeHtml(item.description)}</span>
+            <button class="feature-chapter" type="button" ${demoTrigger(game.demo, item.start)}>
+              <span class="feature-chapter-time">${icon("play")}${formatTime(item.start)}</span>
+              <strong>${escapeHtml(item.title)}</strong>
+              <span>${escapeHtml(item.description)}</span>
+            </button>
           </li>`).join("")}
         </ul>
       </div>
@@ -504,11 +524,48 @@ function setupPlayer() {
   const video = qs("[data-player-video]", dialog ?? document);
   const title = qs("[data-player-title]", dialog ?? document);
   const close = qs("[data-player-close]", dialog ?? document);
+  const chapterList = qs("[data-player-chapters]", dialog ?? document);
   if (!dialog || !video || !title || !close) return;
+
+  let chapters = [];
+
+  const renderChapters = () => {
+    if (!chapterList) return;
+    chapterList.hidden = chapters.length === 0;
+    chapterList.innerHTML = chapters.map(chapter => `
+      <li><button type="button" data-seek="${chapter.start}">
+        <span>${formatTime(chapter.start)}</span>${escapeHtml(chapter.label)}
+      </button></li>`).join("");
+  };
+
+  // Highlight the chapter containing the playhead.
+  const syncChapter = () => {
+    if (!chapterList || !chapters.length) return;
+    const time = video.currentTime;
+    let active = 0;
+    chapters.forEach((chapter, index) => { if (time + 0.25 >= chapter.start) active = index; });
+    qsa("[data-seek]", chapterList).forEach((button, index) => {
+      if (index === active) button.setAttribute("aria-current", "true");
+      else button.removeAttribute("aria-current");
+    });
+  };
+
+  const seek = seconds => {
+    if (!seconds) return;
+    // Seeking before metadata loads is ignored by some browsers.
+    if (video.readyState >= 1) video.currentTime = seconds;
+    else video.addEventListener("loadedmetadata", () => { video.currentTime = seconds; }, { once: true });
+  };
 
   const open = trigger => {
     title.textContent = trigger.dataset.title ?? "Project demo";
+    chapters = chapterSets.get(trigger.dataset.chapters) ?? [];
+    renderChapters();
+    if (trigger.dataset.poster) video.poster = trigger.dataset.poster;
+    else video.removeAttribute("poster");
     video.src = trigger.dataset.video;
+    seek(Number(trigger.dataset.start) || 0);
+    syncChapter();
     dialog.showModal();
     video.play().catch(() => { /* autoplay may be blocked; controls remain */ });
   };
@@ -516,13 +573,25 @@ function setupPlayer() {
   const shut = () => {
     video.pause();
     video.removeAttribute("src");
+    video.removeAttribute("poster");
     video.load();
+    chapters = [];
+    renderChapters();
   };
 
   document.addEventListener("click", event => {
     const trigger = event.target.closest("[data-video]");
     if (trigger) open(trigger);
   });
+
+  chapterList?.addEventListener("click", event => {
+    const button = event.target.closest("[data-seek]");
+    if (!button) return;
+    video.currentTime = Number(button.dataset.seek);
+    video.play().catch(() => {});
+  });
+  video.addEventListener("timeupdate", syncChapter);
+  video.addEventListener("seeked", syncChapter);
 
   close.addEventListener("click", () => dialog.close());
   dialog.addEventListener("close", shut);
