@@ -95,6 +95,20 @@ Interface icons are [Lucide](https://lucide.dev) (ISC) and brand icons are
 [Simple Icons](https://simpleicons.org) (CC0), inlined as a single `<symbol>`
 sprite in `index.html` so there is no icon dependency or extra request.
 
+## Burgeran! demo
+
+The featured demo plays inline. It starts muted once most of it is on screen,
+pauses when it scrolls away, and resumes when it comes back, unless the visitor
+paused it themselves. Reduced motion and data-saver turn autoplay off. The
+timeline is split into the chapters listed under `featured.demo.chapters` in
+`data.js`, and each "What I built" row jumps to its chapter and is marked
+while that chapter plays. Keep each highlight's `start` equal to a chapter's
+`start` so the two stay linked.
+
+Seeking needs HTTP range requests. GitHub Pages supports them;
+`python -m http.server` does not, so chapter jumps snap back to the start in
+that local preview only.
+
 ## Contact
 
 Every "Contact" and "Start a project" link points to the DATAL Projects contact
