@@ -21,6 +21,36 @@ videos/               project demo recordings
 downloads/            the client agreement PDF
 ```
 
+## Design rules
+
+Written down so changes stay deliberate instead of drifting back to generic
+defaults (gradients, glass, card grids, the same fade on everything).
+
+**Brief.** The reader is a Roblox studio lead or game owner deciding whether to
+hire a programmer. They came to see proof of shipped work, then get in touch.
+They see the statement and Burgeran! first; "Start a project" is the easiest
+action on the page.
+
+**Colour.** Every colour comes from the Cynex mark (`images/cynex-services.png`):
+violet `#9356f5`, ember `#fc9053`, and the white glyph, plus tints and shades of
+the violet. Colours are flat planes; nothing is a gradient. The checked WCAG
+contrast table sits at the top of `styles.css`; add a row for any new text pair.
+
+**Type.** One family, Source Sans 3 (Roblox ships it as `Enum.Font.SourceSans`).
+Hierarchy comes from size, weight, italic and colour. No uppercase tracked
+labels; labels are short, sentence case and used only to name a group.
+
+**Surfaces.** No card shells, elevation shadows or blur. Content is separated by
+spacing and 1px rules. Radii stay at 4px.
+
+**Numbers.** Only the process steps are numbered, because their order matters.
+
+**Motion.** Each content type has its own reveal (see the Motion block in
+`styles.css`), on a long, soft ease with no overshoot. The one flourish is the
+ember bar drawn under the headline. The process line follows scroll position.
+No motion hides text while it is being read, and with `prefers-reduced-motion`
+everything renders in its final state.
+
 ## Theming
 
 Light and dark palettes are both defined as CSS custom properties at the top of

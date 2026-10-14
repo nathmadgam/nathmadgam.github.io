@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#f6f6f3" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#090b12" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#110d1d" media="(prefers-color-scheme: dark)">
   <title>Cynex Services | Roblox Programmer &amp; Systems Developer</title>
   <meta name="description" content="Nathaniel Madrid: co-founder of DATAL Projects, business owner, and computer science student from the Philippines. Roblox programmer and systems developer behind Cynex Services and lead developer of Burgeran!.">
   <link rel="canonical" href="https://nathmadgam.github.io/">
@@ -29,6 +29,11 @@
     (function () {
       var root = document.documentElement;
       root.classList.add("js");
+      // Reveal styles hide content until app.js shows it. If the module never
+      // runs (blocked, failed, offline), drop them so nothing stays hidden.
+      setTimeout(function () {
+        if (!root.classList.contains("motion-ready")) root.classList.remove("js");
+      }, 2500);
       try {
         var saved = localStorage.getItem("theme");
         if (saved === "light" || saved === "dark") root.dataset.theme = saved;
@@ -39,10 +44,10 @@
   <link rel="apple-touch-icon" href="images/cynex-services.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400..800;1,400..800&display=swap">
+  <link rel="stylesheet" href="assets/css/styles.css?v=2026-10-14">
   <link rel="preload" href="images/avatar.webp" as="image" type="image/webp">
-  <script src="assets/js/app.js" type="module"></script>
+  <script src="assets/js/app.js?v=2026-10-14" type="module"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -134,7 +139,6 @@
         <svg class="icon" aria-hidden="true"><use href="#i-menu"></use></svg>
       </button>
     </div>
-    <div class="scroll-progress" data-scroll-progress aria-hidden="true"></div>
   </header>
 
   <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" data-mobile-nav hidden>
@@ -155,48 +159,41 @@
   </nav>
 
   <main id="main">
-    <section class="hero" id="top" data-hero>
-      <div class="hero-aura" aria-hidden="true"></div>
-      <div class="shell hero-inner">
-        <div class="hero-copy">
-          <p class="hero-status"><span class="availability">Available for selected projects</span></p>
-          <p class="eyebrow">Nathaniel Madrid · Philippines</p>
-          <h1>Software and Roblox systems, built to <em>be maintained.</em></h1>
-          <p class="hero-roles">
-            <span class="visually-hidden">Co-founder of DATAL Projects, lead developer of Burgeran!, Roblox systems programmer, business owner, and computer science student.</span>
-            <span class="hero-roles-track" aria-hidden="true" data-hero-roles></span>
-          </p>
-          <p class="lede">I co-founded DATAL Projects, run Cynex Services, and develop gameplay, backend services, persistent data, and interfaces in Luau, structured so a team can extend the work after launch.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#featured">See Burgeran!<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a>
-            <a class="btn btn-secondary" href="#ventures">My ventures</a>
+    <section class="hero" id="top">
+      <div class="shell">
+        <p class="hero-kicker" data-motion="fade"><strong>Nathaniel Madrid</strong>, Roblox programmer and systems developer</p>
+        <h1 class="hero-title" data-motion="rise">Software and Roblox systems, built to <em>be maintained.</em></h1>
+
+        <div class="hero-grid">
+          <div class="hero-copy" data-motion="rise">
+            <p class="lede">I co-founded DATAL Projects, run Cynex Services, and develop gameplay, backend services, persistent data, and interfaces in Luau, structured so a team can extend the work after launch.</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#contact">Start a project<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"></use></svg></a>
+              <a class="btn btn-secondary" href="#featured">See Burgeran!</a>
+            </div>
           </div>
-          <dl class="hero-meta">
-            <div><dt>Company</dt><dd><a class="text-link" href="https://datalprojects.com/" target="_blank" rel="noopener noreferrer">Co-founder, DATAL Projects<svg class="icon" aria-hidden="true"><use href="#i-external"></use></svg></a></dd></div>
-            <div><dt>Lead role</dt><dd><a class="text-link" href="#featured">Burgeran! · Cly Games</a></dd></div>
-            <div><dt>Education</dt><dd>Computer science student, game-development focus</dd></div>
-            <div><dt>Experience</dt><dd>8+ years in Roblox Studio</dd></div>
-            <div><dt>Based in</dt><dd>Philippines · UTC+8</dd></div>
-          </dl>
+
+          <figure class="hero-portrait" data-motion="lift">
+            <img src="images/avatar.webp" alt="Portrait of Nathaniel Madrid" width="1100" height="1100" fetchpriority="high" decoding="async">
+            <figcaption>Nathaniel Madrid, business owner and the programmer behind Cynex Services</figcaption>
+          </figure>
         </div>
 
-        <figure class="hero-portrait">
-          <div class="hero-portrait-frame" data-glow>
-            <img src="images/avatar.webp" alt="Portrait of Nathaniel Madrid" width="1100" height="1100" fetchpriority="high" decoding="async">
-            <span class="hero-portrait-badge">
-              <img src="assets/cached-media/datal-projects.webp" alt="" width="256" height="256" decoding="async">
-              <span><strong>DATAL Projects</strong><small>Co-founder</small></span>
-            </span>
-          </div>
-          <figcaption>Nathaniel Madrid, business owner and the programmer behind Cynex Services</figcaption>
-        </figure>
+        <dl class="hero-meta" data-motion="draw">
+          <div><dt>Status</dt><dd><span class="availability">Available for selected projects</span></dd></div>
+          <div><dt>Company</dt><dd><a class="text-link" href="https://datalprojects.com/" target="_blank" rel="noopener noreferrer">Co-founder, DATAL Projects<svg class="icon" aria-hidden="true"><use href="#i-external"></use></svg></a></dd></div>
+          <div><dt>Lead role</dt><dd><a class="text-link" href="#featured">Burgeran!, Cly Games</a></dd></div>
+          <div><dt>Experience</dt><dd>8+ years in Roblox Studio</dd></div>
+          <div><dt>Education</dt><dd>Computer science student, game-development focus</dd></div>
+          <div><dt>Based in</dt><dd>Philippines, UTC+8</dd></div>
+        </dl>
       </div>
     </section>
 
     <section class="section section-featured" id="featured" aria-labelledby="featured-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Featured project</p>
+          <p class="section-label">Featured project</p>
           <h2 id="featured-title" class="section-title">Burgeran!, where I led development.</h2>
           <p class="section-lede">My strongest release to date: a live Roblox restaurant game for Cly Games, where I was lead developer and programmer.</p>
         </div>
@@ -207,7 +204,7 @@
     <section class="section" id="ventures" aria-labelledby="ventures-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Ventures</p>
+          <p class="section-label">Ventures</p>
           <h2 id="ventures-title" class="section-title">Businesses I founded and run.</h2>
           <p class="section-lede">Alongside client work, I own and operate development businesses from the Philippines, from a software development company to my own Roblox programming practice.</p>
         </div>
@@ -218,15 +215,15 @@
     <section class="section" id="about" aria-labelledby="about-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>About</p>
+          <p class="section-label">About</p>
           <h2 id="about-title" class="section-title">Systems that stay clear, stable, and readable.</h2>
         </div>
         <div class="about-grid">
-          <div class="prose reveal">
+          <div class="prose" data-motion="rise">
             <p>I am a business owner and computer science student from the Philippines, co-founder of the software company DATAL Projects, and a Roblox programmer and systems developer. My work covers gameplay systems, DataStore architecture, responsive UI, moderation tools, NPC behaviour, economies, and internal development tooling.</p>
             <p>I organise projects around reusable Luau modules, server-side validation, predictable state, and explicit configuration, so the result stays practical for a team to extend.</p>
           </div>
-          <dl class="facts reveal">
+          <dl class="facts" data-motion="draw">
             <div><dt>Archived system demos</dt><dd>16</dd></div>
             <div><dt>Archived client reviews</dt><dd>9</dd></div>
             <div><dt>Published experiences</dt><dd>4</dd></div>
@@ -238,7 +235,7 @@
     <section class="section" id="work" aria-labelledby="work-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Selected work</p>
+          <p class="section-label">Selected work</p>
           <h2 id="work-title" class="section-title">Six systems, in motion.</h2>
           <p class="section-lede">Compact demonstrations covering gameplay, persistent data, NPC behaviour, interfaces, economy systems, and reusable frameworks. Select a project to play its recording.</p>
         </div>
@@ -250,7 +247,7 @@
     <section class="section" id="experiences" aria-labelledby="experiences-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Live experiences</p>
+          <p class="section-label">Live experiences</p>
           <h2 id="experiences-title" class="section-title">Published Roblox games.</h2>
           <p class="section-lede">Experiences currently live on Roblox where I worked as lead developer or programmer.</p>
         </div>
@@ -261,14 +258,19 @@
     <section class="section" id="freelance" aria-labelledby="freelance-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Freelance collaborations</p>
+          <p class="section-label">Freelance collaborations</p>
           <h2 id="freelance-title" class="section-title">Selected communities and public work.</h2>
           <p class="section-lede">Roblox communities I have worked with as freelance collaborations, alongside other public previous work. Each link opens the external site in a new tab.</p>
         </div>
-        <div class="freelance-major" data-freelance-major></div>
-        <div class="freelance-public">
-          <h3 class="column-label">Other public previous work</h3>
-          <div class="public-work-list" data-public-work></div>
+        <div class="row-grid">
+          <div>
+            <h3 class="column-label">Roblox communities</h3>
+            <ul class="row-list" data-freelance-major></ul>
+          </div>
+          <div>
+            <h3 class="column-label">Other public previous work</h3>
+            <ul class="row-list" data-public-work></ul>
+          </div>
         </div>
       </div>
     </section>
@@ -276,7 +278,7 @@
     <section class="section" id="capabilities" aria-labelledby="capabilities-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Capabilities</p>
+          <p class="section-label">Capabilities</p>
           <h2 id="capabilities-title" class="section-title">Where I work across a project.</h2>
           <p class="section-lede">The areas I take responsibility for in professional software and Roblox game development.</p>
         </div>
@@ -287,27 +289,30 @@
     <section class="section" id="process" aria-labelledby="process-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Process</p>
+          <p class="section-label">Process</p>
           <h2 id="process-title" class="section-title">A practical workflow.</h2>
         </div>
-        <ol class="process-list" data-process-list></ol>
+        <div class="process" data-process>
+          <div class="process-track" aria-hidden="true"><span></span></div>
+          <ol class="process-list" data-process-list></ol>
+        </div>
       </div>
     </section>
 
     <section class="section" id="network" aria-labelledby="network-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Network</p>
+          <p class="section-label">Network</p>
           <h2 id="network-title" class="section-title">Groups and developer communities.</h2>
         </div>
-        <div class="network-grid">
+        <div class="row-grid">
           <div>
             <h3 class="column-label">Roblox groups</h3>
-            <ul class="network-list" data-roblox-groups></ul>
+            <ul class="row-list" data-roblox-groups></ul>
           </div>
           <div>
             <h3 class="column-label">Discord servers</h3>
-            <ul class="network-list" data-discord-servers></ul>
+            <ul class="row-list" data-discord-servers></ul>
           </div>
         </div>
       </div>
@@ -316,10 +321,12 @@
     <section class="section" id="feedback" aria-labelledby="feedback-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Feedback</p>
+          <p class="section-label">Feedback</p>
           <h2 id="feedback-title" class="section-title">What clients said after delivery.</h2>
           <p class="section-lede">Nine five-star reviews archived from completed Fiverr scripting orders, including repeat clients.</p>
+          <p class="review-summary" data-review-summary></p>
         </div>
+        <div data-review-lead></div>
         <ul class="review-list" data-review-list></ul>
       </div>
     </section>
@@ -327,12 +334,12 @@
     <section class="section" id="agreement" aria-labelledby="agreement-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Agreement</p>
+          <p class="section-label">Agreement</p>
           <h2 id="agreement-title" class="section-title">Review the contract before we start.</h2>
           <p class="section-lede">A five-page form recording project scope, payment milestones, revisions, ownership, confidentiality, cancellation terms, and signatures. Read it here, or download the fillable PDF.</p>
         </div>
 
-        <div class="contract reveal" data-contract>
+        <div class="contract" data-contract>
           <div class="contract-bar">
             <p class="contract-title">
               <svg class="icon" aria-hidden="true"><use href="#i-file-text"></use></svg>
@@ -353,7 +360,7 @@
               </a>
             </div>
           </div>
-          <div class="contract-viewport" data-contract-viewport tabindex="0" role="group" aria-label="Contract Agreement Form, five pages">
+          <div class="contract-viewport" data-contract-viewport data-motion="walk" tabindex="0" role="group" aria-label="Contract Agreement Form, five pages">
             <figure class="contract-page" data-contract-page="1"><img src="assets/contract-pages/page-1.webp" alt="Page 1: party information, project details, and services" width="1275" height="1950" loading="lazy" decoding="async"></figure>
             <figure class="contract-page" data-contract-page="2"><img src="assets/contract-pages/page-2.webp" alt="Page 2: payment, milestones, review, revisions, and ownership" width="1275" height="1950" loading="lazy" decoding="async"></figure>
             <figure class="contract-page" data-contract-page="3"><img src="assets/contract-pages/page-3.webp" alt="Page 3: permitted use, Roblox platform rules, confidentiality, and cancellation" width="1275" height="1950" loading="lazy" decoding="async"></figure>
@@ -367,7 +374,7 @@
     <section class="section" id="contact" aria-labelledby="contact-title">
       <div class="shell">
         <div class="section-head">
-          <p class="section-label"><span aria-hidden="true"></span>Contact</p>
+          <p class="section-label">Contact</p>
           <h2 id="contact-title" class="section-title">Need a Roblox system built, improved, or repaired?</h2>
           <p class="section-lede">Send the feature brief, the current state of the project, the expected behaviour, and the deadline. I will review the scope and outline the cleanest implementation path.</p>
         </div>

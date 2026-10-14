@@ -1,14 +1,13 @@
 /**
  * Cynex Services portfolio site behaviour.
  * Renders list content from data.js and wires up navigation, the demo player,
- * the contract viewer, the inquiry form, and the interactive layer (scroll
- * progress, pointer glow, hero roles, project filter, counters). No external
- * dependencies; every animation respects prefers-reduced-motion.
+ * the contract viewer, the inquiry form, the project filter, and the motion
+ * layer (scroll reveals and the process line). No external dependencies;
+ * every animation respects prefers-reduced-motion.
  */
 import {
   featured,
   ventures,
-  heroRoles,
   projects,
   games,
   freelanceProjects,
@@ -18,7 +17,7 @@ import {
   robloxGroups,
   discordServers,
   reviews,
-} from "./data.js";
+} from "./data.js?v=2026-10-14";
 
 const CONTACT_EMAIL = "nathanielmadridgaminde@proton.me";
 
@@ -51,15 +50,15 @@ function renderFeatured() {
   if (!root) return;
   const game = featured;
   root.innerHTML = `
-    <article class="feature reveal" data-glow>
-      <a class="feature-media" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer"
+    <article class="feature">
+      <a class="feature-media" data-motion="wipe" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer"
          aria-label="Play ${escapeHtml(game.name)} on Roblox (opens in a new tab)">
         <img src="${escapeHtml(game.image)}" data-fallback="${escapeHtml(game.fallback)}"
              alt="Key art for ${escapeHtml(game.name)}: a player orders at a red burger stall while customers eat nearby"
              width="768" height="432" loading="lazy" decoding="async">
         <span class="feature-status">${escapeHtml(game.status)}</span>
       </a>
-      <div class="feature-body">
+      <div class="feature-body" data-motion="rise">
         <div class="feature-identity">
           <img src="${escapeHtml(game.icon)}" data-fallback="${escapeHtml(game.fallback)}"
                alt="" width="256" height="256" loading="lazy" decoding="async">
@@ -84,9 +83,9 @@ function renderFeatured() {
         <h4 class="column-label">What I built</h4>
         <ul>
           ${game.highlights.map(item => `
-          <li>
-            ${icon("check")}
-            <span><strong>${escapeHtml(item.title)}</strong>${escapeHtml(item.description)}</span>
+          <li data-motion="fade">
+            <strong>${escapeHtml(item.title)}</strong>
+            <span>${escapeHtml(item.description)}</span>
           </li>`).join("")}
         </ul>
       </div>
@@ -101,7 +100,7 @@ function renderVentures() {
     const external = /^https?:/.test(venture.url);
     const target = external ? ' target="_blank" rel="noopener noreferrer"' : "";
     return `
-    <article class="venture reveal${venture.lead ? " venture-lead" : ""}" data-glow>
+    <article class="venture${venture.lead ? " venture-lead" : ""}" data-motion="draw">
       <div class="venture-head">
         <div class="venture-logo" data-tone="${escapeHtml(venture.logoTone)}">
           <img src="${escapeHtml(venture.logo)}" alt="${escapeHtml(venture.name)} logo"
@@ -112,13 +111,13 @@ function renderVentures() {
           <p class="venture-role">${escapeHtml(venture.role)}</p>
         </div>
       </div>
-      <p class="venture-copy">${escapeHtml(venture.description)}</p>
-      <ul class="chip-list" aria-label="Focus areas">
-        ${venture.tags.map(tag => `<li class="chip">${escapeHtml(tag)}</li>`).join("")}
-      </ul>
-      <a class="text-link venture-link" href="${escapeHtml(venture.url)}"${target}>
-        ${escapeHtml(venture.linkLabel)}${icon(external ? "external" : "arrow-right")}
-      </a>
+      <div>
+        <p class="venture-copy">${escapeHtml(venture.description)}</p>
+        <p class="venture-tags"><span class="visually-hidden">Focus areas: </span>${venture.tags.map(escapeHtml).join(" &middot; ")}</p>
+        <a class="text-link venture-link" href="${escapeHtml(venture.url)}"${target}>
+          ${escapeHtml(venture.linkLabel)}${icon(external ? "external" : "arrow-right")}
+        </a>
+      </div>
     </article>`;
   }).join("");
 }
@@ -127,22 +126,18 @@ function renderProjects() {
   const list = qs("[data-project-list]");
   if (!list) return;
   list.innerHTML = projects.map(project => `
-    <article class="project reveal" data-category="${escapeHtml(project.category)}">
-      <button class="project-media" type="button" data-glow
+    <article class="project" data-category="${escapeHtml(project.category)}">
+      <button class="project-media" type="button" data-motion="wipe"
               data-video="${escapeHtml(project.video)}"
               data-title="${escapeHtml(project.title)}"
               aria-label="Play the ${escapeHtml(project.title)} demo">
         <img src="${escapeHtml(project.poster)}" alt="Still frame from the ${escapeHtml(project.title)} demo"
              width="960" height="540" loading="lazy" decoding="async">
-        <span class="play-badge" aria-hidden="true">${icon("play")}</span>
+        <span class="play-badge" aria-hidden="true">${icon("play")}Play demo</span>
       </button>
-      <div class="project-body">
+      <div class="project-body" data-motion="fade">
         <h3 class="project-title">${escapeHtml(project.title)}</h3>
-        <p class="project-meta">
-          <span>${escapeHtml(project.category)}</span>
-          <span class="sep" aria-hidden="true">/</span>
-          <span>${escapeHtml(project.year)}</span>
-        </p>
+        <p class="project-meta meta">${escapeHtml(project.category)}, ${escapeHtml(project.year)}</p>
         <p class="project-copy">${escapeHtml(project.description)}</p>
         <p class="project-tags">${project.tags.map(escapeHtml).join(" &middot; ")}</p>
       </div>
@@ -168,7 +163,7 @@ function renderProjectFilter() {
       const match = selected === "All" || project.dataset.category === selected;
       project.hidden = !match;
       // Filtered-in cards may not have crossed the reveal threshold yet.
-      if (match) project.classList.add("is-visible");
+      if (match) qsa("[data-motion]", project).forEach(settle);
     });
   });
 }
@@ -177,14 +172,14 @@ function renderExperiences() {
   const list = qs("[data-experience-list]");
   if (!list) return;
   list.innerHTML = games.map(game => `
-    <article class="experience reveal">
+    <article class="experience" data-motion="slide">
       <img class="experience-thumb" src="${escapeHtml(game.cachedImage ?? game.fallback)}"
            data-fallback="${escapeHtml(game.fallback)}"
            alt="Thumbnail for ${escapeHtml(game.name)}"
            width="496" height="279" loading="lazy" decoding="async">
       <div>
         <h3 class="experience-name">${escapeHtml(game.name)}</h3>
-        <p class="experience-meta">${escapeHtml(game.creator)} &middot; ${escapeHtml(game.role)}</p>
+        <p class="experience-meta meta">${escapeHtml(game.role)} for ${escapeHtml(game.creator)}</p>
         <p class="experience-copy">${escapeHtml(game.description)}</p>
         <a class="text-link" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">
           Open on Roblox${icon("external")}
@@ -194,47 +189,47 @@ function renderExperiences() {
   attachImageFallbacks(list);
 }
 
+/** Shared markup for the ruled, linked rows used by freelance work and the network. */
+const linkedRow = ({ url, name, description, role, image, fallback, fit = "cover", label }) => `
+    <li data-motion="draw">
+      <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"
+         aria-label="${escapeHtml(label ?? `${name}, ${role} (opens in a new tab)`)}">
+        <img src="${escapeHtml(image)}"${fallback ? ` data-fallback="${escapeHtml(fallback)}"` : ""}
+             data-fit="${fit}" alt="" width="44" height="44" loading="lazy" decoding="async">
+        <span class="row-copy">
+          <strong>${escapeHtml(name)}</strong>
+          <small>${escapeHtml(description)}</small>
+        </span>
+        <span class="row-role">${escapeHtml(role)}${icon("external")}</span>
+      </a>
+    </li>`;
+
 function renderFreelance() {
   const major = qs("[data-freelance-major]");
   const publicList = qs("[data-public-work]");
 
   if (major) {
-    major.innerHTML = freelanceProjects.map(project => `
-      <article class="freelance-card reveal">
-        <a href="${escapeHtml(project.url)}" target="_blank" rel="noopener noreferrer"
-           aria-label="Open ${escapeHtml(project.name)} community page (opens in a new tab)">
-          <div class="freelance-logo" data-glow>
-            <img src="${escapeHtml(project.cachedImage)}" alt="Official ${escapeHtml(project.name)} community logo"
-                 width="150" height="150" loading="lazy" decoding="async">
-          </div>
-          <div class="freelance-card-body">
-            <p class="freelance-meta">Freelance collaboration</p>
-            <h3>${escapeHtml(project.name)}</h3>
-            <p>${escapeHtml(project.description)}</p>
-            <span class="text-link">View community${icon("external")}</span>
-          </div>
-        </a>
-      </article>`).join("");
+    major.innerHTML = freelanceProjects.map(project => linkedRow({
+      url: project.url,
+      name: project.name,
+      description: project.description,
+      role: "Freelance",
+      image: project.cachedImage,
+      fit: "contain",
+      label: `Open the ${project.name} community page (opens in a new tab)`,
+    })).join("");
   }
 
   if (publicList) {
-    publicList.innerHTML = publicWork.map(work => `
-      <article class="public-work-item reveal">
-        <div class="public-work-identity">
-          <div class="public-work-icon">
-            <img src="${escapeHtml(work.favicon)}" alt="${escapeHtml(work.name)} website favicon" width="48" height="48" loading="lazy" decoding="async">
-          </div>
-          <div>
-            <p class="freelance-meta">Public previous work</p>
-            <h4>${escapeHtml(work.name)}</h4>
-            <p>${escapeHtml(work.description)}</p>
-          </div>
-        </div>
-        <a class="text-link" href="${escapeHtml(work.url)}" target="_blank" rel="noopener noreferrer"
-           aria-label="Visit ${escapeHtml(work.name)} (opens in a new tab)">
-          Visit site${icon("external")}
-        </a>
-      </article>`).join("");
+    publicList.innerHTML = publicWork.map(work => linkedRow({
+      url: work.url,
+      name: work.name,
+      description: work.description,
+      role: "Visit site",
+      image: work.favicon,
+      fit: "contain",
+      label: `Visit ${work.name} (opens in a new tab)`,
+    })).join("");
   }
 }
 
@@ -242,7 +237,7 @@ function renderCapabilities() {
   const list = qs("[data-capability-list]");
   if (!list) return;
   list.innerHTML = capabilities.map(item => `
-    <div class="capability reveal">
+    <div class="capability" data-motion="draw">
       <dt>${escapeHtml(item.title)}</dt>
       <dd>${escapeHtml(item.description)}</dd>
     </div>`).join("");
@@ -252,27 +247,22 @@ function renderProcess() {
   const list = qs("[data-process-list]");
   if (!list) return;
   list.innerHTML = process.map((step, index) => `
-    <li class="process-step reveal">
-      <span class="process-index">${String(index + 1).padStart(2, "0")}</span>
+    <li class="process-step" data-step>
+      <span class="process-index" aria-hidden="true">${index + 1}</span>
       <h3>${escapeHtml(step.title)}</h3>
       <p>${escapeHtml(step.description)}</p>
     </li>`).join("");
 }
 
 function renderNetwork() {
-  const entry = (item, external) => `
-    <li>
-      <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">
-        <img src="${escapeHtml(item.cachedImage ?? item.fallback)}"
-             data-fallback="${escapeHtml(item.fallback)}"
-             alt="" width="44" height="44" loading="lazy" decoding="async">
-        <span class="network-copy">
-          <strong>${escapeHtml(item.name)}</strong>
-          <small>${escapeHtml(item.description)}</small>
-        </span>
-        <span class="network-role">${escapeHtml(item.role)}</span>
-      </a>
-    </li>`;
+  const entry = item => linkedRow({
+    url: item.url,
+    name: item.name,
+    description: item.description,
+    role: item.role,
+    image: item.cachedImage ?? item.fallback,
+    fallback: item.fallback,
+  });
 
   const groups = qs("[data-roblox-groups]");
   const servers = qs("[data-discord-servers]");
@@ -288,21 +278,41 @@ function renderNetwork() {
 
 function renderReviews() {
   const list = qs("[data-review-list]");
+  const lead = qs("[data-review-lead]");
+  const summary = qs("[data-review-summary]");
   if (!list) return;
-  list.innerHTML = reviews.map(review => `
-    <li class="review reveal">
-      <p class="review-stars" role="img" aria-label="${review.rating} out of 5 stars">
-        ${icon("star").repeat(review.rating)}
-      </p>
+
+  const facts = review =>
+    `${escapeHtml(review.location)}, ${escapeHtml(review.price)} order over ${escapeHtml(review.duration)}, ${escapeHtml(review.age)}`;
+  const byline = review =>
+    `${escapeHtml(review.name)}${review.repeatClient ? '<span class="review-repeat">Repeat client</span>' : ""}`;
+
+  const leading = reviews.find(review => review.featured);
+  if (lead && leading) {
+    lead.innerHTML = `
+      <figure class="review-lead" data-motion="rise">
+        <blockquote>${escapeHtml(leading.quote)}</blockquote>
+        <figcaption>
+          <p class="review-by">${byline(leading)}</p>
+          <p class="review-facts meta">${facts(leading)}</p>
+        </figcaption>
+      </figure>`;
+  }
+
+  if (summary && reviews.length) {
+    const average = reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+    const profile = reviews[0].platformUrl;
+    summary.innerHTML = `
+      <span class="review-stars" role="img" aria-label="${average.toFixed(1)} out of 5 stars">${icon("star").repeat(Math.round(average))}</span>
+      <span>${average.toFixed(1)} average across ${reviews.length} ${escapeHtml(reviews[0].platform)} orders</span>
+      ${profile ? `<a class="text-link" href="${escapeHtml(profile)}" target="_blank" rel="noopener noreferrer">See the ${escapeHtml(reviews[0].platform)} profile${icon("external")}</a>` : ""}`;
+  }
+
+  list.innerHTML = reviews.filter(review => review !== leading).map(review => `
+    <li class="review" data-motion="draw">
       <blockquote>${escapeHtml(review.quote)}</blockquote>
-      <p class="review-by">
-        ${escapeHtml(review.name)}
-        ${review.repeatClient ? '<span class="review-repeat">Repeat client</span>' : ""}
-      </p>
-      <p class="review-facts">
-        ${escapeHtml(review.location)} &middot; ${escapeHtml(review.price)} &middot;
-        ${escapeHtml(review.duration)} &middot; ${escapeHtml(review.age)}
-      </p>
+      <p class="review-by">${byline(review)}</p>
+      <p class="review-facts meta">${facts(review)}</p>
     </li>`).join("");
 }
 
@@ -405,22 +415,87 @@ function setupScrollSpy() {
   sections.forEach(section => observer.observe(section));
 }
 
-/** Group-level reveal: one observer, elements fade in place. */
-function setupReveal() {
-  const targets = qsa(".reveal");
+/**
+ * Final state for one [data-motion] element: mark it in, then drop the
+ * attribute once its transition has run so component styles (hover
+ * transitions in particular) take over again.
+ */
+function settle(element) {
+  if (!element.hasAttribute("data-motion") || element.classList.contains("is-in")) return;
+  element.classList.add("is-in");
+  const order = Number(element.style.getPropertyValue("--i") || 0);
+  setTimeout(() => {
+    element.removeAttribute("data-motion");
+    element.style.removeProperty("--i");
+  }, order * 110 + 1800);
+}
+
+/**
+ * Scroll reveals. Each element's variant is set in markup (see the Motion
+ * block in styles.css); elements that enter view together are staggered in
+ * document order. Reduced motion settles everything immediately.
+ */
+function setupMotion() {
+  document.documentElement.classList.add("motion-ready");
+  const targets = qsa("[data-motion]");
   if (prefersReducedMotion.matches || !("IntersectionObserver" in window)) {
-    targets.forEach(target => target.classList.add("is-static"));
+    targets.forEach(target => {
+      target.classList.add("is-in");
+      target.removeAttribute("data-motion");
+    });
     return;
   }
   const observer = new IntersectionObserver(entries => {
+    let order = 0;
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
-      entry.target.classList.add("is-visible");
       observer.unobserve(entry.target);
+      entry.target.style.setProperty("--i", String(Math.min(order++, 5)));
+      settle(entry.target);
     });
-  }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+  }, { rootMargin: "0px 0px -6% 0px", threshold: 0.12 });
 
   targets.forEach(target => observer.observe(target));
+}
+
+/**
+ * Process line: on wide screens an ember rule runs across the four steps as
+ * the section scrolls up the viewport, and each step is marked reached as
+ * the line passes it. Text is never hidden.
+ */
+function setupProcess() {
+  const root = qs("[data-process]");
+  const steps = qsa("[data-step]", root ?? document);
+  if (!root || !steps.length) return;
+
+  const mark = progress => {
+    root.style.setProperty("--progress", progress.toFixed(3));
+    steps.forEach((step, index) =>
+      step.classList.toggle("is-reached", progress >= (index + 0.35) / steps.length));
+  };
+
+  if (prefersReducedMotion.matches) {
+    mark(1);
+    return;
+  }
+
+  let queued = false;
+  const update = () => {
+    queued = false;
+    const top = root.getBoundingClientRect().top;
+    // 0 when the steps reach 85% down the viewport, 1 once they are at 35%.
+    const start = innerHeight * 0.85;
+    const end = innerHeight * 0.35;
+    mark(Math.min(Math.max((start - top) / (start - end), 0), 1));
+  };
+  const queue = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(update);
+  };
+  addEventListener("scroll", queue, { passive: true });
+  addEventListener("resize", queue, { passive: true });
+  update();
 }
 
 function setupPlayer() {
@@ -547,107 +622,6 @@ function setupInquiryForm() {
   });
 }
 
-/** Thin gradient bar in the header tracking page scroll. */
-function setupScrollProgress() {
-  const bar = qs("[data-scroll-progress]");
-  if (!bar) return;
-  let queued = false;
-  const update = () => {
-    queued = false;
-    const max = document.documentElement.scrollHeight - innerHeight;
-    bar.style.setProperty("--progress", max > 0 ? String(Math.min(scrollY / max, 1)) : "0");
-  };
-  addEventListener("scroll", () => {
-    if (queued) return;
-    queued = true;
-    requestAnimationFrame(update);
-  }, { passive: true });
-  addEventListener("resize", update, { passive: true });
-  update();
-}
-
-/**
- * Pointer-follow highlight. One delegated listener writes the pointer position
- * into --mx/--my on the hero and on whichever [data-glow] card is hovered; CSS
- * does the drawing. Skipped for touch and reduced motion.
- */
-function setupPointerGlow() {
-  if (prefersReducedMotion.matches || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-  const hero = qs("[data-hero]");
-  let frame = 0;
-  let last = null;
-
-  const paint = () => {
-    frame = 0;
-    if (!last) return;
-    const { x, y, target } = last;
-    const card = target instanceof Element ? target.closest("[data-glow]") : null;
-    for (const element of [card, hero]) {
-      if (!element) continue;
-      const rect = element.getBoundingClientRect();
-      if (y < rect.top || y > rect.bottom) continue;
-      element.style.setProperty("--mx", `${x - rect.left}px`);
-      element.style.setProperty("--my", `${y - rect.top}px`);
-    }
-  };
-
-  addEventListener("pointermove", event => {
-    last = { x: event.clientX, y: event.clientY, target: event.target };
-    if (!frame) frame = requestAnimationFrame(paint);
-  }, { passive: true });
-}
-
-/** Cycles the hero role line. Screen readers get the full list from static text. */
-function setupHeroRoles() {
-  const track = qs("[data-hero-roles]");
-  if (!track || !heroRoles.length) return;
-  track.textContent = heroRoles[0];
-  if (prefersReducedMotion.matches || heroRoles.length < 2) return;
-
-  let index = 0;
-  setInterval(() => {
-    if (document.hidden) return;
-    track.classList.add("is-leaving");
-    setTimeout(() => {
-      index = (index + 1) % heroRoles.length;
-      track.textContent = heroRoles[index];
-      track.classList.remove("is-leaving");
-    }, 260);
-  }, 2800);
-}
-
-/** Counts the About facts up from zero the first time they scroll into view. */
-function setupCounters() {
-  const values = qsa(".facts dd").filter(dd => /^\d+$/.test(dd.textContent.trim()));
-  if (!values.length || prefersReducedMotion.matches || !("IntersectionObserver" in window)) return;
-
-  const run = dd => {
-    const target = Number(dd.dataset.count);
-    const start = performance.now();
-    const duration = 900;
-    const step = now => {
-      const t = Math.min((now - start) / duration, 1);
-      dd.textContent = String(Math.round(target * (1 - (1 - t) ** 3)));
-      if (t < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  };
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      observer.unobserve(entry.target);
-      run(entry.target);
-    });
-  }, { threshold: 0.6 });
-
-  values.forEach(dd => {
-    dd.dataset.count = dd.textContent.trim();
-    dd.textContent = "0";
-    observer.observe(dd);
-  });
-}
-
 function setupCopyEmail() {
   const button = qs("[data-copy-email]");
   const label = qs("[data-copy-label]", button ?? document);
@@ -685,10 +659,6 @@ renderNetwork();
 renderReviews();
 
 setupHeader();
-setupScrollProgress();
-setupPointerGlow();
-setupHeroRoles();
-setupCounters();
 setupCopyEmail();
 setupThemeToggle();
 setupMobileNav();
@@ -696,4 +666,5 @@ setupScrollSpy();
 setupPlayer();
 setupContract();
 setupInquiryForm();
-setupReveal();
+setupProcess();
+setupMotion();

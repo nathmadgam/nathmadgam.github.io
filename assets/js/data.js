@@ -43,15 +43,6 @@ export const ventures = [
   },
 ];
 
-/** @type {string[]} Rotating hero line; the first entry is what non-animated contexts show. */
-export const heroRoles = [
-  "Co-founder, DATAL Projects",
-  "Lead developer, Burgeran!",
-  "Roblox systems programmer",
-  "Business owner",
-  "Computer science student",
-];
-
 /** @type {FeaturedGame} */
 export const featured = {
   name: "Burgeran!",
@@ -265,7 +256,7 @@ export const reviews = [
   { name: "eventpunks", location: "Austria", repeatClient: true, rating: 5, age: "1 year ago", price: "$200-$400", duration: "2 weeks", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Everything fine." },
   { name: "lotteryshot", location: "United States", repeatClient: false, rating: 5, age: "1 year ago", price: "$100-$200", duration: "10 days", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Went beyond and helped with extra work, excellent and fair." },
   { name: "hafizrenal", location: "Indonesia", repeatClient: false, rating: 5, age: "1 year ago", price: "Up to $50", duration: "1 day", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Great working with Nath. They were professional, responsive, and delivered outstanding results. Highly recommend!" },
-  { name: "skyebsu", location: "United Kingdom", repeatClient: true, rating: 5, age: "2 years ago", price: "$50-$100", duration: "3 weeks", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Pays keen attention to detail, extremely good at scripting, very quick to respond!" },
+  { name: "skyebsu", location: "United Kingdom", repeatClient: true, featured: true, rating: 5, age: "2 years ago", price: "$50-$100", duration: "3 weeks", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Pays keen attention to detail, extremely good at scripting, very quick to respond!" },
   { name: "eventpunks", location: "Austria", repeatClient: true, rating: 5, age: "2 years ago", price: "Up to $50", duration: "2 days", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Everything fine and everything done as discussed and given to him as the order. I really appreciate his willingness to do quality work." },
   { name: "togodumnus", location: "United Kingdom", repeatClient: true, rating: 5, age: "2 years ago", price: "Up to $50", duration: "1 day", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "I am very pleased Nathaniel was able to solve a problem for me that I had for a while. I am very pleased with the service provided." },
   { name: "loaf_bread", location: "Philippines", repeatClient: false, rating: 5, age: "2 years ago", price: "Up to $50", duration: "6 days", platform: "Fiverr", platformUrl: "https://www.fiverr.com/nathmad54", quote: "Thank you so much, sir! It has been a pleasure working with you. He was able to fulfill all of my requests and even provided valuable ideas. Any minor issues were promptly resolved. I highly recommend his services." },
