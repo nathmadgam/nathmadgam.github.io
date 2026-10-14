@@ -550,76 +550,184 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
 }
 
 /* ---------- Featured project ----------
-   No card shell: the key art carries the left side, the facts sit on the
-   page ground to the right, and the systems list follows as plain rows. */
+   No card shell: the demo carries the left side, the facts sit on the page
+   ground to the right, and the systems list follows as plain rows that
+   double as the demo's chapter list. */
 .feature { display: grid; gap: var(--space-lg); }
 
-.feature-media {
+/* Inline demo player. It plays muted on its own while it is mostly on
+   screen and pauses when it scrolls away (setupDemo in app.js). The controls
+   sit in a flat bar under the picture rather than over it, so they never
+   cover the game. */
+.demo { min-width: 0; }
+.demo-frame {
   position: relative;
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
   overflow: hidden;
-  border-radius: var(--radius);
-  background: var(--surface-sunk);
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: #000000;
+}
+.demo-video {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #000000;
+  cursor: pointer;
+}
+.demo:fullscreen { display: flex; flex-direction: column; justify-content: center; background: #000000; }
+.demo:fullscreen .demo-frame { flex: 1; display: grid; place-items: center; border-radius: 0; }
+.demo:fullscreen .demo-video { width: 100%; height: 100%; aspect-ratio: auto; object-fit: contain; }
+
+/* Shown before the first play and whenever the demo is paused. */
+.demo-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(0.875rem, 2vw, 1.25rem);
+  border: 0;
+  background: transparent;
   color: inherit;
   font: inherit;
   text-align: left;
+  transition: opacity var(--dur) var(--ease);
 }
-/* Bottom scrim so the play label reads on any frame of the key art. */
-.feature-media::after {
-  content: "";
-  position: absolute;
-  inset: 45% 0 0;
-  background: linear-gradient(to top, rgba(10, 8, 20, 0.72), transparent);
-  pointer-events: none;
-}
-.feature-play {
-  position: absolute;
-  z-index: 1;
-  left: clamp(0.875rem, 2vw, 1.25rem);
-  bottom: clamp(0.875rem, 2vw, 1.25rem);
+.demo[data-state="playing"] .demo-overlay { opacity: 0; pointer-events: none; }
+.demo-overlay-label {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  padding: 0.375rem 1rem 0.375rem 0.375rem;
+  border-radius: var(--radius);
+  background: var(--tile-dark);
   color: #ffffff;
 }
-.feature-play-icon {
+.demo-overlay-icon {
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius);
   background: var(--ember);
   color: var(--on-ember);
   transition: transform var(--dur) var(--ease);
 }
-.feature-play-icon .icon { width: 20px; height: 20px; margin-left: 3px; }
-.feature-media:hover .feature-play-icon { transform: scale(1.08); }
-.feature-play-copy strong { display: block; font-size: var(--fs-body); font-weight: 650; line-height: 1.25; }
-.feature-play-copy small { display: block; font-size: var(--fs-xs); opacity: 0.85; }
-.feature-media img {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  transition: transform 600ms var(--ease-soft);
-}
-.feature-media:hover img { transform: scale(1.015); }
+.demo-overlay-icon .icon { width: 18px; height: 18px; margin-left: 2px; }
+.demo-overlay:hover .demo-overlay-icon { transform: scale(1.06); }
+.demo-overlay-label strong { display: block; font-size: var(--fs-sm); font-weight: 650; line-height: 1.25; }
+.demo-overlay-label small { display: block; font-size: var(--fs-xs); color: #c9c4d8; }
 
 .feature-status {
   position: absolute;
   top: 0.875rem;
   left: 0.875rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
   padding: 0.25rem 0.625rem;
   border-radius: var(--radius);
   background: var(--ember);
   color: var(--on-ember);
   font-size: var(--fs-xs);
   font-weight: 650;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease);
+}
+.demo[data-state="playing"] .feature-status { opacity: 0; }
+
+/* Timeline: one segment per chapter, each filling as the playhead crosses
+   it. The whole strip is the scrubber (pointer drag or arrow keys). */
+.demo-timeline {
+  position: relative;
+  display: flex;
+  gap: 3px;
+  height: 28px;
+  padding-block: 10px;
+  background: var(--tile-dark);
+  padding-inline: 0.75rem;
+  cursor: pointer;
+  touch-action: none;
+}
+.demo-timeline:focus-visible { outline-offset: -2px; }
+.demo-segment {
+  position: relative;
+  flex: var(--length, 1) 1 0;
+  min-width: 4px;
+  border-radius: 1px;
+  background: #463e62;
+  overflow: hidden;
+  transition: transform 160ms var(--ease);
+}
+.demo-timeline:hover .demo-segment,
+.demo-timeline:focus-visible .demo-segment { transform: scaleY(1.6); }
+.demo-segment-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--ember);
+  transform: scaleX(var(--fill, 0));
+  transform-origin: left;
+}
+.demo-tip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.demo-tip[hidden] { display: none; }
+
+.demo-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.375rem 0.375rem;
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--tile-dark);
+  color: #f1eef8;
+}
+.demo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  min-width: 44px;
+  height: 44px;
+  padding-inline: 0.625rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color var(--dur) var(--ease);
+}
+.demo-btn:hover { background: #2a2440; }
+.demo-btn .icon { width: 18px; height: 18px; }
+.demo-btn[data-demo-sound][aria-pressed="false"] { color: #fc9053; }
+.demo-now {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  gap: 0.625rem;
+  min-width: 0;
+  padding-inline: 0.375rem;
+  font-size: var(--fs-xs);
+}
+.demo-chapter {
+  overflow: hidden;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.demo-time { flex: none; color: #b4adc8; font-variant-numeric: tabular-nums; }
+@media (max-width: 359px) {
+  .demo-sound-label { display: none; }
 }
 
 .feature-body {
@@ -687,13 +795,15 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   color: var(--ink-3);
 }
 .feature-systems li { border-bottom: 1px solid var(--line); }
-/* Each system is a button that opens the demo at its chapter. */
+/* Each system is a button that jumps the demo to its chapter. The one now
+   playing is marked, with a rule along its top that fills as it plays. */
 .feature-chapter {
+  position: relative;
   display: block;
-  width: 100%;
+  width: calc(100% + 1rem);
+  height: 100%;
   padding: 1rem 0.5rem;
   margin-inline: -0.5rem;
-  box-sizing: content-box;
   border: 0;
   border-radius: var(--radius);
   background: transparent;
@@ -702,7 +812,21 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   text-align: left;
   transition: background-color var(--dur) var(--ease);
 }
+.feature-chapter::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0.5rem;
+  right: 0.5rem;
+  height: 2px;
+  background: var(--ember);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+  opacity: 0;
+}
 .feature-chapter:hover { background: var(--surface-sunk); }
+.feature-chapter[aria-current="true"] { background: var(--surface-sunk); }
+.feature-chapter[aria-current="true"]::before { opacity: 1; }
 .feature-chapter-time {
   display: inline-flex;
   align-items: center;
@@ -714,8 +838,15 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   color: var(--accent);
 }
 .feature-chapter-time .icon { width: 11px; height: 11px; }
+.feature-chapter-now {
+  display: none;
+  margin-left: 0.25rem;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+.feature-chapter[aria-current="true"] .feature-chapter-now { display: inline; }
 .feature-systems strong { display: block; font-size: var(--fs-body); font-weight: 650; }
-.feature-systems .feature-chapter > span:last-child { display: block; margin-top: 0.125rem; font-size: var(--fs-sm); color: var(--ink-2); }
+.feature-chapter-copy { display: block; margin-top: 0.125rem; font-size: var(--fs-sm); color: var(--ink-2); }
 
 @media (min-width: 640px) {
   .feature-systems ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1252,34 +1383,6 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   background: #000000;
 }
 
-.player-chapters {
-  display: flex;
-  gap: 0.375rem;
-  padding: 0.625rem 0.75rem 0.75rem;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scrollbar-width: thin;
-}
-.player-chapters[hidden] { display: none; }
-.player-chapters button {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.375rem;
-  min-height: 36px;
-  padding: 0.375rem 0.75rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--ink-2);
-  font-size: var(--fs-xs);
-  white-space: nowrap;
-  transition: background-color var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
-}
-.player-chapters button span { font-variant-numeric: tabular-nums; color: var(--ink-3); }
-.player-chapters button:hover { border-color: var(--ink-3); color: var(--ink); }
-.player-chapters button[aria-current="true"] { border-color: var(--ink); background: var(--ink); color: var(--bg); }
-.player-chapters button[aria-current="true"] span { color: inherit; opacity: 0.75; }
-
 /* ---------- Misc ---------- */
 .noscript {
   padding: var(--space-md) 0;
@@ -1366,6 +1469,5 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   .js [data-motion],
   .js [data-motion] > * { opacity: 1 !important; transform: none !important; clip-path: none !important; }
   .js [data-motion="draw"] { background-size: 100% 1px !important; }
-  .project-media:hover img,
-  .feature-media:hover img { transform: none; }
+  .project-media:hover img { transform: none; }
 }

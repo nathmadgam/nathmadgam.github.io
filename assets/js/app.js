@@ -1,9 +1,9 @@
 /**
  * Cynex Services portfolio site behaviour.
  * Renders list content from data.js and wires up navigation, the demo player,
- * the contract viewer, the email copy button, the project filter, and the motion
- * layer (scroll reveals and the process line). No external dependencies;
- * every animation respects prefers-reduced-motion.
+ * the inline Burgeran! demo, the contract viewer, the email copy button, the
+ * project filter, and the motion layer (scroll reveals and the process line).
+ * No external dependencies; every animation respects prefers-reduced-motion.
  */
 import {
   featured,
@@ -17,7 +17,7 @@ import {
   robloxGroups,
   discordServers,
   reviews,
-} from "./data.js?v=2026-10-14b";
+} from "./data.js?v=2026-10-15";
 
 const CONTACT_EMAIL = "nathanielmadridgaminde@proton.me";
 const CONTACT_URL = "https://datalprojects.com/contact";
@@ -34,12 +34,11 @@ const escapeHtml = value =>
 const formatTime = seconds =>
   `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, "0")}`;
 
-/** Attributes that make an element open the shared video player, optionally at a time. */
-const demoTrigger = (demo, start = 0) =>
-  `data-video="${escapeHtml(demo.video)}" data-title="${escapeHtml(demo.title)}" ` +
-  `data-poster="${escapeHtml(demo.poster)}" data-chapters="${escapeHtml(demo.id)}" data-start="${start}"`;
-
-const chapterSets = new Map([[featured.demo.id, featured.demo.chapters]]);
+/** Seconds from an "m:ss" string. */
+const parseTime = text => {
+  const [minutes, seconds] = String(text).split(":").map(Number);
+  return (minutes || 0) * 60 + (seconds || 0);
+};
 
 const icon = (name, className = "icon") =>
   `<svg class="${className}" aria-hidden="true"><use href="#i-${name}"></use></svg>`;
@@ -61,18 +60,47 @@ function renderFeatured() {
   const root = qs("[data-featured]");
   if (!root) return;
   const game = featured;
+  const demo = game.demo;
+  const total = parseTime(demo.duration);
+  const length = (chapter, index) =>
+    (demo.chapters[index + 1]?.start ?? total) - chapter.start;
+
   root.innerHTML = `
     <article class="feature">
-      <button class="feature-media" type="button" data-motion="wipe" ${demoTrigger(game.demo)}
-              aria-label="Watch the ${escapeHtml(game.demo.title)} (${escapeHtml(game.demo.duration)})">
-        <img src="${escapeHtml(game.image)}" data-fallback="${escapeHtml(game.fallback)}"
-             alt="" width="768" height="432" loading="lazy" decoding="async">
-        <span class="feature-status">${escapeHtml(game.status)}</span>
-        <span class="feature-play" aria-hidden="true">
-          <span class="feature-play-icon">${icon("play")}</span>
-          <span class="feature-play-copy"><strong>Watch the systems demo</strong><small>${escapeHtml(game.demo.duration)} &middot; ${game.demo.chapters.length - 1} chapters</small></span>
-        </span>
-      </button>
+      <div class="demo" data-demo data-state="idle">
+        <div class="demo-frame" data-motion="wipe">
+          <video class="demo-video" data-demo-video muted playsinline loop preload="none"
+                 poster="${escapeHtml(demo.poster)}" width="1920" height="1080"
+                 aria-label="${escapeHtml(demo.title)}">
+            <source src="${escapeHtml(demo.video)}" type="video/mp4">
+          </video>
+          <button class="demo-overlay" type="button" data-demo-start>
+            <span class="demo-overlay-label">
+              <span class="demo-overlay-icon">${icon("play")}</span>
+              <span><strong>Watch the systems demo</strong><small>${escapeHtml(demo.duration)} &middot; ${demo.chapters.length - 1} chapters</small></span>
+            </span>
+          </button>
+          <span class="feature-status">${escapeHtml(game.status)}</span>
+        </div>
+        <div class="demo-timeline" data-demo-timeline role="slider" tabindex="0"
+             aria-label="Demo position" aria-valuemin="0" aria-valuemax="${Math.round(total)}"
+             aria-valuenow="0" aria-valuetext="0:00, ${escapeHtml(demo.chapters[0].label)}">
+          ${demo.chapters.map((chapter, index) => `
+          <span class="demo-segment" style="--length: ${length(chapter, index)}"><span class="demo-segment-fill"></span></span>`).join("")}
+          <span class="demo-tip" data-demo-tip hidden></span>
+        </div>
+        <div class="demo-bar">
+          <button class="demo-btn" type="button" data-demo-play aria-label="Play">${icon("play")}</button>
+          <button class="demo-btn" type="button" data-demo-sound aria-pressed="false">
+            ${icon("volume-off")}<span class="demo-sound-label">Sound off</span>
+          </button>
+          <p class="demo-now">
+            <span class="demo-chapter" data-demo-chapter>${escapeHtml(demo.chapters[0].label)}</span>
+            <span class="demo-time"><span data-demo-current>0:00</span> / ${escapeHtml(demo.duration)}</span>
+          </p>
+          <button class="demo-btn" type="button" data-demo-fullscreen aria-label="Full screen">${icon("maximize")}</button>
+        </div>
+      </div>
       <div class="feature-body" data-motion="rise">
         <div class="feature-identity">
           <img src="${escapeHtml(game.icon)}" data-fallback="${escapeHtml(game.fallback)}"
@@ -88,8 +116,8 @@ function renderFeatured() {
           <div><dt>Genre</dt><dd>${escapeHtml(game.genre)}</dd></div>
         </dl>
         <div class="feature-actions">
-          <button class="btn btn-primary" type="button" ${demoTrigger(game.demo)}>
-            ${icon("play")}Watch demo
+          <button class="btn btn-primary" type="button" data-demo-watch>
+            ${icon("volume")}Watch with sound
           </button>
           <a class="btn btn-secondary" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">
             Play on Roblox${icon("external")}
@@ -98,14 +126,14 @@ function renderFeatured() {
         </div>
       </div>
       <div class="feature-systems">
-        <h4 class="column-label">What I built <small>Select a system to watch it in the demo</small></h4>
+        <h4 class="column-label">What I built <small>Select a system to jump to it in the demo</small></h4>
         <ul>
           ${game.highlights.map(item => `
           <li data-motion="fade">
-            <button class="feature-chapter" type="button" ${demoTrigger(game.demo, item.start)}>
-              <span class="feature-chapter-time">${icon("play")}${formatTime(item.start)}</span>
+            <button class="feature-chapter" type="button" data-demo-seek="${item.start}">
+              <span class="feature-chapter-time">${icon("play")}${formatTime(item.start)}<span class="feature-chapter-now">Now playing</span></span>
               <strong>${escapeHtml(item.title)}</strong>
-              <span>${escapeHtml(item.description)}</span>
+              <span class="feature-chapter-copy">${escapeHtml(item.description)}</span>
             </button>
           </li>`).join("")}
         </ul>
@@ -524,59 +552,21 @@ function setupPlayer() {
   const video = qs("[data-player-video]", dialog ?? document);
   const title = qs("[data-player-title]", dialog ?? document);
   const close = qs("[data-player-close]", dialog ?? document);
-  const chapterList = qs("[data-player-chapters]", dialog ?? document);
   if (!dialog || !video || !title || !close) return;
-
-  let chapters = [];
-
-  const renderChapters = () => {
-    if (!chapterList) return;
-    chapterList.hidden = chapters.length === 0;
-    chapterList.innerHTML = chapters.map(chapter => `
-      <li><button type="button" data-seek="${chapter.start}">
-        <span>${formatTime(chapter.start)}</span>${escapeHtml(chapter.label)}
-      </button></li>`).join("");
-  };
-
-  // Highlight the chapter containing the playhead.
-  const syncChapter = () => {
-    if (!chapterList || !chapters.length) return;
-    const time = video.currentTime;
-    let active = 0;
-    chapters.forEach((chapter, index) => { if (time + 0.25 >= chapter.start) active = index; });
-    qsa("[data-seek]", chapterList).forEach((button, index) => {
-      if (index === active) button.setAttribute("aria-current", "true");
-      else button.removeAttribute("aria-current");
-    });
-  };
-
-  const seek = seconds => {
-    if (!seconds) return;
-    // Seeking before metadata loads is ignored by some browsers.
-    if (video.readyState >= 1) video.currentTime = seconds;
-    else video.addEventListener("loadedmetadata", () => { video.currentTime = seconds; }, { once: true });
-  };
 
   const open = trigger => {
     title.textContent = trigger.dataset.title ?? "Project demo";
-    chapters = chapterSets.get(trigger.dataset.chapters) ?? [];
-    renderChapters();
-    if (trigger.dataset.poster) video.poster = trigger.dataset.poster;
-    else video.removeAttribute("poster");
     video.src = trigger.dataset.video;
-    seek(Number(trigger.dataset.start) || 0);
-    syncChapter();
     dialog.showModal();
+    document.dispatchEvent(new CustomEvent("player:open"));
     video.play().catch(() => { /* autoplay may be blocked; controls remain */ });
   };
 
   const shut = () => {
     video.pause();
     video.removeAttribute("src");
-    video.removeAttribute("poster");
     video.load();
-    chapters = [];
-    renderChapters();
+    document.dispatchEvent(new CustomEvent("player:close"));
   };
 
   document.addEventListener("click", event => {
@@ -584,20 +574,282 @@ function setupPlayer() {
     if (trigger) open(trigger);
   });
 
-  chapterList?.addEventListener("click", event => {
-    const button = event.target.closest("[data-seek]");
-    if (!button) return;
-    video.currentTime = Number(button.dataset.seek);
-    video.play().catch(() => {});
-  });
-  video.addEventListener("timeupdate", syncChapter);
-  video.addEventListener("seeked", syncChapter);
-
   close.addEventListener("click", () => dialog.close());
   dialog.addEventListener("close", shut);
   dialog.addEventListener("click", event => {
     if (event.target === dialog) dialog.close();
   });
+}
+
+/**
+ * Inline Burgeran! demo.
+ *
+ * Plays muted on its own while at least 60% of the picture is on screen and
+ * pauses once less than 30% is (the gap stops it flickering at the edge).
+ * Browsers only allow autoplay without sound, so sound is one tap away and
+ * is remembered while the visitor scrolls. A visitor's own pause always
+ * wins: the demo will not restart by itself until they press play again.
+ * Reduced motion and data-saver skip autoplay; scroll-pausing still applies
+ * once the visitor starts it.
+ */
+function setupDemo() {
+  const root = qs("[data-demo]");
+  if (!root) return;
+  const video = qs("[data-demo-video]", root);
+  const frame = qs(".demo-frame", root);
+  const timeline = qs("[data-demo-timeline]", root);
+  const segments = qsa(".demo-segment", timeline);
+  const tip = qs("[data-demo-tip]", root);
+  const playButton = qs("[data-demo-play]", root);
+  const soundButton = qs("[data-demo-sound]", root);
+  const fullscreenButton = qs("[data-demo-fullscreen]", root);
+  const chapterLabel = qs("[data-demo-chapter]", root);
+  const currentLabel = qs("[data-demo-current]", root);
+  const systemButtons = qsa("[data-demo-seek]");
+  const chapters = featured.demo.chapters;
+
+  const autoplayAllowed = !prefersReducedMotion.matches && !navigator.connection?.saveData;
+  let started = false;     // it has played (or been scrubbed) at least once
+  let userPaused = false;  // the visitor paused it; never auto-resume over that
+  let inView = false;
+  let suspended = false;   // another demo is open in the dialog
+  let frameId = 0;
+  let lastSecond = -1;
+  let lastChapter = -1;
+
+  const duration = () =>
+    Number.isFinite(video.duration) && video.duration > 0
+      ? video.duration
+      : parseTime(featured.demo.duration);
+  const chapterAt = time => {
+    let index = 0;
+    chapters.forEach((chapter, i) => { if (time + 0.05 >= chapter.start) index = i; });
+    return index;
+  };
+  const chapterEnd = index => chapters[index + 1]?.start ?? duration();
+  const clamp01 = value => Math.min(Math.max(value, 0), 1);
+
+  /* ---- drawing ---- */
+  const paint = () => {
+    const time = video.currentTime;
+    const active = chapterAt(time);
+    segments.forEach((segment, index) => {
+      const start = chapters[index].start;
+      segment.style.setProperty("--fill", clamp01((time - start) / (chapterEnd(index) - start)).toFixed(4));
+    });
+
+    const second = Math.floor(time);
+    if (second !== lastSecond || active !== lastChapter) {
+      currentLabel.textContent = formatTime(time);
+      timeline.setAttribute("aria-valuenow", String(second));
+      timeline.setAttribute("aria-valuetext", `${formatTime(time)}, ${chapters[active].label}`);
+      lastSecond = second;
+    }
+    if (active !== lastChapter) {
+      chapterLabel.textContent = chapters[active].label;
+      lastChapter = active;
+    }
+
+    // Mark the matching row in "What I built" and fill its top rule.
+    const start = chapters[active].start;
+    const progress = clamp01((time - start) / (chapterEnd(active) - start));
+    systemButtons.forEach(button => {
+      if (Number(button.dataset.demoSeek) === start) {
+        button.setAttribute("aria-current", "true");
+        button.style.setProperty("--progress", progress.toFixed(4));
+      } else if (button.hasAttribute("aria-current")) {
+        button.removeAttribute("aria-current");
+        button.style.removeProperty("--progress");
+      }
+    });
+  };
+
+  const loop = () => {
+    paint();
+    frameId = video.paused ? 0 : requestAnimationFrame(loop);
+  };
+
+  const syncState = () => {
+    const playing = !video.paused && !video.ended;
+    root.dataset.state = playing ? "playing" : started ? "paused" : "idle";
+    playButton.innerHTML = icon(playing ? "pause" : "play");
+    playButton.setAttribute("aria-label", playing ? "Pause" : "Play");
+    if (playing && !frameId) frameId = requestAnimationFrame(loop);
+  };
+
+  const syncSound = () => {
+    const on = !video.muted;
+    soundButton.setAttribute("aria-pressed", String(on));
+    soundButton.setAttribute("aria-label", on ? "Turn sound off" : "Turn sound on");
+    soundButton.innerHTML =
+      `${icon(on ? "volume" : "volume-off")}<span class="demo-sound-label" aria-hidden="true">${on ? "Sound on" : "Sound off"}</span>`;
+  };
+
+  /* ---- playback ---- */
+  const play = () => {
+    started = true;
+    video.play().catch(error => {
+      // The browser refused sound without a tap: keep playing silently.
+      if (error?.name === "NotAllowedError" && !video.muted) {
+        video.muted = true;
+        video.play().catch(syncState);
+      } else {
+        // Autoplay disabled entirely: the overlay stays up for a tap.
+        syncState();
+      }
+    });
+  };
+
+  const seek = seconds => {
+    const target = Math.min(Math.max(seconds, 0), duration() - 0.1);
+    started = true;
+    // Seeking before metadata loads is ignored by some browsers.
+    if (video.readyState >= 1) video.currentTime = target;
+    else {
+      video.addEventListener("loadedmetadata", () => { video.currentTime = target; }, { once: true });
+      video.preload = "metadata";
+      video.load();
+    }
+    paint();
+  };
+
+  /** Whether the scroll position and the visitor's choices allow playing now. */
+  const wanted = () =>
+    inView && !userPaused && !suspended && !document.hidden && (started || autoplayAllowed);
+
+  const reconsider = () => {
+    if (wanted() && video.paused) play();
+    else if (!wanted() && !video.paused) video.pause();
+  };
+
+  /** A deliberate "watch this": clears the visitor's pause and brings the demo into view. */
+  const watch = ({ at, sound } = {}) => {
+    userPaused = false;
+    if (sound) video.muted = false;
+    if (at !== undefined) seek(at);
+    const rect = frame.getBoundingClientRect();
+    const visible = Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0);
+    if (visible < rect.height * 0.8) {
+      frame.scrollIntoView({ behavior: prefersReducedMotion.matches ? "auto" : "smooth", block: "center" });
+    }
+    play();
+  };
+
+  const togglePlay = () => {
+    if (video.paused) {
+      userPaused = false;
+      play();
+    } else {
+      userPaused = true;
+      video.pause();
+    }
+  };
+
+  /* ---- wiring ---- */
+  video.addEventListener("play", syncState);
+  video.addEventListener("pause", syncState);
+  video.addEventListener("seeked", paint);
+  video.addEventListener("loadedmetadata", paint);
+  video.addEventListener("volumechange", syncSound);
+  video.addEventListener("click", togglePlay);
+
+  qs("[data-demo-start]", root).addEventListener("click", () => watch());
+  playButton.addEventListener("click", togglePlay);
+  soundButton.addEventListener("click", () => {
+    video.muted = !video.muted;
+    // Turning sound on is a clear sign of wanting to watch.
+    if (!video.muted && video.paused) watch();
+  });
+  qs("[data-demo-watch]")?.addEventListener("click", () => watch({ sound: true }));
+  systemButtons.forEach(button =>
+    button.addEventListener("click", () => watch({ at: Number(button.dataset.demoSeek) })));
+
+  // Timeline: press or drag anywhere to scrub; hovering shows the chapter
+  // under the pointer.
+  const timeAt = clientX => {
+    const rect = timeline.getBoundingClientRect();
+    const first = segments[0].getBoundingClientRect().left;
+    const last = segments[segments.length - 1].getBoundingClientRect().right;
+    return {
+      time: clamp01((clientX - first) / (last - first)) * duration(),
+      x: Math.min(Math.max(clientX - rect.left, 48), rect.width - 48),
+    };
+  };
+  const showTip = clientX => {
+    const { time, x } = timeAt(clientX);
+    tip.textContent = `${formatTime(time)} · ${chapters[chapterAt(time)].label}`;
+    tip.style.left = `${x}px`;
+    tip.hidden = false;
+  };
+  let scrubbing = false;
+  timeline.addEventListener("pointerdown", event => {
+    scrubbing = true;
+    timeline.setPointerCapture(event.pointerId);
+    seek(timeAt(event.clientX).time);
+    showTip(event.clientX);
+  });
+  timeline.addEventListener("pointermove", event => {
+    if (scrubbing) seek(timeAt(event.clientX).time);
+    if (scrubbing || event.pointerType === "mouse") showTip(event.clientX);
+  });
+  const endScrub = () => {
+    if (!scrubbing) return;
+    scrubbing = false;
+    tip.hidden = true;
+    if (!userPaused) play();
+  };
+  timeline.addEventListener("pointerup", endScrub);
+  timeline.addEventListener("pointercancel", endScrub);
+  timeline.addEventListener("pointerleave", () => { if (!scrubbing) tip.hidden = true; });
+
+  timeline.addEventListener("keydown", event => {
+    const time = video.currentTime;
+    const active = chapterAt(time);
+    const targets = {
+      ArrowRight: time + 5,
+      ArrowLeft: time - 5,
+      PageDown: chapters[Math.min(active + 1, chapters.length - 1)].start,
+      // Back to the start of this chapter, or to the previous one if already there.
+      PageUp: time - chapters[active].start > 2 ? chapters[active].start : chapters[Math.max(active - 1, 0)].start,
+      Home: 0,
+      End: duration() - 1,
+    };
+    if (!(event.key in targets)) return;
+    event.preventDefault();
+    seek(targets[event.key]);
+  });
+
+  // Full screen takes the whole player, so the chapter timeline comes along.
+  // iOS Safari can only full-screen the video element itself.
+  if (!root.requestFullscreen && !video.webkitEnterFullscreen) fullscreenButton.hidden = true;
+  fullscreenButton.addEventListener("click", () => {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (root.requestFullscreen) root.requestFullscreen().catch(() => {});
+    else video.webkitEnterFullscreen();
+  });
+  document.addEventListener("fullscreenchange", () => {
+    const full = document.fullscreenElement === root;
+    fullscreenButton.innerHTML = icon(full ? "minimize" : "maximize");
+    fullscreenButton.setAttribute("aria-label", full ? "Exit full screen" : "Full screen");
+  });
+
+  // Scroll-aware playback.
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(entries => {
+      const ratio = entries[entries.length - 1].intersectionRatio;
+      if (ratio >= 0.6) inView = true;
+      else if (ratio < 0.3) inView = false;
+      else return;
+      reconsider();
+    }, { threshold: [0, 0.3, 0.6] }).observe(frame);
+  }
+  document.addEventListener("visibilitychange", reconsider);
+  document.addEventListener("player:open", () => { suspended = true; reconsider(); });
+  document.addEventListener("player:close", () => { suspended = false; reconsider(); });
+
+  syncSound();
+  syncState();
+  paint();
 }
 
 function setupContract() {
@@ -687,6 +939,7 @@ setupThemeToggle();
 setupMobileNav();
 setupScrollSpy();
 setupPlayer();
+setupDemo();
 setupContract();
 setupProcess();
 setupMotion();
