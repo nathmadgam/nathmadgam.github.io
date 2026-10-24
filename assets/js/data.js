@@ -25,11 +25,11 @@ export const ventures = [
   },
   {
     name: "Cynex Services",
-    role: "Founder · Freelance practice",
-    description: "My independent Roblox programming practice, delivering gameplay, backend, data, and interface systems to studios and creators under contract.",
-    tags: ["Roblox", "Luau", "Contract work"],
-    url: "https://datalprojects.com/contact",
-    linkLabel: "Start a project",
+    role: "Founder · Discord server",
+    description: "My Discord server for Roblox development: project inquiries, development updates, and direct technical discussion.",
+    tags: ["Discord", "Roblox", "Community"],
+    url: "https://discord.gg/Pnjjkc6FHY",
+    linkLabel: "Join the server",
     logo: "images/cynex-services.png",
     logoTone: "light",
   },
@@ -274,7 +274,7 @@ export const robloxGroups = [
 /** @type {DiscordServer[]} */
 export const discordServers = [
   { name: "Summit Developers", role: "Pioneer", description: "A Roblox developer community for collaboration, feedback, and technical discussion.", inviteCode: "UXsEATcmaa", url: "https://discord.gg/UXsEATcmaa", guildId: "1442736803843932223", iconHash: "51d3509cc16f090db3234db14dd33cf8", fallback: "assets/fallbacks/discord-summit.svg", cachedImage: "assets/cached-media/discord-summit.webp", cacheName: "discord-summit.webp" },
-  { name: "Cynex Services", role: "Founder", description: "The primary server for project inquiries, development updates, and direct contact.", inviteCode: "sAQtQyyS", url: "https://discord.gg/sAQtQyyS", fallback: "assets/fallbacks/discord-cynex.svg", cachedImage: "images/cynex-services.png" },
+  { name: "Cynex Services", role: "Founder", description: "The primary server for project inquiries, development updates, and direct contact.", inviteCode: "Pnjjkc6FHY", url: "https://discord.gg/Pnjjkc6FHY", fallback: "assets/fallbacks/discord-cynex.svg", cachedImage: "images/cynex-services.png" },
 ];
 
 export const reviews = [

@@ -17,7 +17,7 @@ import {
   robloxGroups,
   discordServers,
   reviews,
-} from "./data.js?v=2026-10-15";
+} from "./data.js?v=2026-10-25";
 
 const CONTACT_EMAIL = "nathanielmadridgaminde@proton.me";
 const CONTACT_URL = "https://datalprojects.com/contact";
@@ -69,7 +69,7 @@ function renderFeatured() {
     <article class="feature">
       <div class="demo" data-demo data-state="idle">
         <div class="demo-frame" data-motion="wipe">
-          <video class="demo-video" data-demo-video muted playsinline loop preload="none"
+          <video class="demo-video" data-demo-video playsinline loop preload="none"
                  poster="${escapeHtml(demo.poster)}" width="1920" height="1080"
                  aria-label="${escapeHtml(demo.title)}">
             <source src="${escapeHtml(demo.video)}" type="video/mp4">
@@ -584,10 +584,11 @@ function setupPlayer() {
 /**
  * Inline Burgeran! demo.
  *
- * Plays muted on its own while at least 60% of the picture is on screen and
- * pauses once less than 30% is (the gap stops it flickering at the edge).
- * Browsers only allow autoplay without sound, so sound is one tap away and
- * is remembered while the visitor scrolls. A visitor's own pause always
+ * Plays on its own, with sound, while at least 60% of the picture is on screen
+ * and pauses once less than 30% is (the gap stops it flickering at the edge).
+ * Browsers refuse sound until the visitor has tapped or pressed a key on the
+ * page, so until then it plays muted and the first such gesture turns sound
+ * on, unless the visitor has chosen with the sound button. A visitor's own pause always
  * wins: the demo will not restart by itself until they press play again.
  * Reduced motion and data-saver skip autoplay; scroll-pausing still applies
  * once the visitor starts it.
@@ -613,6 +614,7 @@ function setupDemo() {
   let userPaused = false;  // the visitor paused it; never auto-resume over that
   let inView = false;
   let suspended = false;   // another demo is open in the dialog
+  let soundChosen = false; // the visitor used the sound button; respect it
   let frameId = 0;
   let lastSecond = -1;
   let lastChapter = -1;
@@ -650,16 +652,13 @@ function setupDemo() {
       lastChapter = active;
     }
 
-    // Mark the matching row in "What I built" and fill its top rule.
+    // Mark the matching row in "What I built".
     const start = chapters[active].start;
-    const progress = clamp01((time - start) / (chapterEnd(active) - start));
     systemButtons.forEach(button => {
       if (Number(button.dataset.demoSeek) === start) {
         button.setAttribute("aria-current", "true");
-        button.style.setProperty("--progress", progress.toFixed(4));
       } else if (button.hasAttribute("aria-current")) {
         button.removeAttribute("aria-current");
-        button.style.removeProperty("--progress");
       }
     });
   };
@@ -756,6 +755,7 @@ function setupDemo() {
   qs("[data-demo-start]", root).addEventListener("click", () => watch());
   playButton.addEventListener("click", togglePlay);
   soundButton.addEventListener("click", () => {
+    soundChosen = true;
     video.muted = !video.muted;
     // Turning sound on is a clear sign of wanting to watch.
     if (!video.muted && video.paused) watch();
@@ -846,6 +846,16 @@ function setupDemo() {
   document.addEventListener("visibilitychange", reconsider);
   document.addEventListener("player:open", () => { suspended = true; reconsider(); });
   document.addEventListener("player:close", () => { suspended = false; reconsider(); });
+
+  // If the browser made it start muted, the visitor's first tap or key press
+  // anywhere unlocks sound. Touch only counts once the finger lifts.
+  const gestures = ["pointerdown", "pointerup", "keydown"];
+  const unlockSound = event => {
+    if (navigator.userActivation && !navigator.userActivation.isActive) return;
+    gestures.forEach(type => document.removeEventListener(type, unlockSound, true));
+    if (!soundChosen && !soundButton.contains(event.target)) video.muted = false;
+  };
+  gestures.forEach(type => document.addEventListener(type, unlockSound, true));
 
   syncSound();
   syncState();

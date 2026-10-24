@@ -334,7 +334,7 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   letter-spacing: -0.015em;
   white-space: nowrap;
 }
-.brand-mark { width: 28px; height: 28px; }
+.brand-mark { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
 
 @media (max-width: 420px) {
   .site-header-inner { gap: 0.5rem; }
@@ -796,7 +796,7 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
 }
 .feature-systems li { border-bottom: 1px solid var(--line); }
 /* Each system is a button that jumps the demo to its chapter. The one now
-   playing is marked, with a rule along its top that fills as it plays. */
+   playing is marked. */
 .feature-chapter {
   position: relative;
   display: block;
@@ -812,21 +812,8 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   text-align: left;
   transition: background-color var(--dur) var(--ease);
 }
-.feature-chapter::before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: 0.5rem;
-  right: 0.5rem;
-  height: 2px;
-  background: var(--ember);
-  transform: scaleX(var(--progress, 0));
-  transform-origin: left;
-  opacity: 0;
-}
 .feature-chapter:hover { background: var(--surface-sunk); }
 .feature-chapter[aria-current="true"] { background: var(--surface-sunk); }
-.feature-chapter[aria-current="true"]::before { opacity: 1; }
 .feature-chapter-time {
   display: inline-flex;
   align-items: center;
