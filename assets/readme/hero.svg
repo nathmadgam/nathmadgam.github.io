@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Nathaniel Madrid, Roblox programmer portfolio</title>
+  <desc id="desc">The portfolio's opening line, "Software and Roblox systems, built to be maintained", beside the chapter timeline of the Burgeran! systems demo it features.</desc>
+
+  <rect width="1200" height="420" rx="4" fill="#110d1d"/>
+
+  <g id="title-block" font-family="'Source Sans 3', 'Source Sans Pro', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif">
+    <rect x="56" y="56" width="28" height="28" rx="4" fill="#fc9053"/>
+    <text x="98" y="78" font-size="22" font-weight="600" fill="#f1eef8">Nathaniel Madrid<tspan font-weight="400" fill="#958ead">, Roblox programmer</tspan></text>
+
+    <text font-size="58" font-weight="700" fill="#f1eef8" letter-spacing="-1">
+      <tspan x="56" y="172">Software and Roblox</tspan>
+      <tspan x="56" y="236">systems, built to</tspan>
+      <tspan x="56" y="300" font-style="italic" fill="#b89cff">be maintained.</tspan>
+    </text>
+
+    <text x="56" y="364" font-size="20" fill="#b4adc8">Portfolio site at nathmadgam.github.io</text>
+  </g>
+
+  <g id="project-proof" transform="translate(744 56)" font-family="'Source Sans 3', 'Source Sans Pro', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif">
+    <line x1="-40" y1="0" x2="-40" y2="308" stroke="#2a2440" stroke-width="1"/>
+    <text x="0" y="22" font-size="20" font-weight="600" fill="#f1eef8">Burgeran! systems demo</text>
+    <text x="400" y="22" font-size="18" fill="#958ead" text-anchor="end">1:36</text>
+
+    <!-- Chapter timeline: segment widths follow the demo's chapter start times (96 s over 400 units). -->
+    <g transform="translate(0 44)">
+      <rect x="0" width="23" height="6" rx="1" fill="#463e62"/>
+      <rect x="27" width="42" height="6" rx="1" fill="#fc9053"/>
+      <rect x="73" width="30" height="6" rx="1" fill="#fc9053"/>
+      <rect x="107" width="42" height="6" rx="1" fill="#fc9053"/>
+      <rect x="153" width="34" height="6" rx="1" fill="#fc9053"/>
+      <rect x="191" width="31" height="6" rx="1" fill="#fc9053"/>
+      <rect x="226" width="30" height="6" rx="1" fill="#fc9053"/>
+      <rect x="260" width="30" height="6" rx="1" fill="#fc9053"/>
+      <rect x="294" width="34" height="6" rx="1" fill="#fc9053"/>
+      <rect x="332" width="68" height="6" rx="1" fill="#fc9053"/>
+    </g>
+
+    <g font-size="20" transform="translate(0 92)">
+      <text y="0"><tspan fill="#b89cff">0:06</tspan><tspan x="64" fill="#f1eef8">Cooking architecture</tspan></text>
+      <text y="36"><tspan fill="#b89cff">0:17</tspan><tspan x="64" fill="#f1eef8">Order fulfilment</tspan></text>
+      <text y="72"><tspan fill="#b89cff">0:25</tspan><tspan x="64" fill="#f1eef8">Customer NPCs</tspan></text>
+      <text y="108"><tspan fill="#b89cff">0:53</tspan><tspan x="64" fill="#f1eef8">Economy and leaderboards</tspan></text>
+      <text y="144"><tspan fill="#b89cff">1:09</tspan><tspan x="64" fill="#f1eef8">Live events and admin tools</tspan></text>
+      <text y="180"><tspan fill="#b89cff">1:18</tspan><tspan x="64" fill="#f1eef8">Backend architecture</tspan></text>
+    </g>
+    <text x="0" y="308" font-size="18" fill="#958ead">Lead developer for Cly Games, live on Roblox</text>
+  </g>
+</svg>

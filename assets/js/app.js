@@ -476,7 +476,7 @@ function settle(element) {
   setTimeout(() => {
     element.removeAttribute("data-motion");
     element.style.removeProperty("--i");
-  }, order * 110 + 1800);
+  }, order * 80 + 1600);
 }
 
 /**
@@ -502,7 +502,7 @@ function setupMotion() {
       entry.target.style.setProperty("--i", String(Math.min(order++, 5)));
       settle(entry.target);
     });
-  }, { rootMargin: "0px 0px -6% 0px", threshold: 0.12 });
+  }, { rootMargin: "0px 0px 8% 0px", threshold: 0 });
 
   targets.forEach(target => observer.observe(target));
 }

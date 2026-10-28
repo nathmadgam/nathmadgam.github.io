@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-labelledby="title desc">
+  <title id="title">Design rules specimen</title>
+  <desc id="desc">The four colours taken from the Cynex mark with their roles and checked contrast, then the type, rule and radius that the rest of the site is built from.</desc>
+
+  <rect width="1200" height="400" rx="4" fill="#110d1d"/>
+
+  <g font-family="'Source Sans 3', 'Source Sans Pro', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif">
+    <text x="56" y="76" font-size="40" font-weight="700" fill="#f1eef8" letter-spacing="-0.5">Every colour comes from the logo</text>
+
+    <!-- Swatches: flat planes, 4px radius, role and contrast under each. -->
+    <g id="swatches" transform="translate(56 112)">
+      <g>
+        <rect width="250" height="96" rx="4" fill="#9356f5"/>
+        <text y="132" font-size="20" font-weight="600" fill="#f1eef8">Violet #9356f5</text>
+        <text y="160" font-size="18" fill="#958ead">Sampled from the mark</text>
+      </g>
+      <g transform="translate(272 0)">
+        <rect width="250" height="96" rx="4" fill="#fc9053"/>
+        <text y="132" font-size="20" font-weight="600" fill="#f1eef8">Ember #fc9053</text>
+        <text y="160" font-size="18" fill="#958ead">Planes and marks, never text</text>
+      </g>
+      <g transform="translate(544 0)">
+        <rect width="250" height="96" rx="4" fill="#6236d6"/>
+        <text y="132" font-size="20" font-weight="600" fill="#f1eef8">Accent #6236d6</text>
+        <text y="160" font-size="18" fill="#958ead">6.96:1 on white, passes AA</text>
+      </g>
+      <g transform="translate(816 0)">
+        <rect width="272" height="96" rx="4" fill="#17112b" stroke="#463e62" stroke-width="1"/>
+        <text y="132" font-size="20" font-weight="600" fill="#f1eef8">Ink #17112b</text>
+        <text y="160" font-size="18" fill="#958ead">18.24:1 on white, body text</text>
+      </g>
+    </g>
+
+    <line x1="56" y1="306" x2="1144" y2="306" stroke="#2a2440" stroke-width="1"/>
+
+    <g id="primitives" transform="translate(56 352)" font-size="20" fill="#b4adc8">
+      <text><tspan font-weight="700" fill="#f1eef8">Source Sans 3</tspan>, the face Roblox ships as Enum.Font.SourceSans</text>
+      <line x1="720" y1="-7" x2="800" y2="-7" stroke="#b4adc8" stroke-width="1"/>
+      <text x="812">1px rules</text>
+      <rect x="930" y="-24" width="24" height="24" rx="4" fill="none" stroke="#b4adc8" stroke-width="1.5"/>
+      <text x="966">4px radii</text>
+    </g>
+  </g>
+</svg>
