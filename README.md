@@ -57,9 +57,9 @@ the same pair DATAL uses. Labels are short, sentence case and used only to name 
 Radii are 12px for buttons, tiles and media, 22px for cards, and a circle for the portrait. Lists of links sit in one bordered card with divided
 rows and 36px icon tiles.
 
-**Wide screens.** The page widens with the window up to about 1900px, and above
-1700px the whole page scales up a step, so 1920 and 2560 screens are filled instead
-of showing a small column in the middle.
+**Wide screens.** As on DATAL, the page stops at 104rem (1664px) and the dot grid
+fills the window on both sides, closed by a dashed rule at the page edge. A wider
+window shows more dots, not a stretched page.
 
 **Numbers.** Numbers appear only where they carry information: demo timestamps and
 the process steps, whose order matters.

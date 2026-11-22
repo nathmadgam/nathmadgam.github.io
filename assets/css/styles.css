@@ -73,7 +73,8 @@
   --space-2xl: clamp(4.5rem, 3rem + 5vw, 7.5rem);
 
   /* Layout */
-  --shell-max: 118rem;   /* fluid to about 1900px at 16px, wider as the root grows */
+  --frame: 104rem;       /* the page never grows past this; the dot grid fills the rest, as on DATAL */
+  --side: max(24px, calc((100% - var(--frame)) / 2));
   --gutter: clamp(1rem, 4vw, 5rem);
   --header-h: 72px;
   --log-pad: clamp(1.5rem, 1rem + 2vw, 2.75rem);   /* spine to entry text */
@@ -127,14 +128,10 @@ html {
   scroll-padding-top: calc(var(--header-h) + 1.5rem);
 }
 
-/* Wide screens: the whole page scales up a step, so it fills the window
-   the way a 1440px laptop view does instead of shrinking into the middle. */
+/* Wide screens get a larger opening line for the wider side column. */
 @media (min-width: 1700px) {
-  html { font-size: 106.25%; }
   :root { --fs-display: clamp(3.5rem, 1.2rem + 2vw, 4.25rem); }
 }
-@media (min-width: 2100px) { html { font-size: 112.5%; } }
-@media (min-width: 2500px) { html { font-size: 118.75%; } }
 
 body {
   position: relative;
@@ -150,8 +147,9 @@ body {
   overflow-x: hidden;
 }
 
-/* Dotted margins as on DATAL: a 24px strip of 9px dots at each window edge,
-   closed by a dashed rule. Only where the gutter is wide enough to hold it. */
+/* Dotted margins as on DATAL: 9px dots fill everything outside the page
+   frame (at least a 24px strip), closed by a dashed rule at the frame edge.
+   Wide windows get more dots, not a wider page. Only from 768px. */
 @media (min-width: 768px) {
   body::before,
   body::after {
@@ -164,13 +162,13 @@ body {
   body::before {
     background-image: radial-gradient(var(--dot) 1px, transparent 1.4px);
     background-size: 9px 9px;
-    -webkit-mask-image: linear-gradient(to right, #000 24px, transparent 24px, transparent calc(100% - 24px), #000 calc(100% - 24px));
-    mask-image: linear-gradient(to right, #000 24px, transparent 24px, transparent calc(100% - 24px), #000 calc(100% - 24px));
+    -webkit-mask-image: linear-gradient(to right, #000 var(--side), transparent var(--side), transparent calc(100% - var(--side)), #000 calc(100% - var(--side)));
+    mask-image: linear-gradient(to right, #000 var(--side), transparent var(--side), transparent calc(100% - var(--side)), #000 calc(100% - var(--side)));
   }
   body::after {
     background-image: linear-gradient(var(--dash) 50%, transparent 50%), linear-gradient(var(--dash) 50%, transparent 50%);
     background-size: 1px 10px, 1px 10px;
-    background-position: 24px 0, calc(100% - 24px) 0;
+    background-position: var(--side) 0, calc(100% - var(--side) - 1px) 0;
     background-repeat: repeat-y;
   }
 }
@@ -224,7 +222,7 @@ a { color: inherit; text-decoration: none; }
 /* ---------- Primitives ---------- */
 .shell {
   width: 100%;
-  max-width: calc(var(--shell-max) + var(--gutter) * 2);
+  max-width: var(--frame);
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -1130,6 +1128,15 @@ h3 { font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; }
   transition: text-decoration-color var(--dur) var(--ease);
 }
 .row-list a:hover .row-copy strong { text-decoration-color: currentColor; }
+/* Certifications: no logo column; rows without a public link use the same box. */
+.cert-list a,
+.cert-list .cert-row { grid-template-columns: minmax(0, 1fr) auto; }
+.cert-list .cert-row {
+  display: grid;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.875rem 1.125rem;
+}
 .row-copy small { display: block; font-size: var(--fs-xs); color: var(--ink-3); }
 .row-role {
   display: inline-flex;
