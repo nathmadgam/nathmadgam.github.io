@@ -44,25 +44,28 @@ changes stay deliberate.
 
 **Colour.** A warm near-black canvas `#0f0f0e`, cards one step up at `#1a1a18`, 1px
 borders `#33332f`, and one volt lime accent `#c6f432` (dark `#141414` text on it) for
-primary buttons, the spine, reached dots, stars, live marks and the glow. Body text is
+primary buttons, the spine, reached dots, stars and live marks. Body text is
 `#f4f4ef`, secondary `#a6a69e`. The light theme mirrors DATAL light: white canvas and
-near-black `#1d1d1f` buttons. The only gradients are the lime glow rising under the
-opening and the dotted strips at the window edges. The checked WCAG contrast table sits
+near-black `#1d1d1f` buttons. There are no colour washes or glows; the only pattern is the
+dotted strip at each window edge. The checked WCAG contrast table sits
 at the top of `styles.css`; add a row for any new text pair.
 
 **Type.** Overpass for headings (600, tight tracking) and Inter for everything else,
 the same pair DATAL uses. Labels are short, sentence case and used only to name a group.
 
 **Surfaces.** Cards are flat: a 1px border on the raised surface, no shadows or blur.
-Radii are 12px for buttons, tiles and media, 22px for cards, a circle for the portrait,
-and full pills for status stamps. Lists of links sit in one bordered card with divided
+Radii are 12px for buttons, tiles and media, 22px for cards, and a circle for the portrait. Lists of links sit in one bordered card with divided
 rows and 36px icon tiles.
+
+**Wide screens.** The page widens with the window up to about 1900px, and above
+1700px the whole page scales up a step, so 1920 and 2560 screens are filled instead
+of showing a small column in the middle.
 
 **Numbers.** Numbers appear only where they carry information: demo timestamps and
 the process steps, whose order matters.
 
-**Motion.** Each content type has its own reveal (see the Motion block in
-`styles.css`), on a long, soft ease with no overshoot. Reveals start just before
+**Motion.** One reveal for everything: a short fade and 16px rise with a small
+stagger, on a soft ease with no overshoot. Nothing scales on hover. Reveals start just before
 an element scrolls into view, so content is settled by the time it is read. The
 process line follows scroll position. With `prefers-reduced-motion` everything
 renders in its final state.

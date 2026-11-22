@@ -18,7 +18,7 @@ import {
   robloxGroups,
   discordServers,
   reviews,
-} from "./data.js?v=2026-11-22n";
+} from "./data.js?v=2026-11-22o";
 
 const CONTACT_EMAIL = "nathanielmadridgaminde@proton.me";
 const CONTACT_URL = "https://datalprojects.com/contact";
@@ -105,7 +105,7 @@ function renderFeatured() {
         <div class="feature-identity">
           <img src="${escapeHtml(game.icon)}" data-fallback="${escapeHtml(game.fallback)}"
                alt="" width="256" height="256" loading="lazy" decoding="async">
-          <p class="feature-role">${escapeHtml(game.role)}<span class="feature-studio">at <a class="text-link" href="${escapeHtml(game.studioUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(game.studio)}${icon("external")}</a></span></p>
+          <p class="feature-role">${escapeHtml(game.role)}<span class="feature-studio">at <a class="text-link" href="${escapeHtml(game.studioUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(game.studio)}</a></span></p>
         </div>
         <p class="feature-summary">${escapeHtml(game.summary)}</p>
         <dl class="feature-facts">
@@ -113,10 +113,10 @@ function renderFeatured() {
         </dl>
         <div class="feature-actions">
           <button class="btn btn-primary" type="button" data-demo-watch>
-            ${icon("volume")}Watch with sound
+            Watch with sound
           </button>
           <a class="btn btn-secondary" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">
-            Play on Roblox${icon("external")}
+            Play on Roblox
           </a>
           <a class="btn btn-secondary" href="${CONTACT_URL}" target="_blank" rel="noopener noreferrer">Build something similar</a>
         </div>
@@ -127,7 +127,7 @@ function renderFeatured() {
           ${game.highlights.map(item => `
           <li>
             <button class="feature-chapter" type="button" data-demo-seek="${item.start}">
-              <span class="feature-chapter-time">${icon("play")}${formatTime(item.start)}<span class="feature-chapter-now">Now playing</span></span>
+              <span class="feature-chapter-time">${formatTime(item.start)}<span class="feature-chapter-now">Now playing</span></span>
               <strong>${escapeHtml(item.title)}</strong>
               <span class="feature-chapter-copy">${escapeHtml(item.description)}</span>
             </button>
@@ -160,7 +160,7 @@ function renderVentures() {
         <p class="venture-copy">${escapeHtml(venture.description)}</p>
         <p class="venture-tags"><span class="visually-hidden">Focus areas: </span>${venture.tags.map(escapeHtml).join(" &middot; ")}</p>
         <a class="text-link venture-link" href="${escapeHtml(venture.url)}"${target}>
-          ${escapeHtml(venture.linkLabel)}${icon(external ? "external" : "arrow-right")}
+          ${escapeHtml(venture.linkLabel)}
         </a>
       </div>
     </article>`;
@@ -178,7 +178,7 @@ function renderProjects() {
               aria-label="Play the ${escapeHtml(project.title)} demo">
         <img src="${escapeHtml(project.poster)}" alt="Still frame from the ${escapeHtml(project.title)} demo"
              width="960" height="540" loading="lazy" decoding="async">
-        <span class="play-badge" aria-hidden="true">${icon("play")}Play demo</span>
+        <span class="play-badge" aria-hidden="true">Play demo</span>
       </button>
       <div class="project-body">
         <h3 class="project-title">${escapeHtml(project.title)}</h3>
@@ -227,7 +227,7 @@ function renderExperiences() {
         <p class="experience-meta meta">${escapeHtml(game.role)} for ${escapeHtml(game.creator)}</p>
         <p class="experience-copy">${escapeHtml(game.description)}</p>
         <a class="text-link" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">
-          Open on Roblox${icon("external")}
+          Open on Roblox
         </a>
       </div>
     </article>`).join("");
@@ -245,7 +245,7 @@ const linkedRow = ({ url, name, description, role, image, fallback, fit = "cover
           <strong>${escapeHtml(name)}</strong>
           <small>${escapeHtml(description)}</small>
         </span>
-        <span class="row-role">${escapeHtml(role)}${icon("external")}</span>
+        <span class="row-role">${escapeHtml(role)}</span>
       </a>
     </li>`;
 
@@ -350,7 +350,7 @@ function renderReviews() {
     summary.innerHTML = `
       <span class="review-stars" role="img" aria-label="${average.toFixed(1)} out of 5 stars">${icon("star").repeat(Math.round(average))}</span>
       <span>${average.toFixed(1)} average across ${reviews.length} ${escapeHtml(reviews[0].platform)} orders</span>
-      ${profile ? `<a class="text-link" href="${escapeHtml(profile)}" target="_blank" rel="noopener noreferrer">See the ${escapeHtml(reviews[0].platform)} profile${icon("external")}</a>` : ""}`;
+      ${profile ? `<a class="text-link" href="${escapeHtml(profile)}" target="_blank" rel="noopener noreferrer">See the ${escapeHtml(reviews[0].platform)} profile</a>` : ""}`;
   }
 
   list.innerHTML = reviews.filter(review => review !== leading).map(review => `
