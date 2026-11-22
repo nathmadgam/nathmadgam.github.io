@@ -2,48 +2,48 @@
   <title id="title">Nathaniel Madrid, Roblox programmer portfolio</title>
   <desc id="desc">The portfolio's opening line, "Software and Roblox systems, built to be maintained", beside the chapter timeline of the Burgeran! systems demo it features.</desc>
 
-  <rect width="1200" height="420" rx="4" fill="#0b1020"/>
+  <rect width="1200" height="420" rx="4" fill="#0f0f0e"/>
 
-  <g id="title-block" font-family="'Source Sans 3', 'Source Sans Pro', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif">
-    <rect x="56" y="56" width="28" height="28" rx="4" fill="#fc9053"/>
-    <text x="98" y="78" font-size="22" font-weight="600" fill="#eef2fb">Nathaniel Madrid<tspan font-weight="400" fill="#8f9bb8">, Roblox programmer</tspan></text>
+  <g id="title-block" font-family="Overpass, Inter, 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif">
+    <rect x="56" y="56" width="28" height="28" rx="4" fill="#c6f432"/>
+    <text x="98" y="78" font-size="22" font-weight="600" fill="#f4f4ef">Nathaniel Madrid<tspan font-weight="400" fill="#8a8a82">, Roblox programmer</tspan></text>
 
-    <text font-size="58" font-weight="700" fill="#eef2fb" letter-spacing="-1">
+    <text font-size="58" font-weight="700" fill="#f4f4ef" letter-spacing="-1">
       <tspan x="56" y="172">Software and Roblox</tspan>
       <tspan x="56" y="236">systems, built to</tspan>
-      <tspan x="56" y="300" font-style="italic" fill="#8ab0ff">be maintained.</tspan>
+      <tspan x="56" y="300" font-style="italic" fill="#c6f432">be maintained.</tspan>
     </text>
 
-    <text x="56" y="364" font-size="20" fill="#b8c2da">Portfolio site at nathmadgam.github.io</text>
+    <text x="56" y="364" font-size="20" fill="#a6a69e">Portfolio site at nathmadgam.github.io</text>
   </g>
 
-  <g id="project-proof" transform="translate(744 56)" font-family="'Source Sans 3', 'Source Sans Pro', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif">
-    <line x1="-40" y1="0" x2="-40" y2="308" stroke="#1a2238" stroke-width="1"/>
-    <text x="0" y="22" font-size="20" font-weight="600" fill="#eef2fb">Burgeran! systems demo</text>
-    <text x="400" y="22" font-size="18" fill="#8f9bb8" text-anchor="end">1:36</text>
+  <g id="project-proof" transform="translate(744 56)" font-family="Overpass, Inter, 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif">
+    <line x1="-40" y1="0" x2="-40" y2="308" stroke="#222220" stroke-width="1"/>
+    <text x="0" y="22" font-size="20" font-weight="600" fill="#f4f4ef">Burgeran! systems demo</text>
+    <text x="400" y="22" font-size="18" fill="#8a8a82" text-anchor="end">1:36</text>
 
     <!-- Chapter timeline: segment widths follow the demo's chapter start times (96 s over 400 units). -->
     <g transform="translate(0 44)">
-      <rect x="0" width="23" height="6" rx="1" fill="#26304d"/>
-      <rect x="27" width="42" height="6" rx="1" fill="#fc9053"/>
-      <rect x="73" width="30" height="6" rx="1" fill="#fc9053"/>
-      <rect x="107" width="42" height="6" rx="1" fill="#fc9053"/>
-      <rect x="153" width="34" height="6" rx="1" fill="#fc9053"/>
-      <rect x="191" width="31" height="6" rx="1" fill="#fc9053"/>
-      <rect x="226" width="30" height="6" rx="1" fill="#fc9053"/>
-      <rect x="260" width="30" height="6" rx="1" fill="#fc9053"/>
-      <rect x="294" width="34" height="6" rx="1" fill="#fc9053"/>
-      <rect x="332" width="68" height="6" rx="1" fill="#fc9053"/>
+      <rect x="0" width="23" height="6" rx="1" fill="#33332f"/>
+      <rect x="27" width="42" height="6" rx="1" fill="#c6f432"/>
+      <rect x="73" width="30" height="6" rx="1" fill="#c6f432"/>
+      <rect x="107" width="42" height="6" rx="1" fill="#c6f432"/>
+      <rect x="153" width="34" height="6" rx="1" fill="#c6f432"/>
+      <rect x="191" width="31" height="6" rx="1" fill="#c6f432"/>
+      <rect x="226" width="30" height="6" rx="1" fill="#c6f432"/>
+      <rect x="260" width="30" height="6" rx="1" fill="#c6f432"/>
+      <rect x="294" width="34" height="6" rx="1" fill="#c6f432"/>
+      <rect x="332" width="68" height="6" rx="1" fill="#c6f432"/>
     </g>
 
     <g font-size="20" transform="translate(0 92)">
-      <text y="0"><tspan fill="#8ab0ff">0:06</tspan><tspan x="64" fill="#eef2fb">Cooking architecture</tspan></text>
-      <text y="36"><tspan fill="#8ab0ff">0:17</tspan><tspan x="64" fill="#eef2fb">Order fulfilment</tspan></text>
-      <text y="72"><tspan fill="#8ab0ff">0:25</tspan><tspan x="64" fill="#eef2fb">Customer NPCs</tspan></text>
-      <text y="108"><tspan fill="#8ab0ff">0:53</tspan><tspan x="64" fill="#eef2fb">Economy and leaderboards</tspan></text>
-      <text y="144"><tspan fill="#8ab0ff">1:09</tspan><tspan x="64" fill="#eef2fb">Live events and admin tools</tspan></text>
-      <text y="180"><tspan fill="#8ab0ff">1:18</tspan><tspan x="64" fill="#eef2fb">Backend architecture</tspan></text>
+      <text y="0"><tspan fill="#c6f432">0:06</tspan><tspan x="64" fill="#f4f4ef">Cooking architecture</tspan></text>
+      <text y="36"><tspan fill="#c6f432">0:17</tspan><tspan x="64" fill="#f4f4ef">Order fulfilment</tspan></text>
+      <text y="72"><tspan fill="#c6f432">0:25</tspan><tspan x="64" fill="#f4f4ef">Customer NPCs</tspan></text>
+      <text y="108"><tspan fill="#c6f432">0:53</tspan><tspan x="64" fill="#f4f4ef">Economy and leaderboards</tspan></text>
+      <text y="144"><tspan fill="#c6f432">1:09</tspan><tspan x="64" fill="#f4f4ef">Live events and admin tools</tspan></text>
+      <text y="180"><tspan fill="#c6f432">1:18</tspan><tspan x="64" fill="#f4f4ef">Backend architecture</tspan></text>
     </g>
-    <text x="0" y="308" font-size="18" fill="#8f9bb8">Lead developer for Cly Games, live on Roblox</text>
+    <text x="0" y="308" font-size="18" fill="#8a8a82">Lead developer for Cly Games, live on Roblox</text>
   </g>
 </svg>

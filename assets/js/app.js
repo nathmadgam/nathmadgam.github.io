@@ -18,7 +18,7 @@ import {
   robloxGroups,
   discordServers,
   reviews,
-} from "./data.js?v=2026-11-22i";
+} from "./data.js?v=2026-11-22l";
 
 const CONTACT_EMAIL = "nathanielmadridgaminde@proton.me";
 const CONTACT_URL = "https://datalprojects.com/contact";

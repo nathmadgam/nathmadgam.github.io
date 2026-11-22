@@ -14,7 +14,7 @@ Plain HTML, CSS, and ES modules. No framework, no build step, no dependencies.
 **[Open the site](https://nathmadgam.github.io/)** · [Start a project](https://datalprojects.com/contact) · [Cynex Services on Discord](https://discord.gg/Pnjjkc6FHY)
 
 <p align="center">
-  <a href="https://nathmadgam.github.io/"><img src="./assets/readme/site-preview.webp" width="100%" alt="The live site in its dark default: the statement and Start a project on the left, the ship log opening on Burgeran! and its systems demo on the right, on desktop and on a phone."></a>
+  <a href="https://nathmadgam.github.io/"><img src="./assets/readme/site-preview.webp" width="100%" alt="The live site in its dark default: near-black with a lime Start a project button, the statement on the left and the ship log opening on Burgeran! and its systems demo on the right, on desktop and on a phone."></a>
 </p>
 
 ## What the page shows
@@ -33,28 +33,30 @@ on a single spine, live work first, then archived.
    and not official government websites.
 4. **Contact.** Start a project through DATAL Projects, plus direct channels.
 
-The spine fills with blue down to the reading position as the page scrolls, each
+The spine fills with lime down to the reading position as the page scrolls, each
 entry's dot lights once it is reached, and the index marks the entry in view.
 
 ## Design rules
 
-Written down so changes stay deliberate instead of drifting back to generic
-defaults (gradients, glass, card grids, the same fade on everything).
+The look follows the dark mode of [datalprojects.com](https://datalprojects.com), the
+company site, so the portfolio and DATAL Projects read as one family. Written down so
+changes stay deliberate.
 
-**Colour.** BetterGov blue on navy, one spot colour. Brand blue `#0032A0` fills
-buttons (white text, with a `#2F6BFF` edge on dark), `#2F6BFF` draws the spine, reached
-dots, stars and the glow, and `#8AB0FF` is accent text on dark. The ground is `#0b1020`
-with cards `#10172b`. Green marks live work only. The only gradients are the soft glow behind the opening and the
-dotted grid in the page margins. The checked WCAG contrast table sits at the top of
-`styles.css`; add a row for any new text pair.
+**Colour.** A warm near-black canvas `#0f0f0e`, cards one step up at `#1a1a18`, 1px
+borders `#33332f`, and one volt lime accent `#c6f432` (dark `#141414` text on it) for
+primary buttons, the spine, reached dots, stars, live marks and the glow. Body text is
+`#f4f4ef`, secondary `#a6a69e`. The light theme mirrors DATAL light: white canvas and
+near-black `#1d1d1f` buttons. The only gradients are the lime glow rising under the
+opening and the dotted strips at the window edges. The checked WCAG contrast table sits
+at the top of `styles.css`; add a row for any new text pair.
 
-**Type.** One family, Source Sans 3 (Roblox ships it as `Enum.Font.SourceSans`).
-Hierarchy comes from size, weight, italic and colour. No uppercase tracked
-labels; labels are short, sentence case and used only to name a group.
+**Type.** Overpass for headings (600, tight tracking) and Inter for everything else,
+the same pair DATAL uses. Labels are short, sentence case and used only to name a group.
 
-**Surfaces.** No elevation shadows or blur. Content is separated by spacing and 1px
-rules. Radii are 8px for controls and media, a circle for the portrait, and full pills for
-status stamps.
+**Surfaces.** Cards are flat: a 1px border on the raised surface, no shadows or blur.
+Radii are 12px for buttons, tiles and media, 22px for cards, a circle for the portrait,
+and full pills for status stamps. Lists of links sit in one bordered card with divided
+rows and 36px icon tiles.
 
 **Numbers.** Numbers appear only where they carry information: demo timestamps and
 the process steps, whose order matters.
