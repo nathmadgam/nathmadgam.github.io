@@ -553,14 +553,8 @@ h3 { font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; }
 }
 .log-index li a:hover { color: var(--ink); }
 .log-index li a[aria-current="true"] { color: var(--ink); font-weight: 650; }
-.log-index .status-dot { transition: transform 300ms var(--ease-soft); }
-.log-index li a[aria-current="true"] .status-dot { transform: scale(1.5); }
 .log-index-cta { margin-top: var(--space-md); }
 
-/* Status marks: a filled green dot is live, a hollow ring is archived. */
-.status-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; }
-.status-live { background: var(--success); }
-.status-archived { border: 1.5px solid var(--ink-3); }
 
 /* The log and its spine. The spine fills with blue to the reading line as
    the page scrolls (--spine, set by setupLog in app.js). */
@@ -582,15 +576,6 @@ h3 { font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; }
   transform: scaleY(var(--spine, 0));
   transform-origin: top;
 }
-.log-head {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0.25rem 1rem;
-  font-size: var(--fs-sm);
-  color: var(--ink-3);
-}
-.log-head span:first-child { color: var(--ink); font-weight: 650; }
 
 .entry { position: relative; padding-block: var(--space-lg) var(--space-2xl); }
 /* The entry's dot on the spine; it fills once the reading line passes it. */
@@ -609,38 +594,6 @@ h3 { font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; }
 .entry.is-reached::before { border-color: var(--brand); background: var(--brand); }
 
 .entry-head { margin-bottom: clamp(2rem, 1.5rem + 2vw, 3rem); }
-.entry-stamp {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 0.75rem;
-  margin-bottom: var(--space-sm);
-}
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.25rem 0.75rem;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--ink-2);
-}
-.stamp-date {
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--ink-3);
-  font-variant-numeric: tabular-nums;
-}
-/* A slot the record cannot fill is drawn, not left blank. */
-.ghost-slot {
-  padding: 0.25rem 0.75rem;
-  border: 1px dashed var(--line-strong);
-  border-radius: 999px;
-  font-size: var(--fs-xs);
-  color: var(--ink-3);
-}
 .entry-title { font-size: var(--fs-h2); max-width: 20ch; }
 .entry-lede {
   max-width: 58ch;
@@ -939,13 +892,16 @@ h3 { font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; }
    playing is marked. */
 .feature-chapter {
   position: relative;
-  display: block;
-  width: calc(100% + 1rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.25rem;
+  width: 100%;
   height: 100%;
-  padding: 1rem 0.5rem;
-  margin-inline: -0.5rem;
+  padding: 1.125rem 1.25rem 1.25rem;
   border: 0;
-  border-radius: var(--radius);
+  border-radius: 0;
   background: transparent;
   color: inherit;
   font: inherit;
