@@ -6,50 +6,45 @@
 
 The source for <https://nathmadgam.github.io/>, the portfolio of Nathaniel Madrid:
 founder of DATAL Projects, lead developer of Burgeran! for Cly Games, a Roblox
-programmer who builds gameplay, backend services, persistent data, and interfaces in Luau,
-and a BetterGov.ph volunteer who maintains nine community-run LGU portals.
+and a Roblox programmer who builds gameplay, backend services, persistent data, and
+interfaces in Luau.
 
 Plain HTML, CSS, and ES modules. No framework, no build step, no dependencies.
 
 **[Open the site](https://nathmadgam.github.io/)** · [Start a project](https://datalprojects.com/contact) · [Cynex Services on Discord](https://discord.gg/Pnjjkc6FHY)
 
 <p align="center">
-  <a href="https://nathmadgam.github.io/"><img src="./assets/readme/site-preview.webp" width="100%" alt="The live site in its dark default: the opening statement naming both kinds of work, with Start a project and Help a local portal, on desktop and on a phone."></a>
+  <a href="https://nathmadgam.github.io/"><img src="./assets/readme/site-preview.webp" width="100%" alt="The live site in its dark default: the statement and Start a project on the left, the ship log opening on Burgeran! and its systems demo on the right, on desktop and on a phone."></a>
 </p>
 
 ## What the page shows
 
-Two readers matter equally: a Roblox studio lead or game owner deciding whether to hire
-a programmer, and a resident who can help keep their LGU portal correct. The page runs
-in two lanes:
+The reader is a Roblox studio lead or game owner deciding whether to hire a programmer.
+The page is a ship log: the left column holds who I am, the offer and the facts, then a
+sticky index of the log; the right column is the log itself, one entry per kind of work
+on a single spine, live work first, then archived.
 
-1. **Statement.** One sentence naming both kinds of work, with two equal actions:
-   "Start a project" (goes straight to <https://datalprojects.com/contact>) and
-   "Help a local portal".
-2. **LGU portals.** The nine community-run portals on the
-   [BetterLGU directory](https://lgu.bettergov.ph), as a Philippines map with numbered
-   pins and a matching north-to-south list. Pointing at a pin or row lights the other;
-   tapping a pin selects it. The portals are community-run and not official government
-   websites, and the page says so.
-3. **Send a local fact.** Councilor names, service guides, office phone numbers and
-   hours, and official Facebook pages. The form builds a pre-filled GitHub issue on that
-   portal's repository, or the same text as an email. Facts without a public source stay
-   as placeholders.
-4. **Developer lane.** Burgeran! with its chaptered systems demo (each chapter in "What
-   I built" jumps the recording), ventures, six recorded system demos, published games,
-   collaborations, capabilities and process, client feedback, and the client agreement.
-5. **Contact.** One path per lane, plus direct channels.
+1. **Burgeran!** Live on Roblox, with its chaptered systems demo (each chapter in "What
+   I built" jumps the recording).
+2. **Live games**, **businesses**, **system demos** (six, filterable),
+   **studios and communities**, **client reviews**, **how I work** and the **contract**.
+3. **Volunteering.** One small entry: I volunteer with BetterGov.ph. The community
+   portals I help with are folded inside it, with a note that they are community-run
+   and not official government websites.
+4. **Contact.** Start a project through DATAL Projects, plus direct channels.
+
+The spine fills with blue down to the reading position as the page scrolls, each
+entry's dot lights once it is reached, and the index marks the entry in view.
 
 ## Design rules
 
 Written down so changes stay deliberate instead of drifting back to generic
 defaults (gradients, glass, card grids, the same fade on everything).
 
-**Colour.** BetterGov blue on navy, laid out like datalprojects.com. Brand blue
-`#0032A0` fills buttons (white text, with a `#2F6BFF` edge on dark; the same
-blue tints the glow), and `#8AB0FF` is accent text and the lane marks on dark. The ground is
-`#0b1020` with cards `#10172b`. Blue marks the developer lane; ember `#fc9053`
-marks the civic lane. The only gradients are the soft glow behind the opening and the
+**Colour.** BetterGov blue on navy, one spot colour. Brand blue `#0032A0` fills
+buttons (white text, with a `#2F6BFF` edge on dark), `#2F6BFF` draws the spine, reached
+dots, stars and the glow, and `#8AB0FF` is accent text on dark. The ground is `#0b1020`
+with cards `#10172b`. Green marks live work only. The only gradients are the soft glow behind the opening and the
 dotted grid in the page margins. The checked WCAG contrast table sits at the top of
 `styles.css`; add a row for any new text pair.
 
@@ -58,10 +53,11 @@ Hierarchy comes from size, weight, italic and colour. No uppercase tracked
 labels; labels are short, sentence case and used only to name a group.
 
 **Surfaces.** No elevation shadows or blur. Content is separated by spacing and 1px
-rules; the contribution form is the one card. Radii are 8px, 14px for cards.
+rules. Radii are 8px for controls and media, a circle for the portrait, and full pills for
+status stamps.
 
-**Numbers.** Numbers appear only where they carry information: the process steps,
-whose order matters, and the portal list, whose numbers key the map pins.
+**Numbers.** Numbers appear only where they carry information: demo timestamps and
+the process steps, whose order matters.
 
 **Motion.** Each content type has its own reveal (see the Motion block in
 `styles.css`), on a long, soft ease with no overshoot. Reveals start just before
@@ -87,9 +83,7 @@ uses the tokens.
 index.html             markup, metadata, and the inline SVG icon sprite
 assets/css/styles.css  design tokens and all component styles
 assets/js/app.js       rendering and behaviour (ES module)
-assets/js/data.js      LGU portals, contribution topics, and project, venture, experience,
-                       capability, network, and review content
-assets/img/            the Philippines outline used as the map mask (Natural Earth)
+assets/js/data.js      project, venture, experience, capability, network, and review content
 assets/posters/        video poster frames (960×540)
 assets/cached-media/   Roblox, Discord, and venture images
 assets/contract-pages/ contract page previews
@@ -102,9 +96,8 @@ downloads/             the client agreement PDF
 
 ## Editing content
 
-Content lives in `assets/js/data.js`. Each LGU portal is one entry with its repo name
-and map position in percent; `dx`/`dy` draw a crowded pin a short way off with a leader
-line. Adding a project means adding one entry
+Content lives in `assets/js/data.js`. The BetterGov.ph portal links are plain HTML in
+the volunteering entry of `index.html`. Adding a project means adding one entry
 plus a poster image and an MP4; no other file needs to change. When a stylesheet
 or script changes, bump its `?v=` query in `index.html` so returning visitors get
 the new file.
