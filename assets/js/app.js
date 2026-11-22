@@ -1,11 +1,14 @@
 /**
- * Cynex Services portfolio site behaviour.
- * Renders list content from data.js and wires up navigation, the demo player,
- * the inline Burgeran! demo, the contract viewer, the email copy button, the
- * project filter, and the motion layer (scroll reveals and the process line).
+ * Personal site behaviour.
+ * Renders list content from data.js and wires up navigation, the LGU portal
+ * map and contribution form, the demo player, the inline Burgeran! demo, the
+ * contract viewer, the email copy button, the project filter, and the motion
+ * layer (scroll reveals, the map pins, and the process line).
  * No external dependencies; every animation respects prefers-reduced-motion.
  */
 import {
+  portals,
+  contributionTopics,
   featured,
   ventures,
   projects,
@@ -17,10 +20,12 @@ import {
   robloxGroups,
   discordServers,
   reviews,
-} from "./data.js?v=2026-10-25";
+} from "./data.js?v=2026-11-22c";
 
 const CONTACT_EMAIL = "nathanielmadridgaminde@proton.me";
 const CONTACT_URL = "https://datalprojects.com/contact";
+const GITHUB_OWNER = "nathmadgam";
+const portalUrl = portal => `https://${GITHUB_OWNER}.github.io/${portal.repo}/`;
 
 const qs = (selector, root = document) => root.querySelector(selector);
 const qsa = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -55,6 +60,170 @@ function attachImageFallbacks(root) {
 }
 
 /* ------------------------------------------------------------------ render */
+
+/** The nine LGU portals: one numbered row each, and a pin on the map. */
+function renderPortals() {
+  const list = qs("[data-portal-list]");
+  const pins = qs("[data-portal-pins]");
+  if (list) {
+    list.innerHTML = portals.map((portal, index) => `
+      <li class="portal" data-portal="${escapeHtml(portal.repo)}">
+        <a href="${escapeHtml(portalUrl(portal))}" target="_blank" rel="noopener noreferrer">
+          <span class="portal-index" aria-hidden="true">${index + 1}</span>
+          <span class="portal-copy">
+            <strong>${escapeHtml(portal.name)}</strong>
+            <small>${escapeHtml(portal.place)}, ${escapeHtml(portal.province)} · ${escapeHtml(portal.region)}</small>
+          </span>
+          <span class="portal-type">${escapeHtml(portal.type)}</span>
+          <span class="portal-go">Open${icon("external")}</span>
+        </a>
+      </li>`).join("");
+  }
+  if (pins) {
+    // The list carries the accessible links. Pins repeat its numbers for
+    // pointer and touch users: a pin lights its row, it does not navigate.
+    // Where towns sit too close to tell apart, the numbered pin is drawn a
+    // short way off and a leader line points to the real location.
+    const shifted = portals.filter(portal => portal.dx || portal.dy);
+    pins.setAttribute("aria-hidden", "true");
+    pins.innerHTML = `
+      <svg class="pin-leaders" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
+        ${shifted.map(portal => `<line x1="${portal.x}" y1="${portal.y}" x2="${portal.x + (portal.dx || 0)}" y2="${portal.y + (portal.dy || 0)}"/>`).join("")}
+      </svg>
+      ${shifted.map(portal => `<span class="pin-anchor" style="--x: ${portal.x}%; --y: ${portal.y}%"></span>`).join("")}
+      ${portals.map((portal, index) => `
+        <button class="pin" type="button" tabindex="-1" data-portal="${escapeHtml(portal.repo)}" data-pin
+                style="--x: ${portal.x + (portal.dx || 0)}%; --y: ${portal.y + (portal.dy || 0)}%; --n: ${index}">
+          <span class="pin-dot">${index + 1}</span>
+          <span class="pin-label">${escapeHtml(portal.place)}</span>
+        </button>`).join("")}`;
+  }
+}
+
+function renderNeeds() {
+  const list = qs("[data-needs]");
+  if (!list) return;
+  list.innerHTML = contributionTopics.filter(topic => topic.need).map(topic => `
+    <li>${icon(topic.icon)}<span>${escapeHtml(topic.need)}</span></li>`).join("");
+}
+
+/**
+ * Hovering or focusing a portal row lights its pin, and pointing at a pin
+ * lights its row, so the map and the list read as one thing. On touch there
+ * is no hover: tapping a pin selects it (tap again to clear) and brings its
+ * row into view.
+ */
+function setupPortalLinking() {
+  const map = qs("[data-ph-map]");
+  if (!map) return;
+  const items = qsa("[data-portal]");
+  let hovered = "";
+  let selected = "";
+  let active = "";
+  const paint = () => {
+    const repo = hovered || selected;
+    if (repo === active) return;
+    active = repo;
+    items.forEach(item => item.classList.toggle("is-active", item.dataset.portal === repo));
+    map.classList.toggle("has-active", Boolean(repo));
+  };
+  items.forEach(item => {
+    const repo = item.dataset.portal;
+    item.addEventListener("pointerenter", event => {
+      if (event.pointerType === "touch") return;
+      hovered = repo;
+      paint();
+    });
+    item.addEventListener("pointerleave", () => { hovered = ""; paint(); });
+    // Pins sit in an aria-hidden layer and are never a focus target.
+    if (item.matches("[data-pin]")) return;
+    item.addEventListener("focusin", () => { hovered = repo; paint(); });
+    item.addEventListener("focusout", () => { hovered = ""; paint(); });
+  });
+  qsa("[data-pin]", map).forEach(pin => {
+    pin.addEventListener("click", () => {
+      const repo = pin.dataset.portal;
+      pin.blur();
+      selected = selected === repo ? "" : repo;
+      paint();
+      if (!selected) return;
+      const row = qs(`.portal[data-portal="${repo}"]`);
+      row?.scrollIntoView({ block: "nearest", behavior: prefersReducedMotion.matches ? "auto" : "smooth" });
+    });
+  });
+
+  // Pins arrive north to south the first time the map comes into view.
+  if (prefersReducedMotion.matches || !("IntersectionObserver" in window)) {
+    map.classList.add("is-placed");
+    return;
+  }
+  const observer = new IntersectionObserver(entries => {
+    if (!entries.some(entry => entry.isIntersecting)) return;
+    map.classList.add("is-placed");
+    observer.disconnect();
+  }, { rootMargin: "0px 0px -15% 0px" });
+  observer.observe(map);
+}
+
+/**
+ * "Send a local fact": builds a pre-filled GitHub issue on the chosen
+ * portal's repository, or the same text as an email. Nothing is sent from
+ * this page; the visitor reviews and submits it on GitHub or in their mail app.
+ */
+function setupContribute() {
+  const form = qs("[data-contribute]");
+  if (!form) return;
+  const portalSelect = qs("[data-contribute-portal]", form);
+  const topicSelect = qs("[data-contribute-topic]", form);
+  const hint = qs("[data-contribute-hint]", form);
+  const emailButton = qs("[data-contribute-email]", form);
+
+  portalSelect.innerHTML = portals.map(portal =>
+    `<option value="${escapeHtml(portal.repo)}">${escapeHtml(portal.place)}, ${escapeHtml(portal.province)}</option>`).join("");
+  topicSelect.innerHTML = contributionTopics.map(topic =>
+    `<option value="${escapeHtml(topic.id)}">${escapeHtml(topic.label)}</option>`).join("");
+
+  const current = () => ({
+    portal: portals.find(portal => portal.repo === portalSelect.value) ?? portals[0],
+    topic: contributionTopics.find(topic => topic.id === topicSelect.value) ?? contributionTopics[0],
+  });
+  const syncHint = () => { hint.textContent = current().topic.hint; };
+
+  const draft = () => {
+    const { portal, topic } = current();
+    const where = `${portal.place}, ${portal.province}`;
+    return {
+      title: `${topic.label}: ${where}`,
+      body: [
+        `Portal: ${portal.name} (${portalUrl(portal)})`,
+        `What: ${topic.label}`,
+        "",
+        "The information:",
+        "",
+        "",
+        "Public source (link, or where it is posted):",
+        "",
+        "",
+        "Facts without a public source stay as placeholders on the portal.",
+      ].join("\n"),
+    };
+  };
+
+  topicSelect.addEventListener("change", syncHint);
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    const { portal } = current();
+    const { title, body } = draft();
+    const url = `https://github.com/${GITHUB_OWNER}/${portal.repo}/issues/new?` +
+      new URLSearchParams({ title, body }).toString();
+    window.open(url, "_blank", "noopener");
+  });
+  emailButton.addEventListener("click", () => {
+    const { title, body } = draft();
+    location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+  });
+  syncHint();
+}
 
 function renderFeatured() {
   const root = qs("[data-featured]");
@@ -129,7 +298,7 @@ function renderFeatured() {
         <h4 class="column-label">What I built <small>Select a system to jump to it in the demo</small></h4>
         <ul>
           ${game.highlights.map(item => `
-          <li data-motion="fade">
+          <li>
             <button class="feature-chapter" type="button" data-demo-seek="${item.start}">
               <span class="feature-chapter-time">${icon("play")}${formatTime(item.start)}<span class="feature-chapter-now">Now playing</span></span>
               <strong>${escapeHtml(item.title)}</strong>
@@ -149,7 +318,7 @@ function renderVentures() {
     const external = /^https?:/.test(venture.url);
     const target = external ? ' target="_blank" rel="noopener noreferrer"' : "";
     return `
-    <article class="venture${venture.lead ? " venture-lead" : ""}" data-motion="draw">
+    <article class="venture${venture.lead ? " venture-lead" : ""}">
       <div class="venture-head">
         <div class="venture-logo" data-tone="${escapeHtml(venture.logoTone)}">
           <img src="${escapeHtml(venture.logo)}" alt="${escapeHtml(venture.name)} logo"
@@ -184,7 +353,7 @@ function renderProjects() {
              width="960" height="540" loading="lazy" decoding="async">
         <span class="play-badge" aria-hidden="true">${icon("play")}Play demo</span>
       </button>
-      <div class="project-body" data-motion="fade">
+      <div class="project-body">
         <h3 class="project-title">${escapeHtml(project.title)}</h3>
         <p class="project-meta meta">${escapeHtml(project.category)}, ${escapeHtml(project.year)}</p>
         <p class="project-copy">${escapeHtml(project.description)}</p>
@@ -221,7 +390,7 @@ function renderExperiences() {
   const list = qs("[data-experience-list]");
   if (!list) return;
   list.innerHTML = games.map(game => `
-    <article class="experience" data-motion="slide">
+    <article class="experience">
       <img class="experience-thumb" src="${escapeHtml(game.cachedImage ?? game.fallback)}"
            data-fallback="${escapeHtml(game.fallback)}"
            alt="Thumbnail for ${escapeHtml(game.name)}"
@@ -240,7 +409,7 @@ function renderExperiences() {
 
 /** Shared markup for the ruled, linked rows used by freelance work and the network. */
 const linkedRow = ({ url, name, description, role, image, fallback, fit = "cover", label }) => `
-    <li data-motion="draw">
+    <li>
       <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"
          aria-label="${escapeHtml(label ?? `${name}, ${role} (opens in a new tab)`)}">
         <img src="${escapeHtml(image)}"${fallback ? ` data-fallback="${escapeHtml(fallback)}"` : ""}
@@ -286,7 +455,7 @@ function renderCapabilities() {
   const list = qs("[data-capability-list]");
   if (!list) return;
   list.innerHTML = capabilities.map(item => `
-    <div class="capability" data-motion="draw">
+    <div class="capability">
       <dt>${escapeHtml(item.title)}</dt>
       <dd>${escapeHtml(item.description)}</dd>
     </div>`).join("");
@@ -358,7 +527,7 @@ function renderReviews() {
   }
 
   list.innerHTML = reviews.filter(review => review !== leading).map(review => `
-    <li class="review" data-motion="draw">
+    <li class="review">
       <blockquote>${escapeHtml(review.quote)}</blockquote>
       <p class="review-by">${byline(review)}</p>
       <p class="review-facts meta">${facts(review)}</p>
@@ -376,17 +545,15 @@ function setupHeader() {
 }
 
 /**
- * Theme toggle. The palette itself is switched by CSS via [data-theme] on the
- * root element; this only records the choice and keeps the label accurate.
+ * Theme toggle. Dark is the default for every visitor; light is an explicit
+ * choice. The palette itself is switched by CSS via [data-theme] on the root
+ * element; this only records the choice and keeps the label accurate.
  */
 function setupThemeToggle() {
   const toggle = qs("[data-theme-toggle]");
   if (!toggle) return;
   const root = document.documentElement;
-  const systemDark = matchMedia("(prefers-color-scheme: dark)");
-
-  const activeTheme = () =>
-    root.dataset.theme || (systemDark.matches ? "dark" : "light");
+  const activeTheme = () => (root.dataset.theme === "light" ? "light" : "dark");
 
   const syncLabel = () => {
     toggle.setAttribute(
@@ -402,11 +569,6 @@ function setupThemeToggle() {
       localStorage.setItem("theme", next);
     } catch (error) { /* storage blocked; the choice lasts for this page only */ }
     syncLabel();
-  });
-
-  // Keep following the OS until the visitor picks a theme explicitly.
-  systemDark.addEventListener("change", () => {
-    if (!root.dataset.theme) syncLabel();
   });
 
   syncLabel();
@@ -932,6 +1094,8 @@ function setupCopyEmail() {
 
 /* --------------------------------------------------------------------- init */
 
+renderPortals();
+renderNeeds();
 renderFeatured();
 renderVentures();
 renderProjects();
@@ -944,6 +1108,8 @@ renderNetwork();
 renderReviews();
 
 setupHeader();
+setupPortalLinking();
+setupContribute();
 setupCopyEmail();
 setupThemeToggle();
 setupMobileNav();

@@ -8,6 +8,37 @@
 /** @typedef {{id:string, title:string, video:string, poster:string, duration:string, chapters:Chapter[]}} Demo */
 /** @typedef {{name:string, studio:string, studioUrl:string, role:string, genre:string, status:string, url:string, summary:string, image:string, icon:string, fallback:string, demo:Demo, highlights:{title:string, description:string, start:number}[]}} FeaturedGame */
 
+/** @typedef {{repo:string, name:string, place:string, province:string, region:string, type:'City'|'Municipality', x:number, y:number}} Portal */
+
+/**
+ * The nine BetterLGU portals I adopted on https://lgu.bettergov.ph and maintain.
+ * Ordered north to south so the list reads in the same order as the map.
+ * x / y place each pin as a percentage of assets/img/philippines.svg, projected
+ * from the town's approximate coordinates (equirectangular, 116.6 to 127 E,
+ * 21.3 to 4.4 N). Live URL: https://nathmadgam.github.io/<repo>/
+ * @type {Portal[]}
+ */
+export const portals = [
+  { repo: "bettersanmariano", name: "Better San Mariano", place: "San Mariano", province: "Isabela", region: "Cagayan Valley", type: "Municipality", x: 52.05, y: 25.53 },
+  { repo: "bettersantotomas", name: "Better Santo Tomas", place: "Santo Tomas", province: "Pangasinan", region: "Ilocos Region", type: "Municipality", x: 38.32, y: 32.06 },
+  { repo: "betterpaombong", name: "Better Paombong", place: "Paombong", province: "Bulacan", region: "Central Luzon", type: "Municipality", x: 40.28, y: 38.26 },
+  { repo: "bettersamal", name: "Better Samal", place: "Samal", province: "Bataan", region: "Central Luzon", type: "Municipality", x: 37.91, y: 38.63, dx: -10, dy: 1.5 },
+  { repo: "betterquezoncity", name: "Better Quezon City", place: "Quezon City", province: "Metro Manila", region: "NCR", type: "City", x: 42.73, y: 39.18, dx: 10, dy: 1 },
+  { repo: "betterminalabac", name: "Better Minalabac", place: "Minalabac", province: "Camarines Sur", region: "Bicol Region", type: "Municipality", x: 63.32, y: 45.72 },
+  { repo: "betterclaver", name: "Better Claver", place: "Claver", province: "Surigao del Norte", region: "Caraga", type: "Municipality", x: 87.82, y: 69.36, dx: 6, dy: -2.5 },
+  { repo: "betterbutuan", name: "Better Butuan", place: "Butuan City", province: "Agusan del Norte", region: "Caraga", type: "City", x: 85.99, y: 73.06 },
+  { repo: "bettermidsayap", name: "Better Midsayap", place: "Midsayap", province: "Cotabato", region: "SOCCSKSARGEN", type: "Municipality", x: 76.26, y: 83.45 },
+];
+
+/** What residents can send for a portal. `icon` names a symbol in the index.html sprite. */
+export const contributionTopics = [
+  { id: "councilors", label: "Councilor names", icon: "users", need: "Councilor names", hint: "The current Sangguniang Bayan or Panlungsod members, with the official page, post, or document that lists them." },
+  { id: "services", label: "A service guide", icon: "clipboard", need: "Service guides", hint: "Steps, requirements, fees, and the office for a permit, certificate, or clearance, with where you found them." },
+  { id: "offices", label: "Office phone numbers and hours", icon: "phone", need: "Office phone numbers and hours", hint: "A town hall or office number and its hours, as printed on an official page, post, or notice." },
+  { id: "facebook", label: "The official Facebook page", icon: "facebook", need: "Official Facebook pages", hint: "The link to the LGU's or an office's verified or official Facebook page." },
+  { id: "correction", label: "A correction to the portal", icon: "info", need: null, hint: "Something on the portal that is wrong or out of date, and the public source that shows the correct version." },
+];
+
 /** @typedef {{name:string, role:string, description:string, tags:string[], url:string, linkLabel:string, logo:string, logoTone:'dark'|'light', lead?:boolean}} Venture */
 
 /** @type {Venture[]} */

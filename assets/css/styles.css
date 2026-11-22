@@ -1,60 +1,75 @@
 /* =========================================================================
-   Cynex portfolio stylesheet
+   Personal site stylesheet
    Order: tokens → reset → primitives → layout → components → motion
    Design rules live in README.md ("Design rules"); this file implements them.
    ========================================================================= */
 
 /* ---------- Tokens ----------
-   Light is the base palette. Dark redefines only the colour tokens, once for
-   the system preference and once for an explicit choice, so the in-page toggle
-   wins in both directions. Nothing else in the sheet is theme-aware. */
+   Dark is the base palette, laid out like datalprojects.com (near-black
+   canvas, soft glow, thin borders, a dotted grid in the margins) and coloured
+   in BetterGov blue. Light is an explicit choice from the toggle and
+   redefines only the colour tokens. Nothing else in the sheet is
+   theme-aware. */
 :root {
-  color-scheme: light dark;
+  color-scheme: dark;
 
-  /* Colour source: the Cynex Services mark (images/cynex-services.png).
-     Its tile runs from violet #9356f5 (bottom) to ember #fc9053 (top) under a
-     white glyph. Every colour below is one of those three, or a tint/shade of
-     the violet. They are used as flat planes; nothing on the page is a
-     gradient.
+  /* Colour source: BetterGov.ph blue. #0032A0 is the brand blue for solid
+     fills with white text; #2F6BFF is the bright blue for button edges on dark
+     and the glow; #8AB0FF is the blue for accent text and lane marks on dark. Ember
+     #fc9053, from the Cynex Services mark, marks the civic lane so the two
+     kinds of work stay apart.
 
-       --violet  #9356f5  sampled from the mark; decorative only (fails AA as text)
-       --ember   #fc9053  sampled from the mark; planes and marks, never text
-       --accent  #6236d6  the violet darkened until it holds AA on white
-       --ink     #17112b  the violet taken almost to black
+     The brand fill is only 1.77 against the navy canvas, so on dark every
+     solid blue button carries a #2F6BFF edge (4.21) to read as a control.
 
      Checked contrast pairs (WCAG 2 ratio, AA body text needs 4.5):
-       light  ink      #17112b on bg #ffffff     18.24
-              ink-2    #4a4460 on bg #ffffff      9.18
-              ink-3    #625c78 on bg #ffffff      6.32
-              ink-3    #625c78 on sunk #f4f2fa    5.70
-              accent   #6236d6 on bg #ffffff      6.96
-              accent   #6236d6 on sunk #f4f2fa    6.27
-              ink      #17112b on ember #fc9053   8.04
-       dark   ink      #f1eef8 on bg #110d1d     16.67
-              ink-2    #b4adc8 on bg #110d1d      8.87
-              ink-3    #958ead on bg #110d1d      6.14
-              ink-3    #958ead on sunk #1b1630    5.61
-              accent   #b89cff on bg #110d1d      8.40
-              accent   #b89cff on sunk #1b1630    7.67
-              bg       #110d1d on accent #b89cff  8.40
-              bg       #110d1d on ember #fc9053   8.42 */
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --surface-sunk: #f4f2fa;
-  --ink: #17112b;
-  --ink-2: #4a4460;
-  --ink-3: #625c78;
-  --line: #e6e3ef;
-  --line-strong: #c9c4d8;
-  --accent: #6236d6;
-  --on-accent: #ffffff;
-  --violet: #9356f5;
+       dark   ink      #eef2fb on bg #0b1020     16.89
+              ink-2    #b8c2da on bg #0b1020     10.61
+              ink-3    #8f9bb8 on bg #0b1020      6.81
+              ink-3    #8f9bb8 on card #10172b    6.40
+              accent   #8ab0ff on bg #0b1020      8.78
+              accent   #8ab0ff on card #10172b    8.25
+              #ffffff on cta #0032a0             10.69
+              #ffffff on cta-hover #1f4fd1        6.78
+              edge     #2f6bff on bg #0b1020      4.21 (UI, needs 3)
+              #0b1020 on ember #fc9053            8.34
+              ember    #fc9053 on bg #0b1020      8.34
+              ink      #eef2fb on civic #130f1c  16.83
+              ink-3    #8f9bb8 on civic #130f1c   6.78
+              ember    #fc9053 on civic #130f1c   8.32
+       light  ink      #0b1020 on bg #ffffff     18.93
+              ink-2    #3d4660 on bg #ffffff      9.36
+              ink-3    #5f6884 on bg #ffffff      5.53
+              ink-3    #5f6884 on sunk #f4f6fb    5.11
+              accent   #0032a0 on bg #ffffff     10.69
+              accent   #0032a0 on sunk #f4f6fb    9.89
+              ember-ink #a84a1c on civic #fff6ef  5.38
+              ink-3    #5f6884 on civic #fff6ef   5.18 */
+  --bg: #0b1020;
+  --surface: #10172b;
+  --surface-sunk: #10172b;
+  --ink: #eef2fb;
+  --ink-2: #b8c2da;
+  --ink-3: #8f9bb8;
+  --line: #1a2238;
+  --line-strong: #26304d;
+  --accent: #8ab0ff;         /* blue as text */
+  --cta: #0032a0;            /* BetterGov brand blue, the primary button */
+  --cta-hover: #1f4fd1;
+  --cta-edge: #2f6bff;
+  --on-cta: #ffffff;
   --ember: #fc9053;
-  --on-ember: #17112b;
-  --focus: #6236d6;
-  --success: #15803d;
-  --backdrop: rgba(23, 17, 43, 0.72);
-  --tile-dark: #110d1d;
+  --on-ember: #0b1020;
+  --ember-ink: #fc9053;      /* ember as text */
+  --civic: #130f1c;          /* the civic lane's ground: navy warmed toward ember */
+  --civic-line: #2e2534;
+  --land: #2a3966;           /* the map's land, 1.69 on the civic ground */
+  --glow: rgba(47, 107, 255, 0.2);
+  --dot: rgba(238, 242, 251, 0.1);
+  --focus: #8ab0ff;
+  --success: #4ade80;
+  --backdrop: rgba(3, 6, 14, 0.8);
+  --tile-dark: #070b16;
 
   /* Type: one family. Source Sans is the family Roblox ships to every
      developer as Enum.Font.SourceSans, so the site reads in the same voice as
@@ -64,7 +79,7 @@
 
   /* Type scale. The display size is deliberately far above h2 so the opening
      is carried by type, not decoration. */
-  --fs-display: clamp(2.75rem, 1.2rem + 5vw, 5.75rem);
+  --fs-display: clamp(2.5rem, 1.1rem + 4.4vw, 5rem);
   --fs-h2: clamp(2rem, 1.35rem + 2.5vw, 3.25rem);
   --fs-h3: 1.3125rem;
   --fs-lede: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
@@ -86,8 +101,9 @@
   --gutter: clamp(1rem, 4vw, 3.5rem);
   --header-h: 68px;
 
-  /* Shape: small radii only, no elevation shadows. */
-  --radius: 4px;
+  /* Shape: soft corners, no elevation shadows. */
+  --radius: 8px;
+  --radius-lg: 14px;
 
   /* Motion: long, soft deceleration with no overshoot. --ease is for hover
      feedback; --ease-soft and --dur-reveal are for scroll storytelling. */
@@ -98,40 +114,32 @@
   --stagger: 80ms;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #110d1d;
-    --surface: #110d1d;
-    --surface-sunk: #1b1630;
-    --ink: #f1eef8;
-    --ink-2: #b4adc8;
-    --ink-3: #958ead;
-    --line: #2a2440;
-    --line-strong: #463e62;
-    --accent: #b89cff;
-    --on-accent: #110d1d;
-    --focus: #b89cff;
-    --success: #4ade80;
-    --backdrop: rgba(0, 0, 0, 0.78);
-    --tile-dark: #0a0714;
-  }
-}
-
-:root[data-theme="dark"] {
-  --bg: #110d1d;
-  --surface: #110d1d;
-  --surface-sunk: #1b1630;
-  --ink: #f1eef8;
-  --ink-2: #b4adc8;
-  --ink-3: #958ead;
-  --line: #2a2440;
-  --line-strong: #463e62;
-  --accent: #b89cff;
-  --on-accent: #110d1d;
-  --focus: #b89cff;
-  --success: #4ade80;
-  --backdrop: rgba(0, 0, 0, 0.78);
-  --tile-dark: #0a0714;
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-sunk: #f4f6fb;
+  --ink: #0b1020;
+  --ink-2: #3d4660;
+  --ink-3: #5f6884;
+  --line: #e3e7f0;
+  --line-strong: #c9d0e0;
+  --accent: #0032a0;
+  --cta: #0032a0;
+  --cta-hover: #00267a;
+  --cta-edge: #0032a0;
+  --on-cta: #ffffff;
+  --on-ember: #0b1020;
+  --ember-ink: #a84a1c;
+  --civic: #fff6ef;
+  --civic-line: #f3dccb;
+  --land: #b3c2e6;
+  --glow: rgba(47, 107, 255, 0.14);
+  --dot: rgba(11, 16, 32, 0.12);
+  --focus: #0032a0;
+  --success: #15803d;
+  --backdrop: rgba(11, 16, 32, 0.72);
+  --tile-dark: #0b1020;
 }
 
 /* ---------- Reset ---------- */
@@ -144,6 +152,7 @@ html {
 }
 
 body {
+  position: relative;
   margin: 0;
   min-width: 320px;
   background: var(--bg);
@@ -154,6 +163,20 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+}
+
+/* A dotted grid, shown only in the margins outside the content column. */
+body::before {
+  --m: max(0px, (100vw - var(--shell-max)) / 2 - 1.5rem);
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.5px);
+  background-size: 24px 24px;
+  -webkit-mask-image: linear-gradient(to right, #000, transparent var(--m), transparent calc(100% - var(--m)), #000);
+  mask-image: linear-gradient(to right, #000, transparent var(--m), transparent calc(100% - var(--m)), #000);
 }
 
 .visually-hidden {
@@ -241,14 +264,11 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
 
 /* Small, sentence-case labels. One treatment, used only where a label names a
    group: section names and column headings. */
-.section-label,
+/* Column headings name a group of rows; one treatment everywhere. */
 .column-label {
   font-size: var(--fs-sm);
   font-weight: 650;
   letter-spacing: 0;
-  color: var(--accent);
-}
-.column-label {
   padding-bottom: var(--space-sm);
   margin-bottom: 0;
   border-bottom: 1px solid var(--ink);
@@ -261,7 +281,7 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   color: var(--ink-3);
 }
 
-/* Buttons. Hierarchy: primary (solid ink) > secondary (outline) > text-link. */
+/* Buttons. Hierarchy: primary (solid brand blue) > secondary (outline) > text-link. */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -281,8 +301,8 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
 .btn .icon { width: 18px; height: 18px; transition: transform var(--dur) var(--ease); }
 .btn:hover .icon { transform: translateX(3px); }
 
-.btn-primary { background: var(--ink); color: var(--bg); }
-.btn-primary:hover { background: var(--accent); color: var(--on-accent); }
+.btn-primary { background: var(--cta); color: var(--on-cta); border-color: var(--cta-edge); }
+.btn-primary:hover { background: var(--cta-hover); color: var(--on-cta); border-color: var(--cta-hover); }
 
 .btn-secondary { border-color: var(--line-strong); color: var(--ink); background: transparent; }
 .btn-secondary:hover { border-color: var(--ink); }
@@ -362,13 +382,14 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   padding: 0.5rem 1rem;
   white-space: nowrap;
   border-radius: var(--radius);
-  background: var(--ink);
-  color: var(--bg);
+  border: 1px solid var(--cta-edge);
+  background: var(--cta);
+  color: var(--on-cta);
   font-size: var(--fs-sm);
   font-weight: 600;
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.header-cta:hover { background: var(--accent); color: var(--on-accent); }
+.header-cta:hover { background: var(--cta-hover); }
 
 .menu-toggle,
 .theme-toggle {
@@ -390,13 +411,9 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
 
 /* Show the icon for the theme the visitor would switch *to*. Handled in CSS so
    the correct glyph is painted before the script runs. */
-.theme-toggle .icon-sun { display: none; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: block; }
-  :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: none; }
-}
-:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
-:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+.theme-toggle .icon-moon { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+:root[data-theme="light"] .theme-toggle .icon-moon { display: block; }
 
 /* ---------- Mobile navigation ---------- */
 .mobile-nav {
@@ -423,35 +440,50 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
 .mobile-nav a[aria-current="true"] { color: var(--ink); }
 
 /* ---------- Hero ----------
-   Type-led opening: the statement carries the left column and the portrait
-   sits beside it, top-aligned with the headline, as supporting evidence. */
-.hero { padding-block: clamp(2.5rem, 1.5rem + 5vw, 6rem) clamp(3.5rem, 2rem + 5vw, 6rem); }
+   The statement names both lanes: the name in the accent, the civic clause on
+   an ember underline. The portrait sits on the Cynex tile, split into the two
+   lane colours as flat planes. */
+.hero {
+  position: relative;
+  isolation: isolate;
+  padding-block: clamp(2.25rem, 1.25rem + 5vw, 5.5rem) clamp(3rem, 2rem + 4vw, 5rem);
+}
+/* A soft blue glow, low behind the opening. Light, never a fill. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: calc(var(--header-h) * -1) 0 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(48% 55% at 80% 58%, var(--glow), transparent 70%),
+    radial-gradient(70% 38% at 30% 112%, var(--glow), transparent 72%);
+}
 
 .hero-grid {
   display: grid;
   gap: var(--space-lg);
+  align-items: center;
 }
-
-.hero-kicker {
-  font-size: var(--fs-lede);
-  font-weight: 500;
-  color: var(--ink-2);
-}
-.hero-kicker strong { color: var(--ink); font-weight: 700; }
 
 .hero-title {
-  margin-top: var(--space-md);
   font-size: var(--fs-display);
-  max-width: 20ch;
-}
-.hero-title em {
-  font-style: italic;
   font-weight: 700;
+  line-height: 1.02;
+  max-width: 17ch;
+}
+.hero-name { display: block; color: var(--accent); }
+.hero-civic {
+  text-decoration: underline;
+  text-decoration-color: var(--ember);
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.1em;
+  text-decoration-skip-ink: none;
 }
 
 .hero .lede {
-  max-width: 50ch;
-  margin-top: clamp(1.5rem, 1rem + 1.5vw, 2.25rem);
+  max-width: 54ch;
+  margin-top: clamp(1.25rem, 0.9rem + 1.2vw, 2rem);
   font-size: var(--fs-lede);
   line-height: 1.5;
   color: var(--ink-2);
@@ -463,41 +495,64 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   gap: 0.75rem;
   margin-top: var(--space-md);
 }
+/* The two lanes' actions are equals: same width side by side, full width stacked. */
+.hero-actions > .btn { min-width: 13.5rem; }
+@media (max-width: 559px) { .hero-actions > .btn { flex: 1 1 100%; } }
 
-.hero-portrait { width: min(100%, 300px); }
+.hero-portrait { width: min(100%, 300px); justify-self: end; }
 .hero-portrait img {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
-  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-lg);
   background: var(--surface-sunk);
 }
 @media (max-width: 899px) {
-  .hero-portrait { width: 168px; }
+  .hero-portrait { order: -1; width: 112px; justify-self: start; }
+  .hero-grid { gap: var(--space-md); }
+  .hero-name { font-size: 0.62em; margin-bottom: 0.15em; }
 }
 
 @media (min-width: 900px) {
   .hero-grid {
     grid-template-columns: minmax(0, 1fr) clamp(220px, 22vw, 300px);
-    align-items: start;
-    column-gap: clamp(2.5rem, 5vw, 4.5rem);
+    column-gap: clamp(2.5rem, 5vw, 5rem);
   }
-  /* Drop the portrait past the kicker line so its top meets the headline. */
-  .hero-portrait { margin-top: calc(var(--fs-lede) * 1.6 + var(--space-md)); }
 }
 
-.hero-meta {
+/* Two lanes under the statement: one per kind of work, each under a rule in
+   its own colour. */
+.lanes {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
-  gap: var(--space-sm) var(--space-md);
-  margin-top: clamp(2.5rem, 1.5rem + 3vw, 4rem);
-  padding-top: var(--space-md);
-  border-top: 1px solid var(--line);
+  gap: var(--space-lg) clamp(2rem, 4vw, 4rem);
+  margin-top: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
 }
-.hero-meta dt { font-size: var(--fs-xs); color: var(--ink-3); }
-.hero-meta dd { margin-top: 0.125rem; font-size: var(--fs-sm); font-weight: 600; line-height: 1.4; }
-.hero-meta .text-link { display: inline; font-weight: 600; }
-.hero-meta .text-link .icon { display: inline-block; margin-left: 0.25rem; vertical-align: -0.125em; }
+@media (min-width: 760px) { .lanes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.lane { padding-top: var(--space-sm); border-top: 3px solid var(--accent); }
+.lane-civic { border-top-color: var(--ember); }
+.lane-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+.lane-dot { width: 10px; height: 10px; border-radius: 2px; background: var(--accent); }
+.lane-civic .lane-dot { background: var(--ember); }
+.lane-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm) var(--space-md);
+  margin-top: var(--space-sm);
+}
+.lane-facts dt { font-size: var(--fs-xs); color: var(--ink-3); }
+.lane-facts dd { margin-top: 0.125rem; font-size: var(--fs-sm); font-weight: 600; line-height: 1.4; }
+.lane-facts .text-link { display: inline; font-weight: 600; }
+.lane-facts .text-link .icon { display: inline-block; margin-left: 0.25rem; vertical-align: -0.125em; }
+.lane-civic .text-link { color: var(--ember-ink); text-decoration-color: color-mix(in srgb, var(--ember-ink) 40%, transparent); }
 
 .availability { display: inline-flex; align-items: center; gap: 0.5rem; }
 .availability::before {
@@ -512,39 +567,21 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
 .section { padding-block: var(--space-2xl); border-top: 1px solid var(--line); }
 
 .section-head { margin-bottom: clamp(2.25rem, 1.5rem + 3vw, 4rem); }
-.section-head .section-label { margin-bottom: var(--space-2xs); }
+.section-head[data-lane]::before {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 4px;
+  margin-bottom: var(--space-md);
+  border-radius: 1px;
+  background: var(--accent);
+}
+.section-head[data-lane="civic"]::before { background: var(--ember); }
 
 /* About */
-.about-grid {
-  display: grid;
-  gap: clamp(2rem, 4vw, 4rem);
-}
 .prose > * + * { margin-top: var(--space-sm); }
 .prose p { max-width: 60ch; color: var(--ink-2); font-size: var(--fs-lede); line-height: 1.55; text-wrap: pretty; }
 .prose p:first-child { color: var(--ink); }
-
-.facts { display: grid; align-content: start; }
-.facts > div {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-sm);
-  padding-block: 0.875rem;
-  border-top: 1px solid var(--line);
-}
-.facts > div:last-child { border-bottom: 1px solid var(--line); }
-.facts dt { font-size: var(--fs-sm); color: var(--ink-2); }
-.facts dd {
-  font-size: 2.25rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-
-@media (min-width: 860px) {
-  .about-grid { grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.8fr); }
-}
 
 /* ---------- Featured project ----------
    No card shell: the demo carries the left side, the facts sit on the page
@@ -612,7 +649,7 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
 .demo-overlay-icon .icon { width: 18px; height: 18px; margin-left: 2px; }
 .demo-overlay:hover .demo-overlay-icon { transform: scale(1.06); }
 .demo-overlay-label strong { display: block; font-size: var(--fs-sm); font-weight: 650; line-height: 1.25; }
-.demo-overlay-label small { display: block; font-size: var(--fs-xs); color: #c9c4d8; }
+.demo-overlay-label small { display: block; font-size: var(--fs-xs); color: #c9d0e0; }
 
 .feature-status {
   position: absolute;
@@ -648,7 +685,7 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   flex: var(--length, 1) 1 0;
   min-width: 4px;
   border-radius: 1px;
-  background: #463e62;
+  background: #26304d;
   overflow: hidden;
   transition: transform 160ms var(--ease);
 }
@@ -685,7 +722,7 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   padding: 0 0.375rem 0.375rem;
   border-radius: 0 0 var(--radius) var(--radius);
   background: var(--tile-dark);
-  color: #f1eef8;
+  color: #eef2fb;
 }
 .demo-btn {
   display: inline-flex;
@@ -704,7 +741,7 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   white-space: nowrap;
   transition: background-color var(--dur) var(--ease);
 }
-.demo-btn:hover { background: #2a2440; }
+.demo-btn:hover { background: #1a2238; }
 .demo-btn .icon { width: 18px; height: 18px; }
 .demo-btn[data-demo-sound][aria-pressed="false"] { color: #fc9053; }
 .demo-now {
@@ -722,7 +759,7 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.demo-time { flex: none; color: #b4adc8; font-variant-numeric: tabular-nums; }
+.demo-time { flex: none; color: #b8c2da; font-variant-numeric: tabular-nums; }
 @media (max-width: 359px) {
   .demo-sound-label { display: none; }
 }
@@ -1227,7 +1264,7 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   display: grid;
   gap: 0.25rem;
   padding-block: var(--space-md);
-  border-top: 2px solid var(--ink);
+  border-top: 3px solid var(--ink);
   border-bottom: 1px solid var(--line);
 }
 .contact-link-label {
@@ -1373,6 +1410,327 @@ h3 { font-weight: 650; letter-spacing: -0.005em; line-height: 1.25; }
   font-size: var(--fs-sm);
   color: var(--ink-2);
 }
+
+
+/* ---------- Civic lane ----------
+   The one ember-ground section. The map and the numbered list are one
+   control: pointing at either lights the other (setupPortalLinking). */
+.section-civic {
+  background: var(--civic);
+  border-top-color: var(--civic-line);
+}
+.section-civic .section-title { max-width: 20ch; }
+.civic-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: var(--space-sm);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--ember-ink);
+}
+.civic-note .icon { width: 18px; height: 18px; }
+.section-civic .text-link { color: var(--ember-ink); text-decoration-color: color-mix(in srgb, var(--ember-ink) 40%, transparent); }
+.section-civic .text-link:hover { text-decoration-color: var(--ember-ink); }
+
+.civic-grid {
+  display: grid;
+  gap: var(--space-lg) clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+@media (min-width: 860px) {
+  .civic-grid { grid-template-columns: minmax(240px, 5fr) minmax(0, 7fr); }
+}
+
+/* Map: the land is the SVG used as a mask, so it takes a theme colour. */
+.ph-map { width: min(100%, 240px); margin-inline: auto; }
+@media (min-width: 860px) {
+  .ph-map { position: sticky; top: calc(var(--header-h) + 1.5rem); width: 100%; max-width: 480px; }
+}
+.ph-map-frame { position: relative; aspect-ratio: 400 / 667; }
+.ph-land {
+  position: absolute;
+  inset: 0;
+  background: var(--land);
+  -webkit-mask: url("../img/philippines.svg") center / 100% 100% no-repeat;
+  mask: url("../img/philippines.svg") center / 100% 100% no-repeat;
+}
+.ph-map figcaption { margin-top: var(--space-sm); font-size: var(--fs-xs); color: var(--ink-3); text-align: center; }
+
+.pin {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+/* The pin carries the row's number, so the list reads as the map's key. */
+.pin-dot {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ember);
+  color: var(--on-ember);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 0 0 2px var(--civic);
+  transition: transform 260ms var(--ease-soft);
+}
+@media (max-width: 859px) {
+  .pin { width: 24px; height: 24px; margin: -12px 0 0 -12px; }
+  .pin-dot { width: 18px; height: 18px; font-size: 0.625rem; }
+}
+/* Leader lines from a moved pin back to the town's real location. */
+.pin-leaders {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.pin-leaders line { stroke: var(--ember); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.pin-anchor {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--ember);
+}
+.pin-label {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 2px);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--bg);
+  font-size: var(--fs-xs);
+  font-weight: 650;
+  white-space: nowrap;
+  transform: translate(-50%, 4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.pin.is-active { z-index: 2; }
+.pin.is-active .pin-dot { transform: scale(1.3); }
+.pin.is-active .pin-label { opacity: 1; transform: translate(-50%, 0); }
+.ph-map.has-active .pin:not(.is-active) .pin-dot { transform: scale(0.85); }
+
+/* The authored moment: pins drop onto the map north to south, once. */
+.js .ph-map .pin-dot {
+  transition: transform 700ms var(--ease-soft), opacity 400ms var(--ease-soft);
+  transition-delay: calc(var(--n, 0) * 110ms);
+}
+.js .ph-map:not(.is-placed) .pin-dot { transform: translateY(-18px) scale(0.4); opacity: 0; }
+.js .ph-map .pin-leaders,
+.js .ph-map .pin-anchor { transition: opacity 400ms var(--ease-soft) 900ms; }
+.js .ph-map:not(.is-placed) .pin-leaders,
+.js .ph-map:not(.is-placed) .pin-anchor { opacity: 0; }
+.js .ph-map.is-placed.has-active .pin-dot { transition-delay: 0ms; transition-duration: 260ms; }
+
+/* Numbered rows: the number is the pin's key, so it carries information. */
+.portal { border-bottom: 1px solid var(--civic-line); }
+.portal a {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.25rem var(--space-sm);
+  padding: 0.875rem 0.5rem;
+  margin-inline: -0.5rem;
+  border-radius: var(--radius);
+  transition: background-color var(--dur) var(--ease);
+}
+.portal.is-active a { background: color-mix(in srgb, var(--ember) 18%, transparent); }
+.portal-index {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ember-ink);
+}
+.portal-copy strong { display: block; font-size: var(--fs-body); font-weight: 650; line-height: 1.3; }
+.portal-copy small { display: block; font-size: var(--fs-xs); color: var(--ink-3); }
+.portal-type { display: none; font-size: var(--fs-xs); color: var(--ink-3); }
+.portal-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: var(--fs-xs);
+  font-weight: 650;
+  color: var(--ember-ink);
+  white-space: nowrap;
+}
+.portal-go .icon { width: 15px; height: 15px; transition: transform var(--dur) var(--ease); }
+.portal.is-active .portal-go .icon { transform: translate(2px, -2px); }
+@media (min-width: 1100px) {
+  .portal a { grid-template-columns: 2.25rem minmax(0, 1fr) 7rem auto; }
+  .portal-type { display: block; }
+}
+
+/* Call for contributors: copy beside a small working form. */
+.contribute {
+  display: grid;
+  gap: var(--space-lg) clamp(2rem, 5vw, 5rem);
+  margin-top: clamp(3rem, 2rem + 4vw, 5.5rem);
+  padding-top: clamp(2rem, 1.5rem + 2vw, 3rem);
+  border-top: 2px solid var(--ink);
+}
+@media (min-width: 900px) { .contribute { grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr); } }
+.contribute-title {
+  max-width: 20ch;
+  font-size: clamp(1.625rem, 1.2rem + 1.5vw, 2.375rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.contribute-copy > p {
+  max-width: 52ch;
+  margin-top: var(--space-sm);
+  color: var(--ink-2);
+  font-size: var(--fs-lede);
+  line-height: 1.5;
+}
+.needs { display: grid; margin-top: var(--space-md); }
+@media (min-width: 560px) { .needs { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-md); } }
+.needs li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-block: 0.75rem;
+  border-top: 1px solid var(--civic-line);
+  font-weight: 650;
+}
+.needs .icon { width: 22px; height: 22px; color: var(--ember-ink); }
+.contribute-copy > p.contribute-rule { margin-top: var(--space-md); font-size: var(--fs-sm); color: var(--ink-3); }
+
+.contribute-form {
+  display: grid;
+  gap: var(--space-md);
+  align-content: start;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--civic-line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+.contribute-form-title { font-size: var(--fs-h3); font-weight: 700; }
+.field label { display: block; margin-bottom: 0.375rem; font-size: var(--fs-sm); font-weight: 650; }
+.select-wrap { position: relative; }
+.select-wrap select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.625rem 2.75rem 0.625rem 0.875rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: var(--fs-body);
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color var(--dur) var(--ease);
+}
+.select-wrap select:hover,
+.select-wrap select:focus-visible { border-color: var(--ink); }
+.select-wrap select:focus-visible { outline-offset: 1px; }
+.select-wrap .icon {
+  position: absolute;
+  top: 50%;
+  right: 0.875rem;
+  width: 18px;
+  height: 18px;
+  color: var(--ink-3);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.field-hint { min-height: 2.9em; margin-top: 0.5rem; font-size: var(--fs-sm); line-height: 1.45; color: var(--ink-2); }
+.contribute-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.contribute-actions .btn:hover .icon { transform: none; }
+.contribute-small { font-size: var(--fs-xs); line-height: 1.5; color: var(--ink-3); }
+.contribute-small .text-link { display: inline; color: var(--ember-ink); }
+.contribute-small .text-link .icon { display: inline-block; width: 13px; height: 13px; margin-left: 0.2rem; vertical-align: -0.1em; }
+
+/* Ember action: the civic lane's primary button, in both themes. */
+.btn-civic { background: var(--ember); color: var(--on-ember); }
+.btn-civic:hover { background: var(--ink); color: var(--bg); }
+
+/* ---------- Developer lane intro ---------- */
+.section-dev .section-title { max-width: 20ch; }
+.section-dev .prose { max-width: 68ch; }
+.dev-proof { color: var(--ink-2); }
+.section-dev .section-head { margin-bottom: 0; }
+.section-dev .prose { margin-top: var(--space-md); }
+
+/* ---------- Network (freelance, groups, servers, public work) ---------- */
+.network-grid { display: grid; gap: clamp(2.5rem, 4vw, 3.5rem) clamp(2rem, 4vw, 4rem); }
+@media (min-width: 780px) { .network-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- Approach (capabilities, then the process) ---------- */
+.process { margin-top: clamp(3rem, 2rem + 3vw, 4.5rem); }
+.process-label { margin-bottom: var(--space-md); }
+
+/* ---------- Agreement ---------- */
+.agreement-head {
+  display: grid;
+  gap: var(--space-md);
+  align-items: end;
+  margin-bottom: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+}
+.agreement-head .section-head { margin-bottom: 0; }
+.agreement-head .btn { justify-self: start; }
+@media (min-width: 900px) { .agreement-head { grid-template-columns: minmax(0, 1fr) auto; } }
+.contract { border-bottom: 1px solid var(--line); }
+.contract-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding-block: 1rem;
+  list-style: none;
+  cursor: pointer;
+}
+.contract-summary::-webkit-details-marker { display: none; }
+.contract-summary:hover .contract-title > span { text-decoration: underline 1px; text-underline-offset: 0.2em; }
+.contract-chevron { width: 20px; height: 20px; color: var(--ink-2); transition: transform 300ms var(--ease-soft); }
+.contract[open] .contract-chevron { transform: rotate(180deg); }
+.contract[open] .contract-viewport { margin-bottom: var(--space-md); }
+
+/* ---------- Contact: one path per lane ---------- */
+.contact-paths { display: grid; gap: var(--space-md); }
+.contact-link-dev { border-top-color: var(--accent); }
+.contact-link-civic { border-top-color: var(--ember); }
+.contact-link-civic .contact-link-url { color: var(--ember-ink); }
+.contact-link .contact-note { margin-top: var(--space-2xs); }
+
+.footer-note {
+  flex-basis: 100%;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+}
+
+/* ---------- Browser surfaces ---------- */
+html { scrollbar-color: var(--line-strong) var(--bg); accent-color: var(--accent); caret-color: var(--accent); }
 
 /* ---------- Header nav breakpoint ---------- */
 @media (min-width: 900px) {
