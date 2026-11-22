@@ -5,8 +5,7 @@
   <rect width="1200" height="420" rx="4" fill="#0f0f0e"/>
 
   <g id="title-block" font-family="Overpass, Inter, 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif">
-    <rect x="56" y="56" width="28" height="28" rx="4" fill="#c6f432"/>
-    <text x="98" y="78" font-size="22" font-weight="600" fill="#f4f4ef">Nathaniel Madrid<tspan font-weight="400" fill="#8a8a82">, Roblox programmer</tspan></text>
+    <text x="56" y="78" font-size="22" font-weight="600" fill="#f4f4ef">Nathaniel Madrid<tspan font-weight="400" fill="#8a8a82">, Roblox programmer</tspan></text>
 
     <text font-size="58" font-weight="700" fill="#f4f4ef" letter-spacing="-1">
       <tspan x="56" y="172">Software and Roblox</tspan>
