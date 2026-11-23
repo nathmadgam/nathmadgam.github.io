@@ -45,9 +45,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Overpass:wght@500..700&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=2026-11-22p">
-  <link rel="preload" href="images/avatar.webp" as="image" type="image/webp">
-  <script src="assets/js/app.js?v=2026-11-22p" type="module"></script>
+  <link rel="stylesheet" href="assets/css/styles.css?v=2026-11-23a">
+  <link rel="preload" href="images/avatar-256.webp" as="image" type="image/webp">
+  <script src="assets/js/app.js?v=2026-11-23a" type="module"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -61,17 +61,8 @@
       <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
       </symbol>
-      <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-        <rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-      </symbol>
-      <symbol id="i-map-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>
-      </symbol>
       <symbol id="i-file-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>
-      </symbol>
-      <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/>
       </symbol>
       <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <path d="m15 18-6-6 6-6"/>
@@ -84,9 +75,6 @@
       </symbol>
       <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
-      </symbol>
-      <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-        <rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
       </symbol>
       <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M7 4.5 19.5 12 7 19.5Z"/></symbol>
       <symbol id="i-pause" viewBox="0 0 24 24"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></symbol>
@@ -116,16 +104,6 @@
       <symbol id="i-proton" viewBox="0 0 24 24"><path fill="currentColor" d="M12 20.351s-1.096-.108-1.955-.705c-.86-.596-6.58-4.688-6.58-4.688v8.098S3.513 24 4.55 24h14.9c1.036 0 1.085-.942 1.085-.942v-8.1s-5.723 4.092-6.58 4.69c-.86.595-1.955.704-1.955.704zm0-20.35S4.925-.23 3.465 7.623v5.35s.06.572 1.67 1.735c1.607 1.162 5.773 4.436 6.867 4.436 1.088 0 5.254-3.273 6.865-4.437 1.607-1.164 1.668-1.737 1.668-1.737V7.62C19.075-.229 12 .003 12 .003zm4.846 10.536h-9.69V7.623C8.14 3.723 12 3.67 12 3.67s3.863.054 4.846 3.954z"/></symbol>
     </defs>
   </svg>
-
-  <div class="top-bar">
-    <div class="shell top-bar-inner">
-      <p>Roblox programmer and systems developer from the Philippines.</p>
-      <p class="top-bar-meta">
-        <span>Remote, UTC+8</span>
-        <a href="mailto:nathanielmadridgaminde@proton.me">nathanielmadridgaminde@proton.me</a>
-      </p>
-    </div>
-  </div>
 
   <header class="site-header" data-header>
     <div class="site-header-inner shell">
@@ -171,12 +149,22 @@
     </ul>
   </nav>
 
+  <div class="top-bar">
+    <div class="shell top-bar-inner">
+      <p>Roblox programmer and systems developer from the Philippines.</p>
+      <p class="top-bar-meta">
+        <span>Remote, UTC+8</span>
+        <a href="mailto:nathanielmadridgaminde@proton.me">nathanielmadridgaminde@proton.me</a>
+      </p>
+    </div>
+  </div>
+
   <main id="main" class="shell">
     <div class="page">
       <aside class="dossier" id="top" aria-labelledby="hero-title">
         <div class="intro">
           <div class="intro-who" data-motion="fade">
-            <img class="intro-portrait" src="images/avatar.webp" alt="Portrait of Nathaniel Madrid in a suit and tie" width="1100" height="1100" fetchpriority="high" decoding="async">
+            <img class="intro-portrait" src="images/avatar-256.webp" alt="Portrait of Nathaniel Madrid in a suit and tie" width="256" height="256" fetchpriority="high" decoding="async">
             <p class="intro-status">Available for selected projects</p>
           </div>
           <h1 class="intro-title" id="hero-title" data-motion="rise">
@@ -212,7 +200,6 @@
             <li><a href="#agreement">Contract</a></li>
             <li><a href="#contact">Contact</a></li>
           </ol>
-          <a class="btn btn-primary btn-sm log-index-cta" href="https://datalprojects.com/contact" target="_blank" rel="noopener noreferrer">Start a project</a>
         </nav>
       </aside>
 
@@ -221,7 +208,7 @@
         <section class="entry" id="featured" aria-labelledby="featured-title">
           <header class="entry-head">
             <h2 id="featured-title" class="entry-title">Burgeran!</h2>
-            <p class="entry-lede">A live restaurant game for Cly Games. I was lead developer and programmer, and it is my strongest release so far.</p>
+            <p class="entry-lede">My strongest release so far, live on Roblox.</p>
           </header>
           <div class="entry-body" data-featured></div>
         </section>
@@ -229,7 +216,7 @@
         <section class="entry" id="experiences" aria-labelledby="experiences-title">
           <header class="entry-head">
             <h2 id="experiences-title" class="entry-title">Live games</h2>
-            <p class="entry-lede">Experiences live on Roblox where I worked as lead developer or programmer.</p>
+            <p class="entry-lede">More games live on Roblox, where I worked as a programmer.</p>
           </header>
           <div class="entry-body"><div class="experience-list" data-experience-list></div></div>
         </section>
@@ -237,7 +224,7 @@
         <section class="entry" id="ventures" aria-labelledby="ventures-title">
           <header class="entry-head">
             <h2 id="ventures-title" class="entry-title">Businesses</h2>
-            <p class="entry-lede">I also own and run three businesses in the Philippines: DATAL Projects, Cynex Services and Tenasa Games.</p>
+            <p class="entry-lede">I also own and run three businesses.</p>
           </header>
           <div class="entry-body"><div class="venture-list" data-venture-list></div></div>
         </section>
@@ -248,7 +235,6 @@
             <p class="entry-lede">Short recordings of gameplay, saved data, NPC behaviour, interfaces, economy systems and reusable frameworks.</p>
           </header>
           <div class="entry-body">
-            <div class="filter-bar" role="group" aria-label="Filter projects by category" data-project-filter></div>
             <div class="project-list" data-project-list></div>
           </div>
         </section>
@@ -256,14 +242,13 @@
         <section class="entry" id="network" aria-labelledby="network-title">
           <header class="entry-head">
             <h2 id="network-title" class="entry-title">Studios and communities</h2>
-            <p class="entry-lede">Roblox communities I have worked with as freelance collaborations, groups and servers I belong to, and other public previous work.</p>
+            <p class="entry-lede">Roblox communities I have freelanced for, the groups and servers I belong to, and other public work.</p>
           </header>
           <div class="entry-body">
             <div class="network-grid">
               <div><h3 class="column-label">Freelance collaborations</h3><ul class="row-list" data-freelance-major></ul></div>
-              <div><h3 class="column-label">Roblox groups</h3><ul class="row-list" data-roblox-groups></ul></div>
-              <div><h3 class="column-label">Discord servers</h3><ul class="row-list" data-discord-servers></ul></div>
-              <div><h3 class="column-label">Other public previous work</h3><ul class="row-list" data-public-work></ul></div>
+              <div><h3 class="column-label">Roblox groups and Discord servers</h3><ul class="row-list" data-community-list></ul></div>
+              <div><h3 class="column-label">Other public work</h3><ul class="row-list" data-public-work></ul></div>
             </div>
           </div>
         </section>
@@ -271,7 +256,7 @@
         <section class="entry" id="feedback" aria-labelledby="feedback-title">
           <header class="entry-head">
             <h2 id="feedback-title" class="entry-title">Client reviews</h2>
-            <p class="entry-lede">Nine five-star reviews archived from completed scripting orders, including repeat clients.</p>
+            <p class="entry-lede">Archived from completed scripting orders, including repeat clients.</p>
             <p class="review-summary" data-review-summary></p>
           </header>
           <div class="entry-body">
@@ -283,18 +268,10 @@
         <section class="entry" id="approach" aria-labelledby="approach-title">
           <header class="entry-head">
             <h2 id="approach-title" class="entry-title">How I work</h2>
-            <div class="prose">
-              <p>I am a business owner and computer science student from the Philippines, founder of the software company DATAL Projects, and a Roblox programmer and systems developer. My work covers gameplay systems, DataStore architecture, responsive UI, moderation tools, NPC behaviour, economies, and internal development tooling.</p>
-              <p>I organise projects around reusable Luau modules, server-side validation, predictable state, and explicit configuration, so the result stays practical for a team to extend.</p>
-            </div>
+            <p class="entry-lede">I organise projects around reusable Luau modules, server-side validation, predictable state, and explicit configuration, so the result stays practical for a team to extend.</p>
           </header>
           <div class="entry-body">
-            <dl class="capability-list" data-capability-list></dl>
-            <div class="process" data-process>
-              <h3 class="column-label process-label">A practical workflow</h3>
-              <div class="process-track" aria-hidden="true"><span></span></div>
-              <ol class="process-list" data-process-list></ol>
-            </div>
+            <ol class="process-list" data-process-list></ol>
           </div>
         </section>
 
@@ -426,10 +403,6 @@
               <button class="btn btn-secondary btn-sm copy-email" type="button" data-copy-email>
                 <span data-copy-label>Copy email address</span>
               </button>
-              <p class="channels-note">
-                <svg class="icon" aria-hidden="true"><use href="#i-map-pin"></use></svg>
-                Philippines · UTC+8 · Remote collaboration
-              </p>
             </div>
           </div>
           </div>
@@ -439,23 +412,46 @@
   </main>
 
   <footer class="site-footer">
-    <div class="shell site-footer-inner">
-      <div class="footer-brand">
-        <p><strong>Nathaniel Madrid</strong><span>Roblox programmer and systems developer</span></p>
+    <div class="shell">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <p class="footer-name">Nathaniel Madrid</p>
+          <p class="footer-about">Roblox programmer and systems developer, and founder of DATAL Projects.</p>
+          <a class="footer-mail" href="mailto:nathanielmadridgaminde@proton.me">nathanielmadridgaminde@proton.me</a>
+        </div>
+        <nav class="footer-col" aria-labelledby="footer-page-title">
+          <h2 class="footer-head" id="footer-page-title">On this page</h2>
+          <ul>
+            <li><a href="#featured">Burgeran!</a></li>
+            <li><a href="#experiences">Live games</a></li>
+            <li><a href="#work">System demos</a></li>
+            <li><a href="#feedback">Client reviews</a></li>
+            <li><a href="#agreement">Contract</a></li>
+          </ul>
+        </nav>
+        <div class="footer-col">
+          <h2 class="footer-head">Elsewhere</h2>
+          <ul>
+            <li><a href="https://github.com/nathmadgam" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+            <li><a href="https://www.linkedin.com/in/nathaniel-madrid" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+            <li><a href="https://x.com/cynexcodes" target="_blank" rel="noopener noreferrer">X</a></li>
+            <li><a href="https://discord.gg/Pnjjkc6FHY" target="_blank" rel="noopener noreferrer">Discord</a></li>
+            <li><a href="https://www.fiverr.com/nathmad54" target="_blank" rel="noopener noreferrer">Fiverr</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h2 class="footer-head">Work with me</h2>
+          <ul>
+            <li><a href="https://datalprojects.com/contact" target="_blank" rel="noopener noreferrer">Start a project</a></li>
+            <li><a href="https://datalprojects.com/" target="_blank" rel="noopener noreferrer">DATAL Projects</a></li>
+            <li><a href="downloads/Contract-Agreement-Form.pdf" download>Contract PDF</a></li>
+          </ul>
+        </div>
       </div>
-      <ul class="footer-links">
-        <li><a href="mailto:nathanielmadridgaminde@proton.me" aria-label="Email">
-          <svg class="icon" aria-hidden="true"><use href="#i-mail"></use></svg></a></li>
-        <li><a href="https://github.com/nathmadgam" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-          <svg class="icon" aria-hidden="true"><use href="#i-github"></use></svg></a></li>
-        <li><a href="https://discord.gg/Pnjjkc6FHY" target="_blank" rel="noopener noreferrer" aria-label="Discord">
-          <svg class="icon" aria-hidden="true"><use href="#i-discord"></use></svg></a></li>
-        <li><a href="https://www.linkedin.com/in/nathaniel-madrid" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-          <svg class="icon" aria-hidden="true"><use href="#i-linkedin"></use></svg></a></li>
-        <li><a href="https://x.com/cynexcodes" target="_blank" rel="noopener noreferrer" aria-label="X">
-          <svg class="icon" aria-hidden="true"><use href="#i-x-social"></use></svg></a></li>
-      </ul>
-      <a class="footer-top" href="#top">Back to top</a>
+      <div class="footer-base">
+        <p>&copy; 2026 Nathaniel Madrid</p>
+        <a href="#top">Back to top</a>
+      </div>
     </div>
   </footer>
 

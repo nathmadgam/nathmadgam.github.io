@@ -5,9 +5,9 @@
 # Nathaniel Madrid, Roblox programmer portfolio
 
 The source for <https://nathmadgam.github.io/>, the portfolio of Nathaniel Madrid:
-founder of DATAL Projects, lead developer of Burgeran! for Cly Games, a Roblox
-and a Roblox programmer who builds gameplay, backend services, persistent data, and
-interfaces in Luau.
+founder of DATAL Projects, lead developer of Burgeran! for Cly Games, and a Roblox
+programmer who builds gameplay, backend services, persistent data, and interfaces
+in Luau.
 
 Plain HTML, CSS, and ES modules. No framework, no build step, no dependencies.
 
@@ -26,8 +26,8 @@ on a single spine, live work first, then archived.
 
 1. **Burgeran!** Live on Roblox, with its chaptered systems demo (each chapter in "What
    I built" jumps the recording).
-2. **Live games**, **businesses**, **system demos** (six, filterable),
-   **studios and communities**, **client reviews**, **how I work** and the **contract**.
+2. **Live games**, **businesses**, **system demos** (six),
+   **studios and communities**, **client reviews**, **how I work**, **certifications** and the **contract**.
 3. **Volunteering.** One small entry: I volunteer with BetterGov.ph. The community
    portals I help with are folded inside it, with a note that they are community-run
    and not official government websites.
@@ -61,14 +61,18 @@ rows and 36px icon tiles.
 fills the window on both sides, closed by a dashed rule at the page edge. A wider
 window shows more dots, not a stretched page.
 
+**Info bar and footer.** Also from DATAL: a thin info bar sits under the header and
+scrolls away, and the footer is a darker band with the name and email on the left,
+plain text link columns, and a copyright row. Links and buttons carry no icons or
+arrows; the platform marks in the contact list are the only exception.
+
 **Numbers.** Numbers appear only where they carry information: demo timestamps and
 the process steps, whose order matters.
 
 **Motion.** One reveal for everything: a short fade and 16px rise with a small
 stagger, on a soft ease with no overshoot. Nothing scales on hover. Reveals start just before
-an element scrolls into view, so content is settled by the time it is read. The
-process line follows scroll position. With `prefers-reduced-motion` everything
-renders in its final state.
+an element scrolls into view, so content is settled by the time it is read. With
+`prefers-reduced-motion` everything renders in its final state.
 
 ## Theming
 
@@ -88,7 +92,7 @@ uses the tokens.
 index.html             markup, metadata, and the inline SVG icon sprite
 assets/css/styles.css  design tokens and all component styles
 assets/js/app.js       rendering and behaviour (ES module)
-assets/js/data.js      project, venture, experience, capability, network, and review content
+assets/js/data.js      project, venture, experience, network, process, and review content
 assets/posters/        video poster frames (960×540)
 assets/cached-media/   Roblox, Discord, and venture images
 assets/contract-pages/ contract page previews

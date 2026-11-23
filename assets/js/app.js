@@ -2,8 +2,7 @@
  * Personal site behaviour.
  * Renders list content from data.js and wires up navigation, the ship log
  * (index, spine and entry dots), the demo player, the inline Burgeran! demo,
- * the contract viewer, the email copy button, the project filter, and the
- * motion layer (scroll reveals and the process line).
+ * the contract viewer, the email copy button, and the scroll reveals.
  * No external dependencies; every animation respects prefers-reduced-motion.
  */
 import {
@@ -13,12 +12,11 @@ import {
   games,
   freelanceProjects,
   publicWork,
-  capabilities,
   process,
   robloxGroups,
   discordServers,
   reviews,
-} from "./data.js?v=2026-11-22p";
+} from "./data.js?v=2026-11-23a";
 
 const CONTACT_EMAIL = "nathanielmadridgaminde@proton.me";
 const CONTACT_URL = "https://datalprojects.com/contact";
@@ -108,21 +106,13 @@ function renderFeatured() {
           <p class="feature-role">${escapeHtml(game.role)}<span class="feature-studio">at <a class="text-link" href="${escapeHtml(game.studioUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(game.studio)}</a></span></p>
         </div>
         <p class="feature-summary">${escapeHtml(game.summary)}</p>
-        <dl class="feature-facts">
-          <div><dt>Genre</dt><dd>${escapeHtml(game.genre)}</dd></div>
-        </dl>
         <div class="feature-actions">
-          <button class="btn btn-primary" type="button" data-demo-watch>
-            Watch with sound
-          </button>
-          <a class="btn btn-secondary" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">
-            Play on Roblox
-          </a>
+          <a class="btn btn-primary" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">Play on Roblox</a>
           <a class="btn btn-secondary" href="${CONTACT_URL}" target="_blank" rel="noopener noreferrer">Build something similar</a>
         </div>
       </div>
       <div class="feature-systems">
-        <h4 class="column-label">What I built <small>Select a system to jump to it in the demo</small></h4>
+        <h3 class="column-label">What I built <small>Select a system to jump to it in the demo</small></h3>
         <ul>
           ${game.highlights.map(item => `
           <li>
@@ -189,34 +179,11 @@ function renderProjects() {
     </article>`).join("");
 }
 
-function renderProjectFilter() {
-  const bar = qs("[data-project-filter]");
-  const list = qs("[data-project-list]");
-  if (!bar || !list) return;
-  const categories = ["All", ...new Set(projects.map(project => project.category))];
-  bar.innerHTML = categories.map((category, index) => `
-    <button class="filter-chip" type="button" data-filter="${escapeHtml(category)}"
-            aria-pressed="${index === 0}">${escapeHtml(category)}</button>`).join("");
-
-  bar.addEventListener("click", event => {
-    const button = event.target.closest("[data-filter]");
-    if (!button) return;
-    const selected = button.dataset.filter;
-    qsa("[data-filter]", bar).forEach(chip =>
-      chip.setAttribute("aria-pressed", String(chip === button)));
-    qsa(".project", list).forEach(project => {
-      const match = selected === "All" || project.dataset.category === selected;
-      project.hidden = !match;
-      // Filtered-in cards may not have crossed the reveal threshold yet.
-      if (match) qsa("[data-motion]", project).forEach(settle);
-    });
-  });
-}
-
 function renderExperiences() {
   const list = qs("[data-experience-list]");
   if (!list) return;
-  list.innerHTML = games.map(game => `
+  // Burgeran! has its own entry above, so it is not listed again.
+  list.innerHTML = games.filter(game => game.name !== featured.name).map(game => `
     <article class="experience">
       <img class="experience-thumb" src="${escapeHtml(game.cachedImage ?? game.fallback)}"
            data-fallback="${escapeHtml(game.fallback)}"
@@ -234,18 +201,18 @@ function renderExperiences() {
   attachImageFallbacks(list);
 }
 
-/** Shared markup for the ruled, linked rows used by freelance work and the network. */
+/** Shared markup for the ruled, linked rows used by freelance work and the network. The role is optional. */
 const linkedRow = ({ url, name, description, role, image, fallback, fit = "cover", label }) => `
     <li>
       <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"
-         aria-label="${escapeHtml(label ?? `${name}, ${role} (opens in a new tab)`)}">
+         aria-label="${escapeHtml(label ?? `${name}${role ? `, ${role}` : ""} (opens in a new tab)`)}">
         <img src="${escapeHtml(image)}"${fallback ? ` data-fallback="${escapeHtml(fallback)}"` : ""}
              data-fit="${fit}" alt="" width="44" height="44" loading="lazy" decoding="async">
         <span class="row-copy">
           <strong>${escapeHtml(name)}</strong>
           <small>${escapeHtml(description)}</small>
         </span>
-        <span class="row-role">${escapeHtml(role)}</span>
+        ${role ? `<span class="row-role">${escapeHtml(role)}</span>` : ""}
       </a>
     </li>`;
 
@@ -258,7 +225,6 @@ function renderFreelance() {
       url: project.url,
       name: project.name,
       description: project.description,
-      role: "Freelance",
       image: project.cachedImage,
       fit: "contain",
       label: `Open the ${project.name} community page (opens in a new tab)`,
@@ -270,7 +236,6 @@ function renderFreelance() {
       url: work.url,
       name: work.name,
       description: work.description,
-      role: "Visit site",
       image: work.favicon,
       fit: "contain",
       label: `Visit ${work.name} (opens in a new tab)`,
@@ -278,47 +243,30 @@ function renderFreelance() {
   }
 }
 
-function renderCapabilities() {
-  const list = qs("[data-capability-list]");
-  if (!list) return;
-  list.innerHTML = capabilities.map(item => `
-    <div class="capability">
-      <dt>${escapeHtml(item.title)}</dt>
-      <dd>${escapeHtml(item.description)}</dd>
-    </div>`).join("");
-}
-
 function renderProcess() {
   const list = qs("[data-process-list]");
   if (!list) return;
   list.innerHTML = process.map((step, index) => `
-    <li class="process-step" data-step>
+    <li class="process-step">
       <span class="process-index" aria-hidden="true">${index + 1}</span>
       <h3>${escapeHtml(step.title)}</h3>
       <p>${escapeHtml(step.description)}</p>
     </li>`).join("");
 }
 
+/** Roblox groups and Discord servers share one list. */
 function renderNetwork() {
-  const entry = item => linkedRow({
+  const list = qs("[data-community-list]");
+  if (!list) return;
+  list.innerHTML = [...robloxGroups, ...discordServers].map(item => linkedRow({
     url: item.url,
     name: item.name,
     description: item.description,
     role: item.role,
     image: item.cachedImage ?? item.fallback,
     fallback: item.fallback,
-  });
-
-  const groups = qs("[data-roblox-groups]");
-  const servers = qs("[data-discord-servers]");
-  if (groups) {
-    groups.innerHTML = robloxGroups.map(entry).join("");
-    attachImageFallbacks(groups);
-  }
-  if (servers) {
-    servers.innerHTML = discordServers.map(entry).join("");
-    attachImageFallbacks(servers);
-  }
+  })).join("");
+  attachImageFallbacks(list);
 }
 
 function renderReviews() {
@@ -527,46 +475,6 @@ function setupMotion() {
   targets.forEach(target => observer.observe(target));
 }
 
-/**
- * Process line: on wide screens an ember rule runs across the four steps as
- * the section scrolls up the viewport, and each step is marked reached as
- * the line passes it. Text is never hidden.
- */
-function setupProcess() {
-  const root = qs("[data-process]");
-  const steps = qsa("[data-step]", root ?? document);
-  if (!root || !steps.length) return;
-
-  const mark = progress => {
-    root.style.setProperty("--progress", progress.toFixed(3));
-    steps.forEach((step, index) =>
-      step.classList.toggle("is-reached", progress >= (index + 0.35) / steps.length));
-  };
-
-  if (prefersReducedMotion.matches) {
-    mark(1);
-    return;
-  }
-
-  let queued = false;
-  const update = () => {
-    queued = false;
-    const top = root.getBoundingClientRect().top;
-    // 0 when the steps reach 85% down the viewport, 1 once they are at 35%.
-    const start = innerHeight * 0.85;
-    const end = innerHeight * 0.35;
-    mark(Math.min(Math.max((start - top) / (start - end), 0), 1));
-  };
-  const queue = () => {
-    if (queued) return;
-    queued = true;
-    requestAnimationFrame(update);
-  };
-  addEventListener("scroll", queue, { passive: true });
-  addEventListener("resize", queue, { passive: true });
-  update();
-}
-
 function setupPlayer() {
   const dialog = qs("[data-player]");
   const video = qs("[data-player-video]", dialog ?? document);
@@ -742,9 +650,8 @@ function setupDemo() {
   };
 
   /** A deliberate "watch this": clears the visitor's pause and brings the demo into view. */
-  const watch = ({ at, sound } = {}) => {
+  const watch = ({ at } = {}) => {
     userPaused = false;
-    if (sound) video.muted = false;
     if (at !== undefined) seek(at);
     const rect = frame.getBoundingClientRect();
     const visible = Math.min(rect.bottom, innerHeight) - Math.max(rect.top, 0);
@@ -780,7 +687,6 @@ function setupDemo() {
     // Turning sound on is a clear sign of wanting to watch.
     if (!video.muted && video.paused) watch();
   });
-  qs("[data-demo-watch]")?.addEventListener("click", () => watch({ sound: true }));
   systemButtons.forEach(button =>
     button.addEventListener("click", () => watch({ at: Number(button.dataset.demoSeek) })));
 
@@ -955,10 +861,8 @@ function setupCopyEmail() {
 renderFeatured();
 renderVentures();
 renderProjects();
-renderProjectFilter();
 renderExperiences();
 renderFreelance();
-renderCapabilities();
 renderProcess();
 renderNetwork();
 renderReviews();
@@ -972,5 +876,4 @@ setupLog();
 setupPlayer();
 setupDemo();
 setupContract();
-setupProcess();
 setupMotion();
